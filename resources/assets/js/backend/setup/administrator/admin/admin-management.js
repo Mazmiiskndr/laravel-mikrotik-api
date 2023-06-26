@@ -26,22 +26,27 @@ let dataTable;
 
 // Function to initialize the DataTable
 function initializeDataTable() {
+  var columns = [
+    { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
+    { data: 'username', name: 'username' },
+    { data: 'fullname', name: 'fullname' },
+    { data: 'group.name', name: 'group.name' },
+    { data: 'email', name: 'email' },
+    { data: 'status', name: 'status' }
+  ];
+
+  if (canEdit || canDelete) {
+    columns.push({ data: 'action', name: 'action', orderable: false, searchable: false });
+  }
+
   dataTable = $('#myTable').DataTable({
     processing: true,
     serverSide: true,
     responsive: true,
     autoWidth: false,
-    order: [[0]],
+    order: [[0]], // order by the second column
     ajax: document.getElementById('myTable').dataset.route,
-    columns: [
-      { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
-      { data: 'username', name: 'username' },
-      { data: 'fullname', name: 'fullname' },
-      { data: 'group.name', name: 'group.name' },
-      { data: 'email', name: 'email' },
-      { data: 'status', name: 'status' },
-      { data: 'action', name: 'action', orderable: false, searchable: false }
-    ]
+    columns: columns
   });
 }
 

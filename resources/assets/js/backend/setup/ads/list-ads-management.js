@@ -48,20 +48,25 @@ let dataTable;
 
 // Function to initialize the DataTable
 function initializeDataTable() {
+  var columns = [
+    { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
+    { data: 'image', name: 'image', width: '15%', orderable: false },
+    { data: 'title', name: 'title' },
+    { data: 'device_type', name: 'device_type' }
+  ];
+
+  if (canEdit || canDelete) {
+    columns.push({ data: 'action', name: 'action', orderable: false, searchable: false });
+  }
+
   dataTable = $('#myTable').DataTable({
     processing: true,
     serverSide: true,
     responsive: true,
     autoWidth: false,
-    order: [[0]],
-    ajax: document.getElementById('myTable').dataset.route, // This route should point to the getDatatables method
-    columns: [
-      { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
-      { data: 'image', name: 'image', width: '15%', orderable: false },
-      { data: 'title', name: 'title' },
-      { data: 'device_type', name: 'device_type' },
-      { data: 'action', name: 'action', orderable: false, searchable: false }
-    ]
+    order: [[0]], // order by the second column
+    ajax: document.getElementById('myTable').dataset.route,
+    columns: columns
   });
 }
 

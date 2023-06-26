@@ -37,7 +37,7 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
     public function getDatatables()
     {
         // Retrieve records from the database using the model, including the related 'services' records, and sort by the latest records
-        $data = $this->model->select('id', 'service_name', 'cost', 'currency', 'idle_timeout', 'ul_rate', 'dl_rate')->orderBy('id', 'DESC')->get();
+        $data = $this->model->where('for_purchase', 0)->select('id', 'service_name', 'cost', 'currency', 'idle_timeout', 'ul_rate', 'dl_rate')->orderBy('id', 'DESC')->get();
 
         // Initialize DataTables and add columns to the table
         return DataTables::of($data)

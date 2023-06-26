@@ -26,7 +26,7 @@
                 {{-- /End Button for Create New Client --}}
 
                 {{-- /Start Button for Batch Delete --}}
-                @if ($permissions['isAllowedToDeleteClient'])
+                @if ($permissions['isAllowedToBatchDeleteClients'])
                 <x-button type="button" color="danger" onclick="confirmDeleteBatch()">
                     <i class="tf-icons fas fa-trash-alt ti-xs me-1"></i>&nbsp; Batch Delete
                 </x-button>
