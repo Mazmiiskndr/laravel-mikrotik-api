@@ -29,7 +29,7 @@
 @push('scripts')
 <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
 <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
-{{-- <script src="{{ asset('assets/js/backend/service/service-management.js') }}"></script> --}}
+<script src="{{ asset('assets/js/backend/service/premium-service-management.js') }}"></script>
 @if (session()->has('success'))
 <div id="successToastPremiumService" class="bs-toast toast toast-ex animate__animated my-2 fade animate__fadeInUp bg-white"
     role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
@@ -50,31 +50,6 @@
         setTimeout(function() {
             $toast.removeClass('show showing');
         }, 3000);
-
-        // Function to show a modal for DELETE!
-        function confirmDeleteService(id) {
-            showSwalDialog('Are you sure?', 'You will not be able to restore this data!', () => {
-                Livewire.emit('confirmService', id);
-            });
-        }
-
-        // Helper function to show a Swal dialog
-        function showSwalDialog(title, text, callback) {
-            Swal.fire({
-                title: title,
-                text: text,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#7367f0',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then(result => {
-                if (result.isConfirmed) {
-                callback();
-                }
-            });
-        }
-
 </script>
 @endif
 @endpush
