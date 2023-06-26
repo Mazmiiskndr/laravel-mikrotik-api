@@ -22,7 +22,6 @@ class Edit extends Component
     public function mount(ServiceMegalosService $serviceMegalosService)
     {
         $this->showDetailService($this->serviceId, $serviceMegalosService);
-
     }
 
     /**

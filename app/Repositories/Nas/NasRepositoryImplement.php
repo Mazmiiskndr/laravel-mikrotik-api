@@ -67,7 +67,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         }
     }
 
-
     /**
      * Get NAS by its shortname
      * @param string $shortName
