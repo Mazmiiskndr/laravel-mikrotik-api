@@ -35,6 +35,19 @@ class ServiceMegalosServiceImplement extends Service implements ServiceMegalosSe
     }
 
     /**
+     * Retrieves records from a database, initializes DataTables Premium Services, adds columns to DataTable.
+     * @return DataTables Yajra JSON response.
+     */
+    public function getPremiumServicesDatatables()
+    {
+        try {
+            return $this->mainRepository->getPremiumServicesDatatables();
+        } catch (Exception $exception) {
+            throw new Exception("Error getting data to premium services datatables : " . $exception->getMessage());
+        }
+    }
+
+    /**
      * Define validation rules for service creation.
      * @param object $request The rules data used to create the new service.
      * @param string|null $serviceId Service ID for uniqueness checks. If not provided, a create operation is assumed.
@@ -59,6 +72,18 @@ class ServiceMegalosServiceImplement extends Service implements ServiceMegalosSe
             return $this->mainRepository->getMessages();
         } catch (Exception $exception) {
             throw new Exception("Error getting messages : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Get the attributes based on the provided service.
+     */
+    public function getAttributes()
+    {
+        try {
+            return $this->mainRepository->getAttributes();
+        } catch (Exception $exception) {
+            throw new Exception("Error getting attributes : " . $exception->getMessage());
         }
     }
 

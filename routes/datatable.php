@@ -15,6 +15,7 @@ use App\Http\Livewire\Backend\Setup\{
 use App\Http\Livewire\Backend\{
     Client\List\DataTable as DataTableClient,
     Service\List\DataTable as DataTableService,
+    Service\Premium\DataTable as DataTablePremiumService,
     Dashboard\DataTable as DataTableLeasesData
 };
 
@@ -52,6 +53,7 @@ Route::middleware(['check.session.cookie'])->group(function () {
         Route::prefix('service/')->group(function () {
                 // Route for getting datatable data for clients
                 Route::get('getDataTable', [DataTableService::class, 'getDataTable'])->name('service.getDataTable');
+                Route::get('getDataTablePremiumService', [DataTablePremiumService::class, 'getDataTable'])->name('premium-service.getDataTable');
         });
 
         // Grouping routes related to getting datatable for both administrator and configurations

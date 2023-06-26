@@ -41,7 +41,7 @@
 @push('scripts')
 <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
 <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
-{{-- <script src="{{ asset('assets/js/backend/service/service-management.js') }}"></script> --}}
+<script src="{{ asset('assets/js/backend/service/service-management.js') }}"></script>
 @if (session()->has('success'))
 <div id="successToastService" class="bs-toast toast toast-ex animate__animated my-2 fade animate__fadeInUp bg-white"
     role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
@@ -54,39 +54,14 @@
 </div>
 <script>
     // Display a success toast notification
-        var $toast = $('#successToastService');
-        $('#toastBody').text("{{ session('success') }}");
+    var $toast = $('#successToastService');
+    $('#toastBody').text("{{ session('success') }}");
 
-        $toast.addClass('show showing');
+    $toast.addClass('show showing');
 
-        setTimeout(function() {
-            $toast.removeClass('show showing');
-        }, 3000);
-
-        // Function to show a modal for DELETE!
-        function confirmDeleteService(id) {
-            showSwalDialog('Are you sure?', 'You will not be able to restore this data!', () => {
-                Livewire.emit('confirmService', id);
-            });
-        }
-
-        // Helper function to show a Swal dialog
-        function showSwalDialog(title, text, callback) {
-            Swal.fire({
-                title: title,
-                text: text,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#7367f0',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then(result => {
-                if (result.isConfirmed) {
-                callback();
-                }
-            });
-        }
-
+    setTimeout(function() {
+        $toast.removeClass('show showing');
+    }, 3000);
 </script>
 @endif
 @endpush
