@@ -79,6 +79,43 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
     }
 
     /**
+     * Retrieves records from a database, initializes DataTables Premium Services, adds columns to DataTable.
+     * @return DataTables Yajra JSON response.
+     */
+    public function getPremiumServicesDatatables()
+    {
+        // Retrieve records from the database using the model, including the related 'services' records, and sort by the latest records
+        $data = $this->model->where('for_purchase', 1)->select('id', 'service_name', 'ul_rate', 'dl_rate', 'purchase_duration','unit_time_purchase')->orderBy('id', 'DESC')->get();
+
+        // Initialize DataTables and add columns to the table
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('upload_rate', function ($data) {
+                return $data->ul_rate . ' Kbps';
+            })
+            ->addColumn('download_rate', function ($data) {
+                return $data->dl_rate . ' Kbps';
+            })
+            ->addColumn('purchase_duration', function ($data) {
+                return $data->purchase_duration . ' ' . ucwords($data->unit_time_purchase);
+            })
+            ->addColumn('action', function ($data) {
+                $editButton = '';
+                $deleteButton = '';
+
+                // Check if the current service is allowed to edit
+                if (AccessControlHelper::isAllowedToPerformAction('edit_premium_service')) {
+                    // If service is allowed, show edit button
+                    $editButton = '<a href="' . route('backend.services.edit-premium-service', $data->id) . '" class="edit btn btn-primary btn-sm" > <i class="fas fa-edit"></i></a>';
+                }
+
+                return $editButton . $deleteButton;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    /**
      * Define validation rules for service creation.
      * @param object $request The rules data used to create the new service.
      * @param string|null $serviceId Service ID for uniqueness checks. If not provided, a create operation is assumed.
@@ -91,20 +128,22 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
         $serviceNameRule .= $serviceId ? ',' . $serviceId . ',id' : '';
 
         // Defining the validation rule for the validity.
-        $validityTypeRule = $request->validity ? 'required|string' : 'nullable|string';
+        $validityTypeRule = (isset($request->validity)) ? 'required|string' : 'nullable|string';
 
         // Defining the validation rule for the time limit.
-        $limitTypeRule = $request->timeLimit ? 'required|string' : 'nullable|string';
+        $limitTypeRule = (isset($request->timeLimit)) ? 'required|string' : 'nullable|string';
 
         // Defining the validation rule for the burst.
-        $burstRule = $request->downloadBurstRate || $request->uploadBurstRate || $request->downloadBurstTime || $request->uploadBurstTime || $request->priority ? 'required' : 'nullable';
+        $burstRule = (isset($request->downloadBurstRate) || isset($request->uploadBurstRate) || isset($request->downloadBurstTime) || isset($request->uploadBurstTime) ) ? 'required' : 'nullable';
+        // TODO: Still need to check
+        // || $request->priority
 
         // Defining the validation rule for the priority.
-        $priorityRule = $request->downloadBurstRate ? 'required|integer|between:1,8' : 'nullable|integer|between:1,8';
+        $priorityRule = (isset($request->downloadBurstRate)) ? 'required|integer|between:1,8' : 'nullable|integer|between:1,8';
 
         // Defining the validation rule for the purchase duration and unit time purchase.
-        $timeDurationRule = $request->enableFeature == '1' ? 'required|numeric|max:9999999999' : 'nullable|numeric|max:9999999999';
-        $unitTimeDurationRule = $request->enableFeature == '1' ? 'required|string' : 'nullable|string';
+        $timeDurationRule = (isset($request->enableFeature)) == '1' ? 'required|numeric|max:9999999999' : 'nullable|numeric|max:9999999999';
+        $unitTimeDurationRule = (isset($request->enableFeature)) == '1' ? 'required|string' : 'nullable|string';
 
         return [
             'serviceName'           => $serviceNameRule,

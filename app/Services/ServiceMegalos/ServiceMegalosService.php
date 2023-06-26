@@ -13,6 +13,12 @@ interface ServiceMegalosService extends BaseService{
     public function getDatatables();
 
     /**
+     * Retrieves records from a database, initializes DataTables Premium Services, adds columns to DataTable.
+     * @return DataTables Yajra JSON response.
+     */
+    public function getPremiumServicesDatatables();
+
+    /**
      * Define validation rules for service creation.
      * @param object $request The rules data used to create the new service.
      * @param string|null $serviceId Service ID for uniqueness checks. If not provided, a create operation is assumed.

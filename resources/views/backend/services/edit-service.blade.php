@@ -1,7 +1,6 @@
 @extends('layouts/layoutMaster')
 @section('title', 'Edit Service')
 @push('styles')
-<link rel="stylesheet" href="{{ asset('assets/datatable/datatables.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
 @endpush
 

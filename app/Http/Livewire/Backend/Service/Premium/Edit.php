@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Backend\Service\List;
+namespace App\Http\Livewire\Backend\Service\Premium;
 
 use App\Services\ServiceMegalos\ServiceMegalosService;
 use App\Traits\LivewireMessageEvents;
@@ -22,7 +22,6 @@ class Edit extends Component
     public function mount(ServiceMegalosService $serviceMegalosService)
     {
         $this->showDetailService($this->serviceId, $serviceMegalosService);
-
     }
 
     /**
@@ -34,16 +33,16 @@ class Edit extends Component
     {
         // Every time a property changes, this function will be called
         $serviceMegalosService = app(ServiceMegalosService::class);
-        $this->validateOnly($property, $serviceMegalosService->getRules($this,$this->serviceId), $serviceMegalosService->getMessages());
+        $this->validateOnly($property, $serviceMegalosService->getRules($this, $this->serviceId), $serviceMegalosService->getMessages());
     }
 
     /**
-     * Render the component `edit form service`.
+     * Render the component `premium services form-edit`.
      * @return \Illuminate\View\View
      */
     public function render()
     {
-        return view('livewire.backend.service.list.edit');
+        return view('livewire.backend.service.premium.edit');
     }
 
     /**
@@ -52,7 +51,7 @@ class Edit extends Component
      * @return \Illuminate\Http\Response Returns a redirect response to the services list route on successful update.
      * @throws \Throwable If there is an error during the update process, it is caught and an error event is dispatched.
      */
-    public function updateService(ServiceMegalosService $serviceMegalosService)
+    public function updatePremiumService(ServiceMegalosService $serviceMegalosService)
     {
         // Validate Form Request
         $newService = $this->validate($serviceMegalosService->getRules($this, $this->serviceId), $serviceMegalosService->getMessages());
@@ -61,17 +60,17 @@ class Edit extends Component
         $newService['serviceName'] = ucwords(strtolower($newService['serviceName']));
 
         try {
-            // Call the storeNewService function in the repository
+            // Call the storeNewPremiumService function in the repository
             $serviceMegalosService->updateService($newService, $this->serviceId);
             // Reset the form fields
             $this->resetFields();
-            // Emit the 'serviceUpdated' event with a true status
-            $this->emit('serviceUpdated', true);
-            return redirect()->route('backend.services.list-services')->with('success', 'Service was updated successfully.');
-            // // Redirect to the service.index page with a success message
+            // Emit the 'premiumServiceUpdated' event with a true status
+            $this->emit('premiumServiceUpdated', true);
+            return redirect()->route('backend.services.premium-services')->with('success', 'Premium Service was updated successfully.');
+            // // Redirect to the premium.service.index page with a success message
         } catch (\Throwable $th) {
             // Show Message Error
-            $this->dispatchErrorEvent('An error occurred while updating service: ' . $th->getMessage());
+            $this->dispatchErrorEvent('An error occurred while updating premium service: ' . $th->getMessage());
         }
     }
 
@@ -186,5 +185,4 @@ class Edit extends Component
             'enableFeature' => 'for_purchase'
         ];
     }
-
 }
