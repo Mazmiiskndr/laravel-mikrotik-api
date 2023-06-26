@@ -21,7 +21,8 @@ class ClientServiceImplement extends Service implements ClientService
     }
 
     /**
-     * getClientParameters
+     * Retrieves client parameters from the settings table.
+     * @return Collection The collection of client parameters.
      */
     public function getClientParameters()
     {
@@ -29,13 +30,13 @@ class ClientServiceImplement extends Service implements ClientService
             return $this->mainRepository->getClientParameters();
         } catch (\Throwable $th) {
             Log::debug($th->getMessage());
+            throw $th;
         }
     }
 
     /**
-     * updateClientSettings
-     *
-     * @param  mixed $settings
+     * Updates or creates client settings based on the provided parameters.
+     * @param array $settings The array of settings to update or create.
      * @return void
      */
     public function updateClientSettings($settings)
@@ -44,6 +45,7 @@ class ClientServiceImplement extends Service implements ClientService
             $this->mainRepository->updateClientSettings($settings);
         } catch (\Throwable $th) {
             Log::debug($th->getMessage());
+            throw $th;
         }
     }
 }

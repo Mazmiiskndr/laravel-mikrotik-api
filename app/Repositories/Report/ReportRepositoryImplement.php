@@ -6,6 +6,7 @@ use App\Helpers\AccessControlHelper;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\RadAcct;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class ReportRepositoryImplement extends Eloquent implements ReportRepository
@@ -30,36 +31,44 @@ class ReportRepositoryImplement extends Eloquent implements ReportRepository
      */
     public function getAllRadAcct()
     {
-        // Prepare the data.
-        $result = [];
+        try {
+            // Prepare the data.
+            $responseData = [];
 
-        // Fetch the data where 'acctstoptime' is NULL and 'starttime' is not NULL.
-        $result['rows'] = $this->radAcctModel->select([
-            'username',
-            'acctstarttime as starttime',
-            'nasipaddress',
-            'framedipaddress as ipaddress',
-            'acctsessiontime',
-            'callingstationid as macaddress'
-        ])
-            ->whereNull('acctstoptime')
-            ->whereNotNull('acctstarttime')
-            ->get()
-            ->map(function ($item) {
-                $item->oltime = strtotime($item->starttime);
-                return $item;
-            });
+            // Fetch the data where 'acctstoptime' is NULL and 'starttime' is not NULL.
+            $responseData['activeSessions'] = $this->radAcctModel->select([
+                'username',
+                'acctstarttime as starttime',
+                'nasipaddress',
+                'framedipaddress as ipaddress',
+                'acctsessiontime',
+                'callingstationid as macaddress'
+            ])
+                ->whereNull('acctstoptime')
+                ->whereNotNull('acctstarttime')
+                ->get()
+                ->map(function ($item) {
+                    $item->oltime = strtotime($item->starttime);
+                    return $item;
+                });
 
-        // Count the number of rows where 'acctstoptime' is NULL and 'starttime' is not NULL.
-        $result['num_rows'] = $this->radAcctModel->whereNull('acctstoptime')->whereNotNull('acctstarttime')->count();
+            // Count the number of rows where 'acctstoptime' is NULL and 'starttime' is not NULL.
+            $responseData['activeSessionsCount'] = $this->radAcctModel->whereNull('acctstoptime')->whereNotNull('acctstarttime')->count();
 
-        // Add the 'firsttime' to each row.
-        foreach ($result['rows'] as $row) {
-            $row->firsttime = $this->getFirstUse($row->username);
+            // Add the 'firsttime' to each row.
+            foreach ($responseData['activeSessions'] as $session) {
+                $session->firsttime = $this->getFirstUse($session->username);
+            }
+
+            // Return the result.
+            return $responseData;
+        } catch (\Exception $e) {
+            // Log the error and return a message.
+            Log::error("Error getting all radacct records: " . $e->getMessage());
+            return [
+                'error' => 'An error occurred while trying to fetch the records. Please try again.',
+            ];
         }
-
-        // Return the result.
-        return $result;
     }
 
     /**
@@ -69,7 +78,7 @@ class ReportRepositoryImplement extends Eloquent implements ReportRepository
     public function getDatatables()
     {
         // Retrieve records from the database using getAllRadAcct function
-        $data = $this->getAllRadAcct()['rows'];
+        $data = $this->getAllRadAcct()['activeSessions'];
 
         // Initialize DataTables and add columns to the table
         return DataTables::of($data)
@@ -100,17 +109,21 @@ class ReportRepositoryImplement extends Eloquent implements ReportRepository
      */
     private function getFirstUse($username)
     {
-        // Fetch the first 'acctstarttime' for the given username where 'acctstarttime' is not NULL.
-        $query = $this->radAcctModel->select('acctstarttime as firsttime')
-            ->where('username', $username)
-            ->whereNotNull('acctstarttime')
-            ->orderBy('acctstarttime')
-            ->first();
+        try {
+            // Fetch the first 'acctstarttime' for the given username where 'acctstarttime' is not NULL.
+            $query = $this->radAcctModel->select('acctstarttime as firsttime')
+                ->where('username', $username)
+                ->whereNotNull('acctstarttime')
+                ->orderBy('acctstarttime')
+                ->first();
 
-        // Check if 'firsttime' exists and return it. Otherwise, return false.
-        if (!empty($query->firsttime)) {
-            return $query->firsttime;
-        } else {
+            // Check if 'firsttime' exists and return it. Otherwise, return false.
+            return !empty($query->firsttime) ? $query->firsttime : false;
+        } catch (\Exception $e) {
+            // Log the error.
+            Log::error("Error fetching the first usage time for username {$username}: " . $e->getMessage());
+
+            // In the event of an error, return false.
             return false;
         }
     }
