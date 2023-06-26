@@ -640,7 +640,6 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
         $this->radiusRecord($attributes);
     }
 
-
     /**
      * Method to manage RADIUS records.
      * You need to implement this method.
