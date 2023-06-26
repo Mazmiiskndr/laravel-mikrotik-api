@@ -42,17 +42,43 @@ window.addEventListener('show-modal', () => {
   $('#updateClientModal').modal('show');
 });
 
-// Event listener for 'select all' checkbox
-document.getElementById('select-all-checkbox').addEventListener('click', function (event) {
-  // Get all the checkboxes with the class 'client-checkbox'
-  let checkboxes = document.getElementsByClassName('client-checkbox');
+// Get the 'select all' checkbox
+let selectAllCheckbox = document.getElementById('select-all-checkbox');
 
-  // Set their checked property to the same as the 'select all' checkbox
-  Array.from(checkboxes).forEach(checkbox => (checkbox.checked = event.target.checked));
-});
+// Only add the event listener if the checkbox actually exists
+if (selectAllCheckbox) {
+  selectAllCheckbox.addEventListener('click', function (event) {
+    // Get all the checkboxes with the class 'client-checkbox'
+    let checkboxes = document.getElementsByClassName('client-checkbox');
+
+    // Set their checked property to the same as the 'select all' checkbox
+    Array.from(checkboxes).forEach(checkbox => (checkbox.checked = event.target.checked));
+  });
+}
 
 // Initialize DataTable when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function () {
+  var columns = [
+    { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
+    { data: 'username', name: 'username' },
+    { data: 'service_name', name: 'service_name' }
+  ];
+
+  if (canBatchDelete) {
+    columns.unshift({
+      data: 'client_uid',
+      render: function (data, type, row) {
+        return `<input type='checkbox' style='border: 1px solid #8f8f8f;' class='form-check-input client-checkbox' value='${data}'>`;
+      },
+      orderable: false,
+      searchable: false,
+      width: '15px'
+    });
+  }
+  if (canEdit || canDelete) {
+    columns.push({ data: 'action', name: 'action', orderable: false, searchable: false });
+  }
+
   dataTable = $('#myTable').DataTable({
     processing: true,
     serverSide: true,
@@ -60,21 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
     autoWidth: false,
     order: [[0]], // order by the second column
     ajax: document.getElementById('myTable').dataset.route,
-    columns: [
-      {
-        data: 'client_uid',
-        render: function (data, type, row) {
-          return `<input type='checkbox' style='border: 1px solid #8f8f8f;' class='form-check-input client-checkbox' value='${data}'>`;
-        },
-        orderable: false,
-        searchable: false,
-        width: '15px'
-      },
-      { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
-      { data: 'username', name: 'username' },
-      { data: 'service_name', name: 'service_name' },
-      { data: 'action', name: 'action', orderable: false, searchable: false }
-    ]
+    columns: columns
   });
 });
 

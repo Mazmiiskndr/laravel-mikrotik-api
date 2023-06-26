@@ -15,7 +15,7 @@ class ListClientController extends Controller
     public function __construct()
     {
         // Apply the 'checkPermissions' middleware to this controller with 'clients' as the required permission
-        $this->middleware('checkPermissions:list_clients,add_new_client,edit_client,delete_client')->only('index');
+        $this->middleware('checkPermissions:list_clients,add_new_client,edit_client,delete_client,batch_delete_clients')->only('index');
     }
 
     /**

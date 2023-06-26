@@ -17,6 +17,17 @@ function showSwalDialog(title, text, callback) {
 
 // Initialize DataTable when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function () {
+  var columns = [
+    { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
+    { data: 'service_name', name: 'service_name' },
+    { data: 'upload_rate', name: 'upload_rate' },
+    { data: 'download_rate', name: 'download_rate' },
+    { data: 'purchase_duration', name: 'purchase_duration' }
+  ];
+  if (canEdit) {
+    columns.push({ data: 'action', name: 'action', orderable: false, searchable: false });
+  }
+
   dataTable = $('#myTable').DataTable({
     processing: true,
     serverSide: true,
@@ -24,14 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
     autoWidth: false,
     order: [[0]], // order by the second column
     ajax: document.getElementById('myTable').dataset.route,
-    columns: [
-      { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
-      { data: 'service_name', name: 'service_name' },
-      { data: 'upload_rate', name: 'upload_rate' },
-      { data: 'download_rate', name: 'download_rate' },
-      { data: 'purchase_duration', name: 'purchase_duration' },
-      { data: 'action', name: 'action', orderable: false, searchable: false }
-    ]
+    columns: columns
   });
 });
 
