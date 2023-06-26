@@ -29,7 +29,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         $this->settingService = $settingService;
     }
 
-    // ***** PUBLIC FUNCTIONS *****
+    // 👇 🌟🌟🌟 PUBLIC FUNCTIONS 🌟🌟🌟 👇
 
     /**
      * Sets up a Mikrotik device process.
@@ -39,42 +39,30 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      */
     public function setupProcess($record, $data)
     {
-        // Initialize the result.
-        $result = ['status' => false, 'message' => ''];
-
         try {
-            // Attempt to connect to the Mikrotik device.
-            $connectResult = $this->connectToDevice($data);
-            if (!$connectResult['status']) {
-                $result['message'] = $connectResult['message'];
-                return $result;
+            // Define an array with the methods to be executed.
+            $methods = [
+                'connectToDevice',         // Method to establish a connection to the Mikrotik device.
+                'setupRadiusServer',       // Method to setup the Radius server.
+                'setupUserAndGroup',       // Method to setup the user and group.
+                'setupWalledGarden',       // Method to setup the Walled Garden.
+            ];
+
+            // Iterate over the methods array and execute each method.
+            foreach ($methods as $method) {
+                // Execute the current method and store the result.
+                $methodResult = $this->$method($data);
+
+                // If the method execution failed, return the failure status and message.
+                if (!$methodResult['status']) {
+                    return ['status' => false, 'message' => $methodResult['message']];
+                }
             }
 
-            // Setup the Radius Server.
-            $radiusResult = $this->setupRadiusServer($data);
-            if (!$radiusResult['status']) {
-                $result['message'] = $radiusResult['message'];
-                return $result;
-            }
-
-            // Setup User and Group.
-            $userResult = $this->setupUserAndGroup($data);
-            if (!$userResult['status']) {
-                $result['message'] = $userResult['message'];
-                return $result;
-            }
-
-            // Setup Walled Garden.
-            $wgResult = $this->setupWalledGarden($data);
-            if (!$wgResult['status']) {
-                $result['message'] = $wgResult['message'];
-                return $result;
-            }
-
-            // If all operations are successful, update the result status.
-            $result['status'] = true;
-            return $result;
+            // If all operations were successful, return a success status.
+            return ['status' => true];
         } catch (\Exception $e) {
+            // If an exception occurred, return a failure status and the exception message.
             return ['status' => false, 'message' => "Error: " . $e->getMessage()];
         }
     }
@@ -131,7 +119,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         return true;
     }
 
-    // 👇 **** PROTECTED FUNCTIONS **** 👇
+    // 👇 🌟🌟🌟 PROTECTED FUNCTIONS 🌟🌟🌟 👇
 
     /**
      * Adds an IP address to the Walled Garden IP List.
@@ -345,7 +333,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         return $result;
     }
 
-    // 👇 **** PRIVATE FUNCTIONS **** 👇
+    // 👇 🌟🌟🌟 PRIVATE FUNCTIONS 🌟🌟🌟 👇
 
     /**
      * Connects to the Mikrotik device.

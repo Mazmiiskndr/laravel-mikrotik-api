@@ -16,6 +16,7 @@ use App\Http\Livewire\Backend\{
     Client\List\DataTable as DataTableClient,
     Service\List\DataTable as DataTableService,
     Service\Premium\DataTable as DataTablePremiumService,
+    Report\ListOnlineUser\DataTable as DataTableOnlineUsers,
     Dashboard\DataTable as DataTableLeasesData
 };
 
@@ -46,14 +47,19 @@ Route::middleware(['check.session.cookie'])->group(function () {
         });
 
         Route::prefix('client/')->group(function () {
-                // Route for getting datatable data for clients
-                Route::get('getDataTable', [DataTableClient::class, 'getDataTable'])->name('client.getDataTable');
+            // Route for getting datatable data for clients
+            Route::get('getDataTable', [DataTableClient::class, 'getDataTable'])->name('client.getDataTable');
         });
 
         Route::prefix('service/')->group(function () {
-                // Route for getting datatable data for clients
-                Route::get('getDataTable', [DataTableService::class, 'getDataTable'])->name('service.getDataTable');
-                Route::get('getDataTablePremiumService', [DataTablePremiumService::class, 'getDataTable'])->name('premium-service.getDataTable');
+            // Route for getting datatable data for clients
+            Route::get('getDataTable', [DataTableService::class, 'getDataTable'])->name('service.getDataTable');
+            Route::get('getDataTablePremiumService', [DataTablePremiumService::class, 'getDataTable'])->name('premium-service.getDataTable');
+        });
+
+        Route::prefix('report/')->group(function () {
+            // Route for getting datatable data for report list-online-users
+            Route::get('getDataTableListOnlineUsers', [DataTableOnlineUsers::class, 'getDataTableListOnlineUsers'])->name('report.getDataTableListOnlineUsers');
         });
 
         // Grouping routes related to getting datatable for both administrator and configurations
@@ -62,6 +68,5 @@ Route::middleware(['check.session.cookie'])->group(function () {
             // Route for getting datatable data for admins
             Route::get('leasesData/getDataTable', [DataTableLeasesData::class, 'getDataTable'])->name('leasesData.getDataTable');
         });
-
     });
 });

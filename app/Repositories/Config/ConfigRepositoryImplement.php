@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Config;
 
+use App\Helpers\AccessControlHelper;
 use App\Models\Module;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Setting;
@@ -23,7 +24,8 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
     }
 
     /**
-     * getDatatables
+     * Returns a DataTables response with all module information for non-null 'flag_module' fields.
+     * @return \Yajra\DataTables\DataTables JSON response for the DataTables.
      */
     public function getDatatables()
     {
@@ -60,12 +62,15 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
             // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
             ->addColumn('action', function ($data) {
                 if ($data['id'] > 0) {
+                    $button = "";
                     // For non-Router rows, use the edit and delete buttons with Names and classes
-                    if($data['name'] == 'hotel_rooms') {
-                        $routeDetailHotelRooms = route('backend.setup.config.hotel_rooms');
-                        $button = '<a href="' . $routeDetailHotelRooms . '" aria-label="Detail Button" name="' . $data['name'] . '" class="edit btn btn-info btn-sm"> <i class="fas fa-eye"></i></a>';
-                        $button .= '&nbsp;&nbsp;<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
-                    }else{
+                    if ($data['name'] == 'hotel_rooms') {
+                        if (AccessControlHelper::isAllowedToPerformAction('config_hotel_rooms')) {
+                            $routeDetailHotelRooms = route('backend.setup.config.hotel_rooms');
+                            $button = '<a href="' . $routeDetailHotelRooms . '" aria-label="Detail Button" name="' . $data['name'] . '" class="edit btn btn-info btn-sm"> <i class="fas fa-eye"></i></a> &nbsp;&nbsp;';
+                        }
+                        $button .= '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
+                    } else {
                         $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
                     }
                 } else {
@@ -80,20 +85,21 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
         return $dataTables;
     }
 
+    /**
+     * Retrieves the 'url_redirect' setting from the current model's table.
+     * @return Model The Eloquent model instance for the 'url_redirect' setting.
+     */
     public function getUrlRedirect()
     {
         // Use Eloquent to retrieve data from the database
         $data = $this->model->whereIn('setting', ['url_redirect'])->firstOrFail();
-
         // Return the data
         return $data;
     }
 
     /**
-     * updateUrlRedirect
-     *
-     * @param  mixed $request
-     * @return void
+     * Updates or creates 'url_redirect' setting based on the given request data.
+     * @param  mixed $request The request data to update or create settings with.
      */
     public function updateUrlRedirect($request)
     {

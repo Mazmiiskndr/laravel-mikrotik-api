@@ -2,7 +2,6 @@
 @section('title', 'List Services')
 @push('styles')
 <link rel="stylesheet" href="{{ asset('assets/datatable/datatables.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
 @endpush
 
 @section('content')
@@ -39,7 +38,6 @@
 
 </div>
 @push('scripts')
-<script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
 <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
 <script src="{{ asset('assets/js/backend/service/service-management.js') }}"></script>
 @if (session()->has('success'))

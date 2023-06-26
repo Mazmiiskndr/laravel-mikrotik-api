@@ -7,24 +7,26 @@ use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Setting;
 use Yajra\DataTables\Facades\DataTables;
 
-class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomRepository{
+class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomRepository
+{
 
     /**
-    * Model class to be used in this repository for the common methods inside Eloquent
-    * Don't remove or change $this->model variable name
-    * @property Model|mixed $model;
-    */
+     * Model class to be used in this repository for the common methods inside Eloquent
+     * Don't remove or change $this->model variable name
+     * @property Model|mixed $model;
+     */
     protected $model;
+    protected $servicesModel;
 
-    public function __construct(Setting $model)
+    public function __construct(Setting $model, Services $servicesModel)
     {
         $this->model = $model;
+        $this->servicesModel = $servicesModel;
     }
 
     /**
-     * getHotelRoomParameters
-     *
-     * @return void
+     * Fetches hotel room parameters from the model's table.
+     * @return Model The fetched Eloquent model instance.
      */
     public function getHotelRoomParameters()
     {
@@ -35,10 +37,8 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
     }
 
     /**
-     * updateHotelRoomSettings
-     *
-     * @param  mixed $settings
-     * @return void
+     * Updates or creates hotel room settings based on the given data.
+     * @param  array $settings The settings to update or create.
      */
     public function updateHotelRoomSettings($settings)
     {
@@ -51,16 +51,17 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
     }
 
     /**
-     * getDatatables
+     * Fetches data from the database and formats it for DataTables.
+     * @return JsonResponse A JSON response suitable for DataTables.
      */
     public function getDatatables()
     {
         // Retrieve records from the database using the model, including the related 'Services' records, and sort by the latest records
-        $data = Services::select('id','service_name', 'cron_type', 'cron')
-        ->where('cron_type', '!=', null)
-        ->where('cron', '!=', '')
-        ->where('cron', '!=', 0)
-        ->get();
+        $data = $this->servicesModel->select('id', 'service_name', 'cron_type', 'cron')
+            ->where('cron_type', '!=', null)
+            ->where('cron', '!=', '')
+            ->where('cron', '!=', 0)
+            ->get();
 
         // Initialize the DataTables library using the fetched data
         $dataTables = DataTables::of($data)
@@ -68,9 +69,6 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
             ->addIndexColumn()
             // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
             ->addColumn('action', function ($data) {
-                // Create an edit button with the record's 'id' as its ID and a 'fas fa-edit' icon
-                // $button = '<button type="button" name="edit" id="' . $data->id . '" class="edit btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</button>';
-
                 // Add a delete button with the record's 'id' as its ID and a 'fas fa-trash' icon
                 $button = '&nbsp;&nbsp;<button type="button" name="edit" class="delete btn btn-danger btn-sm" onclick="confirmDeleteService(\'' . $data->id . '\')"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
 
@@ -83,7 +81,4 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
         // Return the DataTables JSON response
         return $dataTables;
     }
-
-
-
 }

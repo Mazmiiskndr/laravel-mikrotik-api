@@ -7,31 +7,26 @@ use LaravelEasyRepository\BaseService;
 interface NasService extends BaseService{
 
     /**
-     * getNasByShortname
-     * @param  mixed $shortname
-     * @return void
+     * Retrieves NAS (Network Access Server) by its shortname.
+     * @param string $shortName The shortname of the NAS.
      */
     public function getNasByShortname($shortName);
 
     /**
-     * getNasParameters
-     *
-     * @return void
+     * Fetches all parameters related to NAS.
      */
     public function getNasParameters();
 
     /**
-     * editNasProcess
-     * @param  mixed $data
-     * @return void
+     * Processes the data for editing a NAS.
+     * @param array $data The data to be processed for editing.
      */
     public function editNasProcess($data);
 
     /**
-     * setupProcess
-     * @param  mixed $record
-     * @param  mixed $data
-     * @return void
+     * Performs setup process using provided record and data.
+     * @param mixed $record The record used in the setup process.
+     * @param array $data The data used in the setup process.
      */
     public function setupProcess($record, $data);
 }

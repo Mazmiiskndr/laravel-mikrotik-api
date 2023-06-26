@@ -7,64 +7,60 @@ use LaravelEasyRepository\BaseService;
 interface MikrotikApiService extends BaseService{
 
     /**
-     * getMikrotikUserActive
-     * @param  mixed $ip
-     * @param  mixed $username
-     * @param  mixed $password
-     * @return void
+     * Fetches active Mikrotik users.
+     * @param string $ip The IP address of the Mikrotik.
+     * @param string $username The username to log into the Mikrotik.
+     * @param string $password The password to log into the Mikrotik.
      */
     public function getMikrotikUserActive($ip, $username, $password);
 
     /**
-     * getMikrotikActiveHotspot
-     * @param  mixed $ip
-     * @param  mixed $username
-     * @param  mixed $password
-     * @return void
+     * Retrieves active hotspot data from Mikrotik.
+     * @param string $ip The IP address of the Mikrotik.
+     * @param string $username The username to log into the Mikrotik.
+     * @param string $password The password to log into the Mikrotik.
      */
     public function getMikrotikActiveHotspot($ip, $username, $password);
 
     /**
-     * getMikrotikResourceData
-     * @param  mixed $ip
-     * @param  mixed $username
-     * @param  mixed $password
-     * @return void
+     * Fetches resource data from Mikrotik.
+     * @param string $ip The IP address of the Mikrotik.
+     * @param string $username The username to log into the Mikrotik.
+     * @param string $password The password to log into the Mikrotik.
      */
     public function getMikrotikResourceData($ip, $username, $password);
 
     /**
-     * getTrafficData
-     * @param  mixed $ip
-     * @param  mixed $username
-     * @param  mixed $password
-     * @param  mixed $interface
-     * @return void
+     * Retrieves traffic data for a specified interface from Mikrotik.
+     * @param string $ip The IP address of the Mikrotik.
+     * @param string $username The username to log into the Mikrotik.
+     * @param string $password The password to log into the Mikrotik.
+     * @param string $interface The interface for which to fetch traffic data.
      */
     public function getTrafficData($ip, $username, $password, $interface);
 
     /**
-     * getDhcpLeasesData
-     * @param  mixed $ip
-     * @param  mixed $username
-     * @param  mixed $password
-     * @param  mixed $interface
-     * @return void
+     * Fetches DHCP Leases data from Mikrotik.
+     * @param string $ip The IP address of the Mikrotik.
+     * @param string $username The username to log into the Mikrotik.
+     * @param string $password The password to log into the Mikrotik.
      */
     public function getDhcpLeasesData($ip, $username, $password);
 
     /**
-     * Retrieves DHCP Leases records from a database, initializes DataTables, adds columns to DataTable.
-     * @return DataTables Yajra JSON response or null if there's no data.
+     * Fetches DHCP Leases records and prepares DataTables JSON response.
+     * @param string $ip The IP address of the Mikrotik.
+     * @param string $username The username to log into the Mikrotik.
+     * @param string $password The password to log into the Mikrotik.
+     * @return mixed DataTables JSON response or null if no data.
      */
     public function getDhcpLeasesDatatables($ip, $username, $password);
 
     /**
-     * connect
-     * @param  mixed $ip
-     * @param  mixed $username
-     * @param  mixed $password
-     * @return void
+     * Establishes a connection to Mikrotik.
+     * @param string $ip The IP address of the Mikrotik.
+     * @param string $username The username to log into the Mikrotik.
+     * @param string $password The password to log into the Mikrotik.
      */
     public function connect($ip, $username, $password);
 

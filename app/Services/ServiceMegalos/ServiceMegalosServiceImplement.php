@@ -133,8 +133,7 @@ class ServiceMegalosServiceImplement extends Service implements ServiceMegalosSe
     }
 
     /**
-     * @return The `getServices()` function is returning the result of calling the `getServices()`
-     * method on the `` object.
+     * Fetches all services from the database.
      */
     public function getServices()
     {
@@ -147,8 +146,8 @@ class ServiceMegalosServiceImplement extends Service implements ServiceMegalosSe
 
     /**
      * Retrieves a service by its ID.
-     * @param int $serviceId Unique identifier of the service.
-     * @return mixed Single record of the service from the database.
+     * @param int $serviceId The unique identifier of the service.
+     * @return mixed A single service record from the database.
      */
     public function getServiceById($serviceId)
     {
@@ -160,10 +159,8 @@ class ServiceMegalosServiceImplement extends Service implements ServiceMegalosSe
     }
 
     /**
-     * storeHotelRoomService
-     *
-     * @param  mixed $request
-     * @return void
+     * Stores a hotel room service in the database.
+     * @param array $request The request data to be stored.
      */
     public function storeHotelRoomService($request)
     {
@@ -175,10 +172,8 @@ class ServiceMegalosServiceImplement extends Service implements ServiceMegalosSe
     }
 
     /**
-     * deleteService
-     *
-     * @param  mixed $id
-     * @return void
+     * Deletes a service by its ID from the database.
+     * @param int $id The unique identifier of the service to be deleted.
      */
     public function deleteService($id)
     {

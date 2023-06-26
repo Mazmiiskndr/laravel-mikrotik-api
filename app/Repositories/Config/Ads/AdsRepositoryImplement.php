@@ -35,9 +35,11 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
         $this->settingService = $settingService;
     }
 
+    // 👇 🌟🌟🌟 PUBLIC FUNCTIONS 🌟🌟🌟 👇
+
     /**
-     * getAdsParameters
-     * @return void
+     * Fetches a set of ad parameters from the current model's table.
+     * @return Collection A collection of Eloquent model instances.
      */
     public function getAdsParameters()
     {
@@ -61,9 +63,8 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
     }
 
     /**
-     * updateAdsSettings
-     * @param  mixed $settings
-     * @return void
+     * Updates or creates ad settings based on the given data.
+     * @param  array $settings The settings to update or create.
      */
     public function updateAdsSettings($settings)
     {
@@ -143,40 +144,6 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
     }
 
     /**
-     * Validate the image based on the device type.
-     * @param Illuminate\Http\UploadedFile $image The uploaded image file
-     * @throws Exception If the image dimensions or size exceed the maximum allowed for the selected device type
-     * @return void
-     */
-    private function validateImage($image, $deviceType)
-    {
-        // Get the original dimensions of the image
-        list($width, $height) = getimagesize($image->getRealPath());
-        $data['width'] = $width;
-        $data['height'] = $height;
-
-        // Get the size of the image file in kilobytes
-        $data['size'] = round(filesize($image->getRealPath()) / 1024); // convert from bytes to kilobytes and round off
-
-        // Check if the selected device type is Desktop
-        if ($deviceType === 'Desktop') {
-            // Compare the width, height, and size of the image with the maximum limits for Desktop
-            if ($data['width'] > $this->adsMaxWidth() || $data['height'] > $this->adsMaxHeight() || $data['size'] > $this->adsMaxSize()) {
-                // Throw an exception if the image dimensions or size exceed the maximum allowed for Desktop
-                throw new \Exception("Desktop image exceeds max width: {$this->adsMaxWidth()}px, height: {$this->adsMaxHeight()}px or size: {$this->adsMaxSize()}KB");
-            }
-        }
-        // Check if the selected device type is Mobile
-        elseif ($deviceType === 'Mobile') {
-            // Compare the width, height, and size of the image with the maximum limits for Mobile
-            if ($data['width'] > $this->mobileAdsMaxWidth() || $data['height'] > $this->mobileAdsMaxHeight() || $data['size'] > $this->mobileAdsMaxSize()) {
-                // Throw an exception if the image dimensions or size exceed the maximum allowed for Mobile
-                throw new \Exception("Mobile image exceeds max width: {$this->mobileAdsMaxWidth()}px, height: {$this->mobileAdsMaxHeight()}px or size: {$this->mobileAdsMaxSize()}KB");
-            }
-        }
-    }
-
-    /**
      * Updates an existing ad using the provided request data.
      * @param array $request The data used to update the ad.
      * @param int $id The ID of the ad to update.
@@ -243,7 +210,104 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
         }
     }
 
-    // **** Private Methods ****
+    /**
+     * Get the maximum width for ads from the settings.
+     * @return int|null The maximum width for ads.
+     */
+    public function adsMaxWidth()
+    {
+        return $this->settingService->getSetting('ads_max_width', $this->moduleId());
+    }
+
+    /**
+     * Get the maximum height for ads from the settings.
+     * @return int|null The maximum height for ads.
+     */
+    public function adsMaxHeight()
+    {
+        return $this->settingService->getSetting('ads_max_height', $this->moduleId());
+    }
+
+    /**
+     * Get the maximum size for ads from the settings.
+     * @return int|null The maximum size for ads.
+     */
+    public function adsMaxSize()
+    {
+        return $this->settingService->getSetting('ads_max_size', $this->moduleId());
+    }
+
+    /**
+     * Get the maximum mobile width for ads from the settings.
+     * @return int|null The maximum mobile width for ads.
+     */
+    public function mobileAdsMaxWidth()
+    {
+        return $this->settingService->getSetting('mobile_ads_max_width', $this->moduleId());
+    }
+
+    /**
+     * Get the maximum mobile height for ads from the settings.
+     * @return int|null The maximum mobile height for ads.
+     */
+    public function mobileAdsMaxHeight()
+    {
+        return $this->settingService->getSetting('mobile_ads_max_height', $this->moduleId());
+    }
+
+    /**
+     * Get the maximum mobile size for ads from the settings.
+     * @return int|null The maximum mobile size for ads.
+     */
+    public function mobileAdsMaxSize()
+    {
+        return $this->settingService->getSetting('mobile_ads_max_size', $this->moduleId());
+    }
+
+    /**
+     * Get the path ads upload folder for ads from the settings.
+     * @return int|null The maximum ads upload folder for ads.
+     */
+    public function adsUploadFolder()
+    {
+        return $this->settingService->getSetting('ads_upload_folder', $this->moduleId());
+    }
+
+    // 👇 🌟🌟🌟 PRIVATE FUNCTIONS 🌟🌟🌟 👇
+
+    /**
+     * Validate the image based on the device type.
+     * @param Illuminate\Http\UploadedFile $image The uploaded image file
+     * @throws Exception If the image dimensions or size exceed the maximum allowed for the selected device type
+     * @return void
+     */
+    private function validateImage($image, $deviceType)
+    {
+        // Get the original dimensions of the image
+        list($width, $height) = getimagesize($image->getRealPath());
+        $data['width'] = $width;
+        $data['height'] = $height;
+
+        // Get the size of the image file in kilobytes
+        $data['size'] = round(filesize($image->getRealPath()) / 1024); // convert from bytes to kilobytes and round off
+
+        // Check if the selected device type is Desktop
+        if ($deviceType === 'Desktop') {
+            // Compare the width, height, and size of the image with the maximum limits for Desktop
+            if ($data['width'] > $this->adsMaxWidth() || $data['height'] > $this->adsMaxHeight() || $data['size'] > $this->adsMaxSize()) {
+                // Throw an exception if the image dimensions or size exceed the maximum allowed for Desktop
+                throw new \Exception("Desktop image exceeds max width: {$this->adsMaxWidth()}px, height: {$this->adsMaxHeight()}px or size: {$this->adsMaxSize()}KB");
+            }
+        }
+        // Check if the selected device type is Mobile
+        elseif ($deviceType === 'Mobile') {
+            // Compare the width, height, and size of the image with the maximum limits for Mobile
+            if ($data['width'] > $this->mobileAdsMaxWidth() || $data['height'] > $this->mobileAdsMaxHeight() || $data['size'] > $this->mobileAdsMaxSize()) {
+                // Throw an exception if the image dimensions or size exceed the maximum allowed for Mobile
+                throw new \Exception("Mobile image exceeds max width: {$this->mobileAdsMaxWidth()}px, height: {$this->mobileAdsMaxHeight()}px or size: {$this->mobileAdsMaxSize()}KB");
+            }
+        }
+    }
 
     /**
      * Generates a unique file name.
@@ -350,69 +414,6 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
         $ad->save();
 
         return $ad;
-    }
-
-    /**
-     * Get the maximum width for ads from the settings.
-     * @return int|null The maximum width for ads.
-     */
-    public function adsMaxWidth()
-    {
-        return $this->settingService->getSetting('ads_max_width', $this->moduleId());
-    }
-
-    /**
-     * Get the maximum height for ads from the settings.
-     * @return int|null The maximum height for ads.
-     */
-    public function adsMaxHeight()
-    {
-        return $this->settingService->getSetting('ads_max_height', $this->moduleId());
-    }
-
-    /**
-     * Get the maximum size for ads from the settings.
-     * @return int|null The maximum size for ads.
-     */
-    public function adsMaxSize()
-    {
-        return $this->settingService->getSetting('ads_max_size', $this->moduleId());
-    }
-
-    /**
-     * Get the maximum mobile width for ads from the settings.
-     * @return int|null The maximum mobile width for ads.
-     */
-    public function mobileAdsMaxWidth()
-    {
-        return $this->settingService->getSetting('mobile_ads_max_width', $this->moduleId());
-    }
-
-    /**
-     * Get the maximum mobile height for ads from the settings.
-     * @return int|null The maximum mobile height for ads.
-     */
-    public function mobileAdsMaxHeight()
-    {
-        return $this->settingService->getSetting('mobile_ads_max_height', $this->moduleId());
-    }
-
-    /**
-     * Get the maximum mobil size for ads from the settings.
-     * @return int|null The maximum mobil size for ads.
-     */
-    public function mobileAdsMaxSize()
-    {
-        return $this->settingService->getSetting('mobile_ads_max_size', $this->moduleId());
-    }
-
-    /**
-     * Get the path ads upload folder for ads from the settings.
-     * @return int|null The maximum ads upload folder for ads.
-     */
-    public function adsUploadFolder()
-    {
-        return $this->settingService->getSetting('ads_upload_folder', $this->moduleId());
     }
 
     /**

@@ -7,17 +7,14 @@ use LaravelEasyRepository\BaseService;
 interface AdsService extends BaseService{
 
     /**
-     * getAdsParameters
-     *
-     * @return void
+     * Fetches a set of ad parameters from the current model's table.
+     * @return Collection A collection of Eloquent model instances.
      */
     public function getAdsParameters();
 
     /**
-     * updateAdsSettings
-     *
-     * @param  mixed $settings
-     * @return void
+     * Updates or creates ad settings based on the given data.
+     * @param  array $settings The settings to update or create.
      */
     public function updateAdsSettings($settings);
 
@@ -82,8 +79,8 @@ interface AdsService extends BaseService{
     public function mobileAdsMaxHeight();
 
     /**
-     * Get the maximum mobil size for ads from the settings.
-     * @return int|null The maximum mobil size for ads.
+     * Get the maximum mobile size for ads from the settings.
+     * @return int|null The maximum mobile size for ads.
      */
     public function mobileAdsMaxSize();
 

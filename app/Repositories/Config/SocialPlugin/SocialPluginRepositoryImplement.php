@@ -47,12 +47,9 @@ class SocialPluginRepositoryImplement extends Eloquent implements SocialPluginRe
         return $socialPlugins;
     }
 
-
     /**
-     * This function updates or creates social plugin settings in a database based on the provided
-     * key-value pairs.
-     * @param settings The  parameter is an array that contains key-value pairs representing
-     * the social plugin settings to be updated or created.
+     * Updates or creates social plugin settings based on the given data.
+     * @param array $settings The settings to update or create.
      */
     public function updateSocialPluginSettings($settings)
     {

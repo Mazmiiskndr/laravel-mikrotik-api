@@ -21,14 +21,8 @@ class SocialPluginServiceImplement extends Service implements SocialPluginServic
     }
 
     /**
-     * This function tries to retrieve social plugin parameters from the main repository and logs any
-     * errors.
-     *
-     * @return The `getSocialPluginParameters()` function is returning the result of calling the
-     * `getSocialPluginParameters()` method on the `` object. If an exception is caught,
-     * the function logs the error message using the `Log::debug()` method. The return value of the
-     * function depends on the implementation of the `getSocialPluginParameters()` method in the
-     * `` object.
+     * Retrieves the parameters for the social plugin.
+     * @return Collection Returns a collection of setting records which contains setting name and its value.
      */
     public function getSocialPluginParameters()
     {
@@ -36,19 +30,13 @@ class SocialPluginServiceImplement extends Service implements SocialPluginServic
             return $this->mainRepository->getSocialPluginParameters();
         } catch (\Throwable $th) {
             Log::debug($th->getMessage());
+            throw $th;
         }
     }
 
     /**
-     * This function updates social plugin settings and logs any errors that occur.
-     *
-     * @param settings The parameter `` is an array containing the updated settings for a
-     * social plugin. The function `updateSocialPluginSettings` is responsible for updating the social
-     * plugin settings in the main repository with the new values provided in the `` array. If
-     * the update is successful, the function returns the updated
-     *
-     * @return the result of calling the `updateSocialPluginSettings` method on the `mainRepository`
-     * object with the `` parameter.
+     * Updates or creates social plugin settings based on the given data.
+     * @param array $settings The settings to update or create.
      */
     public function updateSocialPluginSettings($settings)
     {
@@ -56,6 +44,7 @@ class SocialPluginServiceImplement extends Service implements SocialPluginServic
             return $this->mainRepository->updateSocialPluginSettings($settings);
         } catch (\Throwable $th) {
             Log::debug($th->getMessage());
+            throw $th;
         }
     }
 }
