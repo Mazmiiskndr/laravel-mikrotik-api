@@ -34,7 +34,7 @@ class ServiceMegalosServiceImplement extends Service implements ServiceMegalosSe
         }
     }
 
-     /**
+    /**
      * Retrieves records from a database, initializes DataTables Premium Services, adds columns to DataTable.
      * @return DataTables Yajra JSON response.
      */
@@ -72,6 +72,18 @@ class ServiceMegalosServiceImplement extends Service implements ServiceMegalosSe
             return $this->mainRepository->getMessages();
         } catch (Exception $exception) {
             throw new Exception("Error getting messages : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Get the attributes based on the provided service.
+     */
+    public function getAttributes()
+    {
+        try {
+            return $this->mainRepository->getAttributes();
+        } catch (Exception $exception) {
+            throw new Exception("Error getting attributes : " . $exception->getMessage());
         }
     }
 

@@ -87,7 +87,7 @@ class Edit extends Component
         $service = $serviceMegalosService->getServiceById($serviceId);
         // If the service exists, set the attributes
         if ($service) {
-            $this->setAttributes($service);
+            $this->setAttributes($serviceMegalosService, $service);
         }
     }
 
@@ -95,10 +95,10 @@ class Edit extends Component
      * Sets the attributes based on the provided service.
      * @param Service $service The service to extract attributes from
      */
-    private function setAttributes($service)
+    private function setAttributes(ServiceMegalosService $serviceMegalosService, $service)
     {
         // Get the fields to be set
-        $fields = $this->getAttributes();
+        $fields = $serviceMegalosService->getAttributes();
 
         // Iterate over each property and set the corresponding value
         foreach ($fields as $property => $field) {
@@ -119,6 +119,7 @@ class Edit extends Component
         // Checking if the field value is 0 or empty and returning null if it is
         return ($service->$field == 0 || empty($service->$field)) ? null : $service->$field;
     }
+
     /**
      * Reset all fields to their default state.
      * @return void
@@ -151,40 +152,6 @@ class Edit extends Component
         $this->timeDuration = null;
         $this->unitTimeDuration = null;
         $this->enableFeature = null;
-    }
-
-    /**
-     * Get the attributes based on the provided service.
-     */
-    private function getAttributes()
-    {
-        // Mapping from class property to service attribute
-        return [
-            'serviceId' => 'id',
-            'serviceName' => 'service_name',
-            'description' => 'description',
-            'downloadRate' => 'dl_rate',
-            'uploadRate' => 'ul_rate',
-            'idleTimeout' => 'idle_timeout',
-            'sessionTimeout' => 'session_timeout',
-            'serviceCost' => 'cost',
-            'currency' => 'currency',
-            'simultaneousUse' => 'simultaneous_use',
-            'downloadBurstRate' => 'dl_br_rate',
-            'uploadBurstRate' => 'ul_br_rate',
-            'downloadBurstTime' => 'dl_br_time',
-            'uploadBurstTime' => 'ul_br_time',
-            'priority' => 'priority',
-            'limitType' => 'time_limit_type',
-            'timeLimit' => 'time_limit',
-            'unitTime' => 'unit_time',
-            'validityType' => 'validity_type',
-            'validity' => 'validity',
-            'unitValidity' => 'unit_validity',
-            'timeDuration' => 'purchase_duration',
-            'unitTimeDuration' => 'unit_time_purchase',
-            'enableFeature' => 'for_purchase'
-        ];
     }
 
 }

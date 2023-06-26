@@ -195,6 +195,40 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
     }
 
     /**
+     * Get the attributes based on the provided service.
+     */
+    public function getAttributes()
+    {
+        // Mapping from class property to service attribute
+        return [
+            'serviceId' => 'id',
+            'serviceName' => 'service_name',
+            'description' => 'description',
+            'downloadRate' => 'dl_rate',
+            'uploadRate' => 'ul_rate',
+            'idleTimeout' => 'idle_timeout',
+            'sessionTimeout' => 'session_timeout',
+            'serviceCost' => 'cost',
+            'currency' => 'currency',
+            'simultaneousUse' => 'simultaneous_use',
+            'downloadBurstRate' => 'dl_br_rate',
+            'uploadBurstRate' => 'ul_br_rate',
+            'downloadBurstTime' => 'dl_br_time',
+            'uploadBurstTime' => 'ul_br_time',
+            'priority' => 'priority',
+            'limitType' => 'time_limit_type',
+            'timeLimit' => 'time_limit',
+            'unitTime' => 'unit_time',
+            'validityType' => 'validity_type',
+            'validity' => 'validity',
+            'unitValidity' => 'unit_validity',
+            'timeDuration' => 'purchase_duration',
+            'unitTimeDuration' => 'unit_time_purchase',
+            'enableFeature' => 'for_purchase'
+        ];
+    }
+
+    /**
      * Stores a new service using the provided request data.
      * @param array $request The data used to create the new service.
      * @return Model|mixed The newly created service.

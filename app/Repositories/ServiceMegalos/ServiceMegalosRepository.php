@@ -33,6 +33,11 @@ interface ServiceMegalosRepository extends Repository{
     public function getMessages();
 
     /**
+     * Get the attributes based on the provided service.
+     */
+    public function getAttributes();
+
+    /**
      * Stores a new service using the provided request data.
      * @param array $request The data used to create the new service.
      * @return Model|mixed The newly created service.
