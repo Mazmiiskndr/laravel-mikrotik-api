@@ -30,6 +30,10 @@ function showModalByName(name) {
     case 'ads':
       livewireComponentName = 'form.ads';
       break;
+    // Log Activity
+    case 'edit_log_activity':
+      livewireComponentName = 'form.log-activity';
+      break;
     // Add more cases for other names here...
     default:
       livewireComponentName = 'form.edit-router';
@@ -62,7 +66,7 @@ function initializeDataTable() {
     ajax: document.getElementById('myTable').dataset.route,
     columns: [
       { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
-      { data: 'title', name: 'title' },
+      { data: 'title', name: 'title', width: '50%' },
       { data: 'action', name: 'action', orderable: false, searchable: false }
     ]
   });

@@ -1,3 +1,4 @@
+
 <?php
 
 namespace Database\Seeders;
@@ -91,6 +92,7 @@ class SettingSeeder extends Seeder
             ['id' => 81, 'module_id' => 17, 'setting' => 'linkedin_service_id', 'value' => NULL, 'flag_module' => NULL],
             ['id' => 82, 'module_id' => 17, 'setting' => 'linkedin_api_client_id', 'value' => 'social_plugins', 'flag_module' => NULL],
             ['id' => 83, 'module_id' => 17, 'setting' => 'linkedin_api_client_secret', 'value' => 'social_plugins', 'flag_module' => NULL],
+            ['id' => 84, 'module_id' => 0, 'setting' => 'log_activities', 'value' => 1, 'flag_module' => NULL],
         ];
 
         foreach ($settings as $setting) {

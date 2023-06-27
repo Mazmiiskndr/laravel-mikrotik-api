@@ -14,6 +14,7 @@ class DataTable extends Component
         'hotelRoomUpdatedUpdated'   => 'handleUpdate',
         'userDataUpdated'           => 'handleUpdate',
         'socialPluginUpdated'       => 'handleUpdate',
+        'logActivityUpdated'       => 'handleUpdate',
     ];
 
     /**
