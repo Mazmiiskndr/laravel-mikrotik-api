@@ -6,6 +6,7 @@ use App\Helpers\AccessControlHelper;
 use App\Models\Module;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Setting;
+use App\Services\Setting\SettingService;
 use Yajra\DataTables\Facades\DataTables;
 
 class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
@@ -17,19 +18,21 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
      * @property Model|mixed $model;
      */
     protected $model;
+    protected $settingService;
 
-    public function __construct(Setting $model)
+    public function __construct(Setting $model, SettingService $settingService)
     {
         $this->model = $model;
+        $this->settingService = $settingService;
     }
 
     /**
-     * Returns a DataTables response with all module information for non-null 'flag_module' fields.
-     * @return \Yajra\DataTables\DataTables JSON response for the DataTables.
+     * Get DataTables response with modules information.
+     * @return \Yajra\DataTables\DataTables
      */
     public function getDatatables()
     {
-        // Use Eloquent to retrieve data from the database
+        // Retrieve distinct flag_module where it is not null
         $flagModules = $this->model
             ->select('flag_module')
             ->whereNotNull('flag_module')
@@ -37,74 +40,45 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
             ->get()
             ->pluck('flag_module');
 
-        // Retrieve module data with matching flag_modules
+        // Retrieve modules data where their names are in flag_modules
         $data = Module::select('name', 'title', 'id')
             ->whereIn('name', $flagModules)
             ->get();
 
-        // Get the raw data and convert it to a collection
+        // Convert retrieved data to a collection
         $data = $data->collect();
 
-        // Add the 'Router' and Log Activities row to the end of the rawData collection
+        // Add Router and Log Activities row into data
         $this->addRowToData($data, -1, 'Log Activities', 'edit_log_activity');
         $this->addRowToData($data, -2, 'Router', 'edit_router');
 
-        // Convert it back to an array
+        // Convert data back to array
         $rawData = $data->toArray();
 
-        // Initialize DataTables using the rawData array
+        // Prepare DataTables
         $dataTables = DataTables::of($rawData)
-            // Add an index column to the DataTable for easier reference
             ->addIndexColumn()
-            // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
             ->addColumn('action', function ($data) {
-                if ($data['id'] > 0) {
-                    $button = "";
-                    // For non-Router rows, use the edit and delete buttons with Names and classes
-                    if ($data['name'] == 'hotel_rooms') {
-                        if (AccessControlHelper::isAllowedToPerformAction('config_hotel_rooms')) {
-                            $routeDetailHotelRooms = route('backend.setup.config.hotel_rooms');
-                            $button = '<a href="' . $routeDetailHotelRooms . '" aria-label="Detail Button" name="' . $data['name'] . '" class="edit btn btn-info btn-sm"> <i class="fas fa-eye"></i></a> &nbsp;&nbsp;';
-                        }
-                        $button .= '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
-                    } else {
-                        $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
-                    }
-                } elseif ($data['name'] == 'edit_log_activity') {
-                $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
-                // TODO:
-                // $button = '<div class="form-check form-switch">
-                //             <livewire:backend.setup.config.form.log-activity />
-                //         </div>
-                //         ';
-
-                } else {
-                    $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
-                }
-                return $button;
+                return $this->generateActionButton($data);
             })
-            // Create and return the DataTables response as a JSON object
             ->make(true);
 
-        // Return the DataTables JSON response
         return $dataTables;
     }
 
     /**
-     * Retrieves the 'url_redirect' setting from the current model's table.
-     * @return Model The Eloquent model instance for the 'url_redirect' setting.
+     * Get setting 'url_redirect'.
+     * @return Setting
      */
     public function getUrlRedirect()
     {
-        // Use Eloquent to retrieve data from the database
-        $data = $this->model->whereIn('setting', ['url_redirect'])->firstOrFail();
-        // Return the data
-        return $data;
+        // Retrieve setting 'url_redirect'
+        return $this->model->where('setting', 'url_redirect')->firstOrFail();
     }
 
     /**
-     * Updates or creates 'url_redirect' setting based on the given request data.
-     * @param  mixed $request The request data to update or create settings with.
+     * Update or create setting 'url_redirect'.
+     * @param  array $request
      */
     public function updateUrlRedirect($request)
     {
@@ -117,7 +91,7 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
     }
 
     /**
-     * Adds a new row to the data collection.
+     * Add a row into data.
      * @param \Illuminate\Support\Collection $data
      * @param int $id
      * @param string $title
@@ -130,5 +104,74 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
             'title' => $title,
             'name' => $name,
         ]);
+    }
+
+    /**
+     * Generate action button based on data.
+     * @param array $data
+     * @return string
+     */
+    private function generateActionButton($data)
+    {
+        $button = "";
+
+        // Generate appropriate button based on data
+        switch ($data['name']) {
+            case 'hotel_rooms':
+                if (AccessControlHelper::isAllowedToPerformAction('config_hotel_rooms')) {
+                    $routeDetailHotelRooms = route('backend.setup.config.hotel_rooms');
+                    $button .= '<a href="' . $routeDetailHotelRooms . '" aria-label="Detail Button" name="' . $data['name'] . '" class="edit btn btn-info btn-sm"> <i class="fas fa-eye"></i></a> &nbsp;&nbsp;';
+                }
+                $button .= $this->generateEditButton($data);
+                break;
+            case 'edit_log_activity':
+                $button = $this->generateFormSwitchButton($data);
+                break;
+            default:
+                $button = $this->generateEditButton($data);
+                break;
+        }
+
+        return $button;
+    }
+
+    /**
+     * Generate edit button.
+     * @param array $data
+     * @return string
+     */
+    private function generateEditButton($data)
+    {
+        return '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
+    }
+
+    /**
+     * Generate form switch button.
+     * @param array $data
+     * @return string
+     */
+    private function generateFormSwitchButton($data)
+    {
+        $logData = $this->settingService->getSetting('log_activities', '0');
+        $checked = $logData ? 'checked' : '';
+        $label = $logData ? 'On' : 'Off';
+
+        // FORM EDIT LOG ACTIVITIES BUTTON AND SHOW MODAL :
+        // return '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
+
+        // FORM EDIT LOG ACTIVITIES SWITCH  :
+        return '<div class="form-check form-switch">
+                    <label class="form-check-label" for="logActivitySwitch" id="labelLogActivity">' . $label . '</label>
+                    <span data-bs-toggle="tooltip" data-bs-placement="right"
+                        title="This setting to control activity logging. When activated, all activity logs will be stored in the database.
+                        When deactivated, activity logs will not be recorded.">
+                        <span class="badge badge-center rounded-pill bg-warning bg-glow" style="width: 15px;height:15px;">
+                        <i class="ti ti-question-mark" style="font-size: 0.8rem;"></i>
+                        </span>
+                    </span>
+                    <input ' . $checked . ' onchange="updateActivity(\'' . $data['name'] . '\', this.checked)" class="form-check-input" type="checkbox"
+                        id="logActivitySwitch">
+                </div>
+                ';
     }
 }
