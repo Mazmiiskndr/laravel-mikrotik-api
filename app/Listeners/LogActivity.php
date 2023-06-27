@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\ActivityPerformed;
 use App\Models\RootActivity;
+use App\Services\Setting\SettingService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -27,6 +28,11 @@ class LogActivity
      */
     public function handle(ActivityPerformed $event)
     {
+        $settingService = app(SettingService::class);
+        $activities = $settingService->getSetting('log_activities', '0');
+        if($activities == '0') {
+            return;
+        }
         RootActivity::create([
             'username' => $event->username,
             'module' => $event->action,

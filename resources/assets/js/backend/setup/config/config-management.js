@@ -30,6 +30,10 @@ function showModalByName(name) {
     case 'ads':
       livewireComponentName = 'form.ads';
       break;
+    // Log Activity
+    case 'edit_log_activity':
+      livewireComponentName = 'form.log-activity';
+      break;
     // Add more cases for other names here...
     default:
       livewireComponentName = 'form.edit-router';

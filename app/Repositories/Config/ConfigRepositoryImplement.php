@@ -45,12 +45,9 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
         // Get the raw data and convert it to a collection
         $data = $data->collect();
 
-        // Add the 'Router' row to the end of the rawData collection
-        $data->push([
-            'id' => -1, // Set an arbitrary negative ID to distinguish it from real records
-            'title' => 'Router',
-            'name' => 'edit_router'
-        ]);
+        // Add the 'Router' and Log Activities row to the end of the rawData collection
+        $this->addRowToData($data, -1, 'Log Activities', 'edit_log_activity');
+        $this->addRowToData($data, -2, 'Router', 'edit_router');
 
         // Convert it back to an array
         $rawData = $data->toArray();
@@ -73,8 +70,10 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
                     } else {
                         $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
                     }
-                } else {
-                    $button = '<button type="button" aria-label="Edit Button" name="edit_router" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'edit_router\')"> <i class="fas fa-edit"></i></button>';
+                } elseif($data['name'] == 'edit_log_activity') {
+                    $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
+                }else{
+                    $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
                 }
                 return $button;
             })
@@ -109,5 +108,21 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
                 ['value' => $value]
             );
         }
+    }
+
+    /**
+     * Adds a new row to the data collection.
+     * @param \Illuminate\Support\Collection $data
+     * @param int $id
+     * @param string $title
+     * @param string $name
+     */
+    protected function addRowToData($data, $id, $title, $name)
+    {
+        $data->push([
+            'id' => $id,
+            'title' => $title,
+            'name' => $name,
+        ]);
     }
 }

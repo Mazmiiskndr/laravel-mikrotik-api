@@ -110,7 +110,7 @@ class Clients extends Component
 
     /**
      * Retrieves the CLIENT parameters using the ClientService and stores them
-     * in the corresponding Livewire properties. Renders the edit-router view.
+     * in the corresponding Livewire properties. Renders the `edit-clients` view.
      * @param  mixed $clientService
      * @return void
      */

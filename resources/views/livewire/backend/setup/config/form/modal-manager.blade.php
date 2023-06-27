@@ -38,6 +38,9 @@
                         @elseif($livewireComponentName == 'form.ads')
                         @livewire('backend.setup.config.form.ads')
 
+                        {{-- Log Activities Data Form Edit --}}
+                        @elseif($livewireComponentName == 'form.log-activity')
+                        @livewire('backend.setup.config.form.log-activity')
                         @endif
 
                     </div>
