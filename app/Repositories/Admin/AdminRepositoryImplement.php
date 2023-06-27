@@ -73,8 +73,6 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
         return ['success' => false, 'message' => 'Invalid Username or Password!.'];
     }
 
-
-
     /**
      * logout
      */

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Cookie;
 
 trait SessionKeyHelper
 {
-    protected function getQueuedSessionKey()
+    public static function getQueuedSessionKey()
     {
         // Get all queued cookies
         $queuedCookies = Cookie::getQueuedCookies();
