@@ -41,7 +41,7 @@ class ClientServiceImplement extends Service implements ClientService
      */
     public function getClientParameters()
     {
-        return $this->handleRepositoryCall('updateAdsSettings');
+        return $this->handleRepositoryCall('getClientParameters');
     }
 
     /**
