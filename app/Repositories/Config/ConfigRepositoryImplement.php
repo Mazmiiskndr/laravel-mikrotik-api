@@ -120,7 +120,7 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
             case 'hotel_rooms':
                 if (AccessControlHelper::isAllowedToPerformAction('config_hotel_rooms')) {
                     $routeDetailHotelRooms = route('backend.setup.config.hotel_rooms');
-                    $button .= '<a href="' . $routeDetailHotelRooms . '" aria-label="Detail Button" name="' . $data['name'] . '" class="edit btn btn-info btn-sm"> <i class="fas fa-eye"></i></a> &nbsp;&nbsp;';
+                    $button .= '<a href="' . $routeDetailHotelRooms . '" aria-label="Detail Button" name="' . $data['name'] . '" class="edit btn btn-info btn-sm mb-1"> <i class="fas fa-eye"></i></a> &nbsp;&nbsp;';
                 }
                 $button .= $this->generateEditButton($data);
                 break;
@@ -142,6 +142,9 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
      */
     private function generateEditButton($data)
     {
+        if($data['name'] == 'hotel_rooms'){
+            return '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm mb-1" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
+        }
         return '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
     }
 
