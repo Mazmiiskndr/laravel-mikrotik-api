@@ -32,6 +32,7 @@
     <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
     <script src="{{ asset('assets/js/backend/setup/config/config-management.js') }}"></script>
     <script>
+
         window.addEventListener('closeModal', event =>{
             $('#modalCenter').modal('hide');
         });

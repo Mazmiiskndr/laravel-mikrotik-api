@@ -13,6 +13,7 @@
                         model="logActivity" required
                         :options="['1' => 'Active', '0' => 'Non Active']" tooltip="This setting to control activity logging. When activated, all activity logs will be stored in the database. When
                         deactivated, activity logs will not be recorded." />
+
                 </div>
             </div>
         </div>
@@ -29,6 +30,8 @@
 </div>
 
 {{-- TODO:  --}}
-{{-- <label class="form-check-label" for="logActivitySwitch">On</label>
-<input wire:model="logActivity" wire:change="updateActivity" class="form-check-input" type="checkbox"
-    id="logActivitySwitch"> --}}
+{{-- <div class="form-check form-switch">
+    <label class="form-check-label" for="logActivitySwitch">On</label>
+    <input wire:model="logActivity" wire:change="updateActivity" class="form-check-input" type="checkbox" //
+        id="logActivitySwitch">
+    </div> --}}

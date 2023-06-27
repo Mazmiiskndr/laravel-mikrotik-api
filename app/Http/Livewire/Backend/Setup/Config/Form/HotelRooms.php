@@ -70,25 +70,17 @@ class HotelRooms extends Component
         try {
             // Update the HOTEL ROOM settings
             $hotelRoomService->updateHotelRoomSettings($settings);
-
             // Show Message Success
             $this->dispatchSuccessEvent('Hotel Room settings updated successfully.');
-            // Close the modal
-            $this->closeModal();
-            // Reset the form fields
-            $this->resetFields();
-
             // Emit the 'hotelRoomUpdated' event with a true status
             $this->emitUp('hotelRoomUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating hotel room settings: ' . $th->getMessage());
+        } finally {
             // Close the modal
             $this->closeModal();
         }
-
-        // Close Modal
-        $this->closeModal();
     }
 
     /**
