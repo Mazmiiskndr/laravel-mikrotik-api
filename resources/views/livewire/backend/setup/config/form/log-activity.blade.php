@@ -7,8 +7,6 @@
     </div>
     <form wire:submit.prevent="updateActivity" method="POST">
         <div class="modal-body">
-
-            {{-- Form Select Log Activities--}}
             <div class="row">
                 <div class="col mb-3">
                     <x-select-field id="logActivity" label="Log Activities"
@@ -29,3 +27,8 @@
         </div>
     </form>
 </div>
+
+{{-- TODO:  --}}
+{{-- <label class="form-check-label" for="logActivitySwitch">On</label>
+<input wire:model="logActivity" wire:change="updateActivity" class="form-check-input" type="checkbox"
+    id="logActivitySwitch"> --}}

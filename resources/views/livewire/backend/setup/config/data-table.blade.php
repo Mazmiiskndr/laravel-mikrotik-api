@@ -9,3 +9,10 @@
         </thead>
     </table>
 </div>
+@push('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        Livewire.emit('loadLogActivitySwitch');
+    });
+</script>
+@endpush

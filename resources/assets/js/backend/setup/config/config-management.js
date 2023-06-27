@@ -66,7 +66,7 @@ function initializeDataTable() {
     ajax: document.getElementById('myTable').dataset.route,
     columns: [
       { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
-      { data: 'title', name: 'title' },
+      { data: 'title', name: 'title', width: '50%' },
       { data: 'action', name: 'action', orderable: false, searchable: false }
     ]
   });

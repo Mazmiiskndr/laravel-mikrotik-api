@@ -70,9 +70,15 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
                     } else {
                         $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
                     }
-                } elseif($data['name'] == 'edit_log_activity') {
-                    $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
-                }else{
+                } elseif ($data['name'] == 'edit_log_activity') {
+                $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
+                // TODO:
+                // $button = '<div class="form-check form-switch">
+                //             <livewire:backend.setup.config.form.log-activity />
+                //         </div>
+                //         ';
+
+                } else {
                     $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
                 }
                 return $button;
