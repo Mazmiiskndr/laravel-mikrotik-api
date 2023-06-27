@@ -13,7 +13,8 @@
                 <div class="col mb-3">
                     <x-select-field id="logActivity" label="Log Activities"
                         model="logActivity" required
-                        :options="['1' => 'Active', '0' => 'Non Active']" />
+                        :options="['1' => 'Active', '0' => 'Non Active']" tooltip="This setting to control activity logging. When activated, all activity logs will be stored in the database. When
+                        deactivated, activity logs will not be recorded." />
                 </div>
             </div>
         </div>
