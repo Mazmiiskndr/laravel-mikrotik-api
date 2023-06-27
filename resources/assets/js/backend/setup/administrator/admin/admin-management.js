@@ -1,3 +1,11 @@
+// Hide Modal
+window.addEventListener('hide-modal', () => {
+  $('#createNewAdmin').modal('hide');
+  $('#updateAdminModal').modal('hide');
+});
+window.addEventListener('show-modal', () => {
+  $('#updateAdminModal').modal('show');
+});
 // Function to show a modal based on a given uid for UPDATE!
 function showAdmin(uid) {
   // Emit an event to show the modal with the given Livewire component uid for UPDATE!

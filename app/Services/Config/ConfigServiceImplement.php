@@ -5,60 +5,63 @@ namespace App\Services\Config;
 use LaravelEasyRepository\Service;
 use App\Repositories\Config\ConfigRepository;
 use Exception;
-use Illuminate\Support\Facades\Log;
 
 class ConfigServiceImplement extends Service implements ConfigService
 {
-
-    /**
-     * don't change $this->mainRepository variable name
-     * because used in extends service class
-     */
     protected $mainRepository;
-
+    /**
+     * Constructor.
+     * @param ConfigRepository $mainRepository The main repository for settings.
+     */
     public function __construct(ConfigRepository $mainRepository)
     {
         $this->mainRepository = $mainRepository;
     }
 
     /**
+     * Handles the method call to the repository and manages exceptions.
+     * @param string $method The method to call.
+     * @param array $parameters The parameters to pass to the method.
+     * @throws \Exception If there is an error when calling the method.
+     * @return mixed The result of the method call.
+     */
+    private function handleRepositoryCall(string $method, array $parameters = [])
+    {
+        try {
+            return $this->mainRepository->{$method}(...$parameters);
+        } catch (\Exception $exception) {
+            $errorMessage = "Error when calling $method: " . $exception->getMessage();
+            throw new \Exception($errorMessage);
+        }
+    }
+
+    /**
      * Returns a DataTables response with all module information for non-null 'flag_module' fields.
-     * @return \Yajra\DataTables\DataTables JSON response for the DataTables.
+     * @return mixed The DataTables JSON response.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function getDatatables()
     {
-        try {
-            return $this->mainRepository->getDatatables();
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-            return [];
-            //throw $th;
-        }
+        return $this->handleRepositoryCall('getDatatables');
     }
 
     /**
      * Retrieves the 'url_redirect' setting from the current model's table.
-     * @return Model The Eloquent model instance for the 'url_redirect' setting.
+     * @return mixed The Eloquent model instance for the 'url_redirect' setting.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function getUrlRedirect()
     {
-        try {
-            return $this->mainRepository->getUrlRedirect();
-        } catch (Exception $exception) {
-            throw new Exception("Error getting URL Redirect : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getUrlRedirect');
     }
 
     /**
      * Updates or creates 'url_redirect' setting based on the given request data.
-     * @param  mixed $request The request data to update or create settings with.
+     * @param mixed $request The request data to update or create settings with.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function updateUrlRedirect($request)
     {
-        try {
-            return $this->mainRepository->updateUrlRedirect($request);
-        } catch (Exception $exception) {
-            throw new Exception("Error updating URL Redirect : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('updateUrlRedirect', [$request]);
     }
 }

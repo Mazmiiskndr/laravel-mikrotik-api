@@ -4,117 +4,111 @@ namespace App\Services\Admin;
 
 use LaravelEasyRepository\Service;
 use App\Repositories\Admin\AdminRepository;
-use Illuminate\Support\Facades\Log;
+use Exception;
 
 class AdminServiceImplement extends Service implements AdminService
 {
-
-    /**
-     * don't change $this->mainRepository variable name
-     * because used in extends service class
-     */
     protected $mainRepository;
-
+    /**
+     * Constructor.
+     * @param AdminRepository $mainRepository The main repository for settings.
+     */
     public function __construct(AdminRepository $mainRepository)
     {
         $this->mainRepository = $mainRepository;
     }
 
     /**
-     * validateAdmin
-     * @param  mixed $username
-     * @param  mixed $password
+     * Handles the method call to the repository and manages exceptions.
+     * @param string $method The method to call.
+     * @param array $parameters The parameters to pass to the method.
+     * @throws Exception If there is an error when calling the method.
+     * @return mixed The result of the method call.
+     */
+    private function handleRepositoryCall(string $method, array $parameters = [])
+    {
+        try {
+            return $this->mainRepository->{$method}(...$parameters);
+        } catch (Exception $exception) {
+            $errorMessage = "Error when calling $method: " . $exception->getMessage();
+            throw new Exception($errorMessage);
+        }
+    }
+
+    /**
+     * Validates an admin user.
+     * @param string $username The username of the admin user.
+     * @param string $password The password of the admin user.
+     * @return mixed The result of the validateAdmin repository method call.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function validateAdmin($username, $password)
     {
-        try {
-            return $this->mainRepository->validateAdmin($username, $password);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-        }
+        return $this->handleRepositoryCall('validateAdmin', [$username, $password]);
     }
 
-
     /**
-     * logout
+     * Logs out the current user.
+     * @return mixed The result of the logout repository method call.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function logout()
     {
-        try {
-            return $this->mainRepository->logout();
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-        }
+        return $this->handleRepositoryCall('logout');
     }
 
     /**
-     * getDatatables
+     * Retrieves all admins for use with DataTables.
+     * @return mixed The result of the getDatatables repository method call.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function getDatatables()
     {
-        try {
-            return $this->mainRepository->getDatatables();
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-        }
+        return $this->handleRepositoryCall('getDatatables');
     }
 
     /**
-     * storeNewAdmin
-     *
-     * @param  mixed $request
-     * @return void
+     * Stores a new admin user.
+     * @param array $request The data used to create the new admin.
+     * @return mixed The result of the storeNewAdmin repository method call.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function storeNewAdmin($request)
     {
-        try {
-            return $this->mainRepository->storeNewAdmin($request);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-        }
+        return $this->handleRepositoryCall('storeNewAdmin', [$request]);
     }
 
     /**
-     * updateAdmin
-     * @param  mixed $admin_uid
-     * @param  mixed $request
-     * @return void
+     * Updates an existing admin user.
+     * @param int $admin_uid The unique identifier of the admin to update.
+     * @param array $request The data used to update the admin.
+     * @return mixed The result of the updateAdmin repository method call.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function updateAdmin($admin_uid, $request)
     {
-        try {
-            return $this->mainRepository->updateAdmin($admin_uid, $request);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-        }
+        return $this->handleRepositoryCall('updateAdmin', [$admin_uid, $request]);
     }
 
     /**
-     * deleteAdmin
-     * @param  mixed $admin_uid
-     * @return void
+     * Deletes an existing admin user.
+     * @param int $admin_uid The unique identifier of the admin to delete.
+     * @return mixed The result of the deleteAdmin repository method call.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function deleteAdmin($admin_uid)
     {
-        try {
-            return $this->mainRepository->deleteAdmin($admin_uid);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-        }
+        return $this->handleRepositoryCall('deleteAdmin', [$admin_uid]);
     }
 
     /**
-     * getAdminByUid
-     *
-     * @param  mixed $uid
-     * @return void
+     * Retrieves a specific admin user by UID.
+     * @param int $uid The unique identifier of the admin to retrieve.
+     * @return mixed The result of the getAdminByUid repository method call.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function getAdminByUid($uid)
     {
-        try {
-            return $this->mainRepository->getAdminByUid($uid);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-        }
+        return $this->handleRepositoryCall('getAdminByUid', [$uid]);
     }
 }

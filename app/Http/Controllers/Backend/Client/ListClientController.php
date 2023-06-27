@@ -19,7 +19,7 @@ class ListClientController extends Controller
     }
 
     /**
-     * Display the list of admins.
+     * Display the list of list clients.
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      * This method retrieves permissions from the request's attributes,

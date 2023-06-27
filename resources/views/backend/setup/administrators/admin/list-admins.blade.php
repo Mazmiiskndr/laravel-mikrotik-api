@@ -34,16 +34,6 @@
     @push('scripts')
     <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
     <script src="{{ asset('assets/js/backend/setup/administrator/admin/admin-management.js') }}"></script>
-    <script>
-        // Hide Modal
-        window.addEventListener('hide-modal', () => {
-            $('#createNewAdmin').modal('hide');
-            $('#updateAdminModal').modal('hide');
-        });
-        window.addEventListener('show-modal', () => {
-            $('#updateAdminModal').modal('show');
-        });
-    </script>
     @endpush
 </div>
 @endif

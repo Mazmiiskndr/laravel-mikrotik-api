@@ -7,8 +7,9 @@ use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
-    /*
-     * index
+    /**
+     * Display the `list-services`.
+     * @return \Illuminate\View\View
      */
     public function index()
     {

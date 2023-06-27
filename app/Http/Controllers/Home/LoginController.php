@@ -10,12 +10,9 @@ use Illuminate\Support\Facades\Cookie;
 class LoginController extends Controller
 {
     protected $adminService;
-
     /**
-     * __construct
-     *
-     * @param  mixed $adminService
-     * @return void
+     * Create a new controller instance.
+     * @param AdminService $adminService The instance of AdminService.
      */
     public function __construct(AdminService $adminService)
     {
@@ -23,7 +20,8 @@ class LoginController extends Controller
     }
 
     /**
-     * index
+     * Display the login page.
+     * @return \Illuminate\View\View The view of the login page.
      */
     public function index()
     {
@@ -40,7 +38,8 @@ class LoginController extends Controller
     }
 
     /**
-     * logout
+     * Logout the user.
+     * @return \Illuminate\Http\RedirectResponse The response after logout.
      */
     public function logout()
     {

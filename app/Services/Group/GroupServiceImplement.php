@@ -9,84 +9,86 @@ use Illuminate\Support\Facades\Log;
 
 class GroupServiceImplement extends Service implements GroupService
 {
-
-    /**
-     * don't change $this->mainRepository variable name
-     * because used in extends service class
-     */
     protected $mainRepository;
-
+    /**
+     * Constructor.
+     * @param GroupRepository $mainRepository The main repository for settings.
+     */
     public function __construct(GroupRepository $mainRepository)
     {
         $this->mainRepository = $mainRepository;
     }
 
     /**
-     * getDatatables
+     * Handles the method call to the repository and manages exceptions.
+     * @param string $method The method to call.
+     * @param array $parameters The parameters to pass to the method.
+     * @throws \Exception If there is an error when calling the method.
+     * @return mixed The result of the method call.
+     */
+    private function handleRepositoryCall(string $method, array $parameters = [])
+    {
+        try {
+            return $this->mainRepository->{$method}(...$parameters);
+        } catch (\Exception $exception) {
+            $errorMessage = "Error when calling $method: " . $exception->getMessage();
+            throw new \Exception($errorMessage);
+        }
+    }
+
+    /**
+     * Retrieves data from the database and formats it for DataTables.
+     * @return mixed The result suitable for DataTables.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function getDatatables()
     {
-        try {
-            return $this->mainRepository->getDatatables();
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-            return [];
-            //throw $th;
-        }
+        return $this->handleRepositoryCall('getDatatables');
     }
 
     /**
-     * @return The `getDataPermissions()` function is returning the result of calling the `getDataPermissions()`
-     * method on the `` object.
+     * Retrieves the data permissions.
+     * @return mixed The data permissions.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function getDataPermissions()
     {
-        try {
-            return $this->mainRepository->getDataPermissions();
-        } catch (Exception $exception) {
-            throw new Exception("Error getting data permissions : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getDataPermissions');
     }
 
     /**
-     * getGroupAndPagesById
-     * @param  mixed $id
+     * Retrieves the group and associated pages by ID.
+     * @param mixed $id The group ID.
+     * @return mixed The group and pages data.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function getGroupAndPagesById($id)
     {
-        try {
-            return $this->mainRepository->getGroupAndPagesById($id);
-        } catch (Exception $exception) {
-            throw new Exception("Error getting group by Id : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getGroupAndPagesById', [$id]);
     }
 
     /**
-     * storeNewGroup
-     * @param  mixed $request
-     * @param  mixed $permissions
+     * Stores a new group with the given name and permissions.
+     * @param mixed $groupName The name of the group.
+     * @param mixed $permissions The permissions of the group.
+     * @return mixed The newly created group.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function storeNewGroup($groupName, $permissions)
     {
-        try {
-            return $this->mainRepository->storeNewGroup($groupName, $permissions);
-        } catch (Exception $exception) {
-            throw new Exception("Error storing group : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('storeNewGroup', [$groupName, $permissions]);
     }
 
     /**
-     * updateGroup
-     * @param  mixed $request
-     * @param  mixed $permissions
-     * @param  mixed $id
+     * Updates an existing group with the given name, permissions, and ID.
+     * @param mixed $groupName The name of the group.
+     * @param mixed $permissions The permissions of the group.
+     * @param mixed $id The ID of the group.
+     * @return mixed The updated group.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function updateGroup($groupName, $permissions, $id)
     {
-        try {
-            return $this->mainRepository->updateGroup($groupName, $permissions, $id);
-        } catch (Exception $exception) {
-            throw new Exception("Error storing group : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('updateGroup', [$groupName, $permissions, $id]);
     }
 }

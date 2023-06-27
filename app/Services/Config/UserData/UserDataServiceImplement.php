@@ -4,46 +4,53 @@ namespace App\Services\Config\UserData;
 
 use LaravelEasyRepository\Service;
 use App\Repositories\Config\UserData\UserDataRepository;
-use Illuminate\Support\Facades\Log;
 
 class UserDataServiceImplement extends Service implements UserDataService
 {
-
-    /**
-     * don't change $this->mainRepository variable name
-     * because used in extends service class
-     */
     protected $mainRepository;
-
+    /**
+     * Constructor.
+     * @param UserDataRepository $mainRepository The main repository for settings.
+     */
     public function __construct(UserDataRepository $mainRepository)
     {
         $this->mainRepository = $mainRepository;
     }
 
     /**
-     * getUserDataParameters
+     * Handles the method call to the repository and manages exceptions.
+     * @param string $method The method to call.
+     * @param array $parameters The parameters to pass to the method.
+     * @throws \Exception If there is an error when calling the method.
+     * @return mixed The result of the method call.
      */
-    public function getUserDataParameters()
+    private function handleRepositoryCall(string $method, array $parameters = [])
     {
         try {
-            return $this->mainRepository->getUserDataParameters();
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
+            return $this->mainRepository->{$method}(...$parameters);
+        } catch (\Exception $exception) {
+            $errorMessage = "Error when calling $method: " . $exception->getMessage();
+            throw new \Exception($errorMessage);
         }
     }
 
     /**
-     * updateUserDataSettings
-     *
-     * @param  mixed $settings
-     * @return void
+     * Retrieves the parameters for the user data.
+     * @return mixed The user data parameters.
+     * @throws \Exception if an error occurs during the repository method call.
+     */
+    public function getUserDataParameters()
+    {
+        return $this->handleRepositoryCall('getUserDataParameters');
+    }
+
+    /**
+     * Updates or creates user data settings based on the given data.
+     * @param mixed $settings The settings to update or create.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function updateUserDataSettings($settings)
     {
-        try {
-            return $this->mainRepository->updateUserDataSettings($settings);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-        }
+        return $this->handleRepositoryCall('updateUserDataSettings', [$settings]);
     }
 }

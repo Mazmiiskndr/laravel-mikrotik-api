@@ -3,21 +3,36 @@
 namespace App\Services\Config\Client;
 
 use App\Repositories\Config\Client\ClientRepository;
+use Exception;
 use LaravelEasyRepository\Service;
-use Illuminate\Support\Facades\Log;
 
 class ClientServiceImplement extends Service implements ClientService
 {
-
-    /**
-     * don't change $this->mainRepository variable name
-     * because used in extends service class
-     */
     protected $mainRepository;
-
+    /**
+     * Constructor.
+     * @param ClientRepository $mainRepository The main repository for settings.
+     */
     public function __construct(ClientRepository $mainRepository)
     {
         $this->mainRepository = $mainRepository;
+    }
+
+    /**
+     * Handles the method call to the repository and manages exceptions.
+     * @param string $method The method to call.
+     * @param array $parameters The parameters to pass to the method.
+     * @throws Exception If there is an error when calling the method.
+     * @return mixed The result of the method call.
+     */
+    private function handleRepositoryCall(string $method, array $parameters = [])
+    {
+        try {
+            return $this->mainRepository->{$method}(...$parameters);
+        } catch (Exception $exception) {
+            $errorMessage = "Error when calling $method: " . $exception->getMessage();
+            throw new Exception($errorMessage);
+        }
     }
 
     /**
@@ -26,12 +41,7 @@ class ClientServiceImplement extends Service implements ClientService
      */
     public function getClientParameters()
     {
-        try {
-            return $this->mainRepository->getClientParameters();
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-            throw $th;
-        }
+        return $this->handleRepositoryCall('getClientParameters');
     }
 
     /**
@@ -41,11 +51,6 @@ class ClientServiceImplement extends Service implements ClientService
      */
     public function updateClientSettings($settings)
     {
-        try {
-            $this->mainRepository->updateClientSettings($settings);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-            throw $th;
-        }
+        return $this->handleRepositoryCall('updateClientSettings', [$settings]);
     }
 }
