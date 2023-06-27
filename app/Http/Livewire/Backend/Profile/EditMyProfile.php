@@ -1,26 +1,26 @@
 <?php
 
-namespace App\Http\Livewire\Backend\Setup\Administrator\Admin;
+namespace App\Http\Livewire\Backend\Profile;
 
 use App\Models\Group;
 use App\Services\Admin\AdminService;
 use App\Traits\LivewireMessageEvents;
 use Livewire\Component;
 
-class Edit extends Component
+class EditMyProfile extends Component
 {
     use LivewireMessageEvents;
 
     // Properties Public Variables
-    public $admin_uid, $group_id, $username, $password, $fullname, $email, $status;
+    public $admin_uid, $group_id, $group_name, $username, $password, $fullname, $email, $status, $status_name;
 
     // Groups
     public $groups;
 
     // Listeners
     protected $listeners = [
-        'getAdmin' => 'showAdmin',
-        'adminUpdated' => '$refresh',
+        'getMyProfile' => 'showMyProfile',
+        'myProfileUpdated' => '$refresh',
     ];
 
     /**
@@ -96,7 +96,7 @@ class Edit extends Component
      */
     public function render()
     {
-        return view('livewire.backend.setup.administrator.admin.edit');
+        return view('livewire.backend.profile.edit-my-profile');
     }
 
     /**
@@ -105,18 +105,23 @@ class Edit extends Component
      * @param  string $admin_uid
      * @return void
      */
-    public function showAdmin(AdminService $adminService, $admin_uid)
+    public function showMyProfile(AdminService $adminService, $admin_uid)
     {
         $admin = $adminService->getAdminByUid($admin_uid);
-
-        $this->dispatchBrowserEvent('show-modal');
+        $this->dispatchBrowserEvent('show-my-profile-modal');
 
         $this->admin_uid = $admin['admin_uid'];
         $this->group_id = $admin['group_id'];
+        $this->group_name = $admin->group->name;
         $this->username = $admin['username'];
         $this->fullname = $admin['fullname'];
         $this->email = $admin['email'];
         $this->status = $admin['status'];
+        if($admin['status'] == 1){
+            $this->status_name = 'Active';
+        }else{
+            $this->status_name = 'Not Active';
+        }
     }
 
     /**
@@ -124,7 +129,7 @@ class Edit extends Component
      * @param  AdminService $adminService
      * @return void
      */
-    public function updateAdmin(AdminService $adminService)
+    public function updateMyProfile(AdminService $adminService)
     {
 
         // Validate the data first
@@ -141,14 +146,13 @@ class Edit extends Component
         try {
             // Update the admin dataAdmin
             $adminService->updateAdmin($this->admin_uid, $newAdmin);
-
             // Show Message Success
-            $this->dispatchSuccessEvent('Admin successfully updated.');
-            // Emit the 'adminUpdated' event with a true status
-            $this->emit('adminUpdated', true);
+            $this->dispatchSuccessEvent('My Profile successfully updated.');
+            // Emit the 'myProfileUpdated' event with a true status
+            $this->emit('myProfileUpdated',true);
         } catch (\Throwable $th) {
             // Show Message Error
-            $this->dispatchErrorEvent('An error occurred while updating admin: ' . $th->getMessage());
+            $this->dispatchErrorEvent('An error occurred while updating my profile : ' . $th->getMessage());
         } finally {
             // Ensure the modal is closed
             $this->closeModal();
@@ -163,7 +167,7 @@ class Edit extends Component
     {
         // Reset the form for the next client
         $this->resetFields();
-        $this->dispatchBrowserEvent('hide-modal');
+        $this->dispatchBrowserEvent('hide-my-profile-modal');
     }
 
     /**

@@ -59,34 +59,14 @@ $navbarDetached = ($navbarDetached ?? '');
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <a class="dropdown-item"
-                                    href="{{ Route::has('profile.show') ? route('profile.show') : 'javascript:void(0);' }}">
-                                    <div class="d-flex">
-                                        <div class="flex-shrink-0 me-3">
-                                            <div class="avatar avatar-online">
-                                                <img src="{{ asset('assets/img/avatars/default.png') }}" alt
-                                                    class="w-px-40 h-auto rounded-circle">
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            @if(session('login_status') == "Active")
-                                            <span class="fw-semibold d-block">
-                                                {{ session('fullname') }}
-                                            </span>
-                                            <small class="text-muted">
-                                                {{ session('role') }}
-                                            </small>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </a>
+                                @livewire('backend.profile.my-profile', ['user_uid' => session('user_uid')])
                             </li>
                             <li>
                                 <div class="dropdown-divider"></div>
                             </li>
                             <li>
                                 <a class="dropdown-item"
-                                    href="{{ Route::has('profile.show') ? route('profile.show') : 'javascript:void(0);' }}">
+                                    href="javascript:void(0)" onclick="showMyProfile('{{session('user_uid')}}')">
                                     <i class="ti ti-user-check me-2 ti-sm"></i>
                                     <span class="align-middle">My Profile</span>
                                 </a>
@@ -112,8 +92,21 @@ $navbarDetached = ($navbarDetached ?? '');
         </div>
         @endif
     </nav>
+    @livewire('backend.profile.edit-my-profile')
     @push('scripts')
     <script>
+        // Hide Modal
+        window.addEventListener('hide-my-profile-modal', () => {
+            $('#updateMyProfileModal').modal('hide');
+        });
+        window.addEventListener('show-my-profile-modal', () => {
+            $('#updateMyProfileModal').modal('show');
+        });
+        // Function to show a modal based on a given uid for UPDATE!
+        function showMyProfile(uid) {
+            // Emit an event to show the modal with the given Livewire component uid for UPDATE!
+            Livewire.emit('getMyProfile', uid);
+        }
         function logoutButton() {
             event.preventDefault();
             Swal.fire({

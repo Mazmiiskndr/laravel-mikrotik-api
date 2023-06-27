@@ -49,8 +49,8 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
         $data = $data->collect();
 
         // Add Router and Log Activities row into data
-        $this->addRowToData($data, -1, 'Log Activities', 'edit_log_activity');
-        $this->addRowToData($data, -2, 'Router', 'edit_router');
+        $this->addRowToData($data, -1, 'Router', 'edit_router');
+        $this->addRowToData($data, -2, 'Log Activities', 'edit_log_activity');
 
         // Convert data back to array
         $rawData = $data->toArray();
