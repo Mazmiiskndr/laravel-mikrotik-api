@@ -5,182 +5,152 @@ namespace App\Services\ServiceMegalos;
 use LaravelEasyRepository\Service;
 use App\Repositories\ServiceMegalos\ServiceMegalosRepository;
 use Exception;
-use Illuminate\Support\Facades\Log;
 
 class ServiceMegalosServiceImplement extends Service implements ServiceMegalosService
 {
 
-    /**
-     * don't change $this->mainRepository variable name
-     * because used in extends service class
-     */
     protected $mainRepository;
-
+    /**
+     * Constructor.
+     * @param ServiceMegalosRepository $mainRepository The main repository for settings.
+     */
     public function __construct(ServiceMegalosRepository $mainRepository)
     {
         $this->mainRepository = $mainRepository;
     }
 
     /**
-     * Retrieves records from a database, initializes DataTables, adds columns to DataTable.
-     * @return DataTables Yajra JSON response.
+     * Handles the method call to the repository and manages exceptions.
+     * @param string $method The method to call.
+     * @param array $parameters The parameters to pass to the method.
+     * @throws Exception If there is an error when calling the method.
+     * @return mixed The result of the method call.
+     */
+    private function handleRepositoryCall(string $method, array $parameters = [])
+    {
+        try {
+            return $this->mainRepository->{$method}(...$parameters);
+        } catch (Exception $exception) {
+            $errorMessage = "Error when calling $method: " . $exception->getMessage();
+            throw new Exception($errorMessage);
+        }
+    }
+
+    /**
+     * Fetches and prepares data for DataTables.
+     * @return mixed The result of getDatatables method from the repository.
      */
     public function getDatatables()
     {
-        try {
-            return $this->mainRepository->getDatatables();
-        } catch (Exception $exception) {
-            throw new Exception("Error getting data to datatable : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getDatatables');
     }
 
     /**
-     * Retrieves records from a database, initializes DataTables Premium Services, adds columns to DataTable.
-     * @return DataTables Yajra JSON response.
+     * Fetches and prepares data for Premium Services DataTables.
+     * @return mixed The result of getPremiumServicesDatatables method from the repository.
      */
     public function getPremiumServicesDatatables()
     {
-        try {
-            return $this->mainRepository->getPremiumServicesDatatables();
-        } catch (Exception $exception) {
-            throw new Exception("Error getting data to premium services datatables : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getPremiumServicesDatatables');
     }
 
     /**
-     * Define validation rules for service creation.
-     * @param object $request The rules data used to create the new service.
-     * @param string|null $serviceId Service ID for uniqueness checks. If not provided, a create operation is assumed.
-     * @return array Array of validation rules
+     * Retrieves validation rules.
+     * @param mixed $request
+     * @param int|null $serviceId
+     * @return mixed The result of getRules method from the repository.
      */
     public function getRules($request, $serviceId = null)
     {
-        try {
-            return $this->mainRepository->getRules($request, $serviceId);
-        } catch (Exception $exception) {
-            throw new Exception("Error getting rules : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getRules', [$request, $serviceId]);
     }
 
     /**
-     * Define validation messages for service creation.
-     * @return array Array of validation messages
+     * Retrieves validation messages.
+     * @return mixed The result of getMessages method from the repository.
      */
     public function getMessages()
     {
-        try {
-            return $this->mainRepository->getMessages();
-        } catch (Exception $exception) {
-            throw new Exception("Error getting messages : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getMessages');
     }
 
     /**
-     * Get the attributes based on the provided service.
+     * Retrieves the attributes.
+     * @return mixed The result of getAttributes method from the repository.
      */
     public function getAttributes()
     {
-        try {
-            return $this->mainRepository->getAttributes();
-        } catch (Exception $exception) {
-            throw new Exception("Error getting attributes : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getAttributes');
     }
 
     /**
-     * Stores a new service using the provided request data.
-     * @param array $request The data used to create the new service.
-     * @return Model|mixed The newly created service.
-     * @throws \Exception if an error occurs while creating the service.
+     * Creates a new service.
+     * @param array $request
+     * @return mixed The result of storeNewService method from the repository.
      */
     public function storeNewService($request)
     {
-        try {
-            return $this->mainRepository->storeNewService($request);
-        } catch (Exception $exception) {
-            throw new Exception("Error creating new service : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('storeNewService', [$request]);
     }
 
     /**
-     * Updates an existing service using the provided request data.
-     * @param array $request The data used to update the service.
-     * @param int $serviceId Service ID for uniqueness checks. If not provided, a create operation is assumed.s
-     * @return Model|mixed The updated service.
-     * @throws \Exception if an error occurs while updating the service.
+     * Updates an existing service.
+     * @param array $request
+     * @param int $serviceId
+     * @return mixed The result of updateService method from the repository.
      */
     public function updateService($request, $serviceId)
     {
-        try {
-            return $this->mainRepository->updateService($request, $serviceId);
-        } catch (Exception $exception) {
-            throw new Exception("Error updating service : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('updateService', [$request, $serviceId]);
     }
 
     /**
-     * Delete an existing service and radgroupreply.
-     * @param int $serviceId The id of the service to be deleted.
-     * @throws \Exception if an error occurs while deleting the service.
+     * Deletes a service and radgroupreply.
+     * @param int $serviceId
+     * @return mixed The result of deleteServiceAndRadGroupReply method from the repository.
      */
     public function deleteServiceAndRadGroupReply($serviceId)
     {
-        try {
-            return $this->mainRepository->deleteServiceAndRadGroupReply($serviceId);
-        } catch (Exception $exception) {
-            throw new Exception("Error deleting service : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('deleteServiceAndRadGroupReply', [$serviceId]);
     }
 
     /**
-     * Fetches all services from the database.
+     * Fetches all services.
+     * @return mixed The result of getServices method from the repository.
      */
     public function getServices()
     {
-        try {
-            return $this->mainRepository->getServices();
-        } catch (Exception $exception) {
-            throw new Exception("Error getting services: " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getServices');
     }
 
     /**
-     * Retrieves a service by its ID.
-     * @param int $serviceId The unique identifier of the service.
-     * @return mixed A single service record from the database.
+     * Fetches a service by its ID.
+     * @param int $serviceId
+     * @return mixed The result of getServiceById method from the repository.
      */
     public function getServiceById($serviceId)
     {
-        try {
-            return $this->mainRepository->getServiceById($serviceId);
-        } catch (Exception $exception) {
-            throw new Exception("Error getting services by id : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getServiceById', [$serviceId]);
     }
 
     /**
-     * Stores a hotel room service in the database.
-     * @param array $request The request data to be stored.
+     * Creates a hotel room service.
+     * @param array $request
+     * @return mixed The result of storeHotelRoomService method from the repository.
      */
     public function storeHotelRoomService($request)
     {
-        try {
-            return $this->mainRepository->storeHotelRoomService($request);
-        } catch (Exception $exception) {
-            throw new Exception("Error storing hotel room service: " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('storeHotelRoomService', [$request]);
     }
 
     /**
-     * Deletes a service by its ID from the database.
-     * @param int $id The unique identifier of the service to be deleted.
+     * Deletes a service by its ID.
+     * @param int $id
+     * @return mixed The result of deleteService method from the repository.
      */
     public function deleteService($id)
     {
-        try {
-            return $this->mainRepository->deleteService($id);
-        } catch (Exception $exception) {
-            throw new Exception("Error deleting service: " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('deleteService', [$id]);
     }
+
 }

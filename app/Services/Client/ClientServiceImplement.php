@@ -8,129 +8,117 @@ use Exception;
 
 class ClientServiceImplement extends Service implements ClientService
 {
-
-    /**
-     * don't change $this->mainRepository variable name
-     * because used in extends service class
-     */
     protected $mainRepository;
-
+    /**
+     * Constructor.
+     * @param ClientRepository $mainRepository The main repository for settings.
+     */
     public function __construct(ClientRepository $mainRepository)
     {
         $this->mainRepository = $mainRepository;
     }
 
     /**
+     * Handles the method call to the repository and manages exceptions.
+     * @param string $method The method to call.
+     * @param array $parameters The parameters to pass to the method.
+     * @throws Exception If there is an error when calling the method.
+     * @return mixed The result of the method call.
+     */
+    private function handleRepositoryCall(string $method, array $parameters = [])
+    {
+        try {
+            return $this->mainRepository->{$method}(...$parameters);
+        } catch (Exception $exception) {
+            $errorMessage = "Error when calling $method: " . $exception->getMessage();
+            throw new Exception($errorMessage);
+        }
+    }
+
+    /**
      * Retrieve client records and associated service names.
-     * Conditionally applies a WHERE clause if provided.
      * @param array|null $conditions
      * @return array
+     * @throws Exception if an error occurs during the repository method call.
      */
     public function getClientWithService($conditions = null)
     {
-        try {
-            return $this->mainRepository->getClientWithService($conditions);
-        } catch (Exception $exception) {
-            throw new Exception("Error getting data clients : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getClientWithService', [$conditions]);
     }
 
     /**
      * Retrieve client by uid.
-     * Conditionally applies a WHERE clause if provided.
      * @param array|null $clientUid
      * @return array
+     * @throws Exception if an error occurs during the repository method call.
      */
     public function getClientByUid($clientUid)
     {
-        try {
-            return $this->mainRepository->getClientByUid($clientUid);
-        } catch (Exception $exception) {
-            throw new Exception("Error getting data client by uid : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getClientByUid', [$clientUid]);
     }
 
     /**
      * Retrieves records from a database, initializes DataTables, adds columns to DataTable.
-     * @return DataTables Yajra JSON response.
+     * @return mixed The result of the getDatatables repository method call.
+     * @throws Exception if an error occurs during the repository method call.
      */
     public function getDatatables()
     {
-        try {
-            return $this->mainRepository->getDatatables();
-        } catch (Exception $exception) {
-            throw new Exception("Error getting data to datatable : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getDatatables');
     }
 
     /**
      * Define validation rules for client creation.
      * @param string|null $clientUid Client UID for uniqueness checks. If not provided, a create operation is assumed.
      * @return array Array of validation rules
+     * @throws Exception if an error occurs during the repository method call.
      */
     public function getRules($clientUid = null)
     {
-        try {
-            return $this->mainRepository->getRules($clientUid);
-        } catch (Exception $exception) {
-            throw new Exception("Error getting rules clients : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getRules', [$clientUid]);
     }
 
     /**
      * Define validation messages for client creation.
      * @return array Array of validation messages
+     * @throws Exception if an error occurs during the repository method call.
      */
     public function getMessages()
     {
-        try {
-            return $this->mainRepository->getMessages();
-        } catch (Exception $exception) {
-            throw new Exception("Error getting messages rules clients : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getMessages');
     }
 
     /**
      * Stores a new client using the provided request data.
      * @param array $request The data used to create the new client.
-     * @return Model|mixed The newly created client.
-     * @throws \Exception if an error occurs while creating the client.
+     * @return mixed The newly created client.
+     * @throws Exception if an error occurs while creating the client.
      */
     public function storeNewClient($request)
     {
-        try {
-            return $this->mainRepository->StoreNewClient($request);
-        } catch (Exception $exception) {
-            throw new Exception("Error creating client : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('storeNewClient', [$request]);
     }
 
     /**
      * Updates an existing client using the provided data.
      * @param string $clientUid The UID of the client to update.
      * @param array $data The data used to update the client.
-     * @return Model|mixed The updated client.
-     * @throws \Exception if an error occurs while updating the client.
+     * @return mixed The updated client.
+     * @throws Exception if an error occurs while updating the client.
      */
     public function updateClient($clientUid, $data)
     {
-        try {
-            return $this->mainRepository->updateClient($clientUid, $data);
-        } catch (Exception $exception) {
-            throw new Exception("Error updating client : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('updateClient', [$clientUid, $data]);
     }
 
     /**
      * Delete client data from the `clients`, `radcheck`, `radacct`, and `radusergroup` tables based on the client UID.
      * @param string $clientUid The UID of the client to delete.
+     * @throws Exception if an error occurs during the repository method call.
      */
     public function deleteClientData($clientUid)
     {
-        try {
-            return $this->mainRepository->deleteClientData($clientUid);
-        } catch (Exception $exception) {
-            throw new Exception("Error creating client : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('deleteClientData', [$clientUid]);
     }
+
 }
