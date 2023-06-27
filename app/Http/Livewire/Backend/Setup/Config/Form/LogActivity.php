@@ -60,25 +60,17 @@ class LogActivity extends Component
         try {
             // Update the LOG ACTIVITY settings
             $settingService->updateSetting('log_activities', 0, $this->logActivity);
-
             // Show Message Success
             $this->dispatchSuccessEvent('Log activities settings updated successfully.');
-            // Close the modal
-            $this->closeModal();
-            // Reset the form fields
-            $this->resetFields();
-
             // Emit the 'logActivityUpdated' event with a true status
             $this->emitUp('logActivityUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating log activities settings: ' . $th->getMessage());
-            // Close the modal
+        } finally {
+            // Close Modal
             $this->closeModal();
         }
-
-        // Close Modal
-        $this->closeModal();
     }
 
     /**
@@ -100,7 +92,7 @@ class LogActivity extends Component
     public function loadForm(SettingService $settingService)
     {
         // Get the Log Activities Parameters using the SettingService
-        $this->logActivity = $settingService->getSetting('log_activities','0');
+        $this->logActivity = $settingService->getSetting('log_activities', '0');
     }
 
     /**

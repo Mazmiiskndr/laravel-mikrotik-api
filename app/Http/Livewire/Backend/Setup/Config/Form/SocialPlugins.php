@@ -87,7 +87,6 @@ class SocialPlugins extends Component
         return view('livewire.backend.setup.config.form.social-plugins');
     }
 
-
     /**
      * This function updates the social plugin settings and emits an event with the status of the
      * update.
@@ -125,8 +124,6 @@ class SocialPlugins extends Component
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating ads settings: ' . $th->getMessage());
         } finally {
-            // Reset the form fields
-            $this->resetFields();
             // Close Modal
             $this->closeModal();
         }
@@ -141,9 +138,6 @@ class SocialPlugins extends Component
     public function resetForm(SocialPluginService $socialPluginService)
     {
         // Get the SOCIALPLUGIN parameters using the SocialPluginService
-        /**
-         * @var SocialPlugin $socialPlugin
-         */
         $socialPluginParameters = $socialPluginService->getSocialPluginParameters();
         // Convert the received data into an associative array and fill it into a Livewire variable
         $this->setLivewireVariables($socialPluginParameters);
@@ -182,7 +176,6 @@ class SocialPlugins extends Component
 
     /**
      * setLivewireVariables
-     *
      * @param  mixed $socialPluginParameters
      * @return void
      */

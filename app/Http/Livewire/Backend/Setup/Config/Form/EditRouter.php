@@ -182,10 +182,10 @@ class EditRouter extends Component
         } catch (\Throwable $th) {
             // If any exceptions were thrown during the process, we handle the error case
             $this->handleError('An error occurred while updating router settings : ' . $th->getMessage());
+        } finally {
+            // Regardless of the outcome, we close the modal after the process
+            $this->closeModal();
         }
-
-        // Regardless of the outcome, we close the modal after the process
-        $this->closeModal();
     }
 
     /**
