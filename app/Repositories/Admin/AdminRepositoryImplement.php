@@ -2,10 +2,11 @@
 
 namespace App\Repositories\Admin;
 
-use App\Helpers\AccessControlHelper;
+use App\Helpers\ActionButtonsBuilder;
 use App\Helpers\SessionKeyHelper;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Admin;
+use App\Traits\DataTablesTrait;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +16,7 @@ use Yajra\DataTables\DataTables;
 class AdminRepositoryImplement extends Eloquent implements AdminRepository
 {
     use SessionKeyHelper;
-
+    use DataTablesTrait;
     /**
      * Model class to be used in this repository for the common methods inside Eloquent
      * Don't remove or change $this->model variable name
@@ -103,32 +104,24 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
         // Retrieve records from the database using the model, including the related 'admin' records, and sort by the latest records
         $data = $this->model->with('group')->latest()->get();
 
-        // Initialize DataTables and add columns to the table
-        return Datatables::of($data)
-            ->addIndexColumn()
-            ->addColumn('status', function ($data) {
-                return $data->status == 1 ? '<span class="badge bg-label-success">Active</span>' : '<span class="badge bg-label-danger">Non Active</span>';
-            })
-            ->addColumn('action', function ($data) {
-                $editButton = '';
-                $deleteButton = '';
+        $editPermission = 'edit_admin';
+        $deletePermission = 'delete_admin';
+        $onclickEdit = 'showAdmin';
+        $onclickDelete = 'confirmDeleteAdmin';
+        $editButton = 'button';
 
-                // Check if the current admin is allowed to edit
-                if (AccessControlHelper::isAllowedToPerformAction('edit_admin')) {
-                    // If admin is allowed, show edit button
-                    $editButton = '<button type="button" name="edit" class="edit btn btn-primary btn-sm" onclick="showAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-edit"></i></button>';
+        // Format the data for DataTables
+        return $this->formatDataTablesResponse(
+            $data,
+            [
+                'status' => function ($data) {
+                    return $data->status == 1 ? '<span class="badge bg-label-success">Active</span>' : '<span class="badge bg-label-danger">Non Active</span>';
+                },
+                'action' => function ($data) use ($editPermission, $deletePermission, $editButton, $onclickEdit, $onclickDelete) {
+                    return $this->getActionButtons($data, $editPermission, $deletePermission, $editButton, $onclickEdit, $onclickDelete);
                 }
-
-                // Check if the current admin is allowed to delete
-                if (AccessControlHelper::isAllowedToPerformAction('delete_admin')) {
-                    // If admin is allowed, show delete button
-                    $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-trash"></i></button>';
-                }
-
-                return $editButton . $deleteButton;
-            })
-            ->rawColumns(['status', 'action'])
-            ->make(true);
+            ]
+        );
     }
 
     /**
@@ -255,6 +248,28 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
     }
 
     // 👇 **** PRIVATE FUNCTIONS **** 👇
+
+    /**
+     * Generate action buttons for the DataTables row.
+     * @param $data
+     * @param $editPermission
+     * @param $deletePermission
+     * @param $editButton
+     * @param $onclickEdit
+     * @param $onclickDelete
+     * @return string HTML string for the action buttons
+     */
+    private function getActionButtons($data, $editPermission, $deletePermission, $editButton, $onclickEdit, $onclickDelete)
+    {
+        return (new ActionButtonsBuilder())
+            ->setEditPermission($editPermission)
+            ->setDeletePermission($deletePermission)
+            ->setOnclickDelete($onclickDelete)
+            ->setOnclickEdit($onclickEdit)
+            ->setType($editButton)
+            ->setIdentity($data->admin_uid)
+            ->build();
+    }
 
     /**
      * Prepare session data.
