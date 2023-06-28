@@ -10,9 +10,10 @@ interface ClientService extends BaseService{
      * Retrieve client records and associated service names.
      * Conditionally applies a WHERE clause if provided.
      * @param array|null $conditions
+     * @param array|null $columns
      * @return array
      */
-    public function getClientWithService($conditions);
+    public function getClientWithService($conditions, $columns);
 
     /**
      * Retrieve client by uid.

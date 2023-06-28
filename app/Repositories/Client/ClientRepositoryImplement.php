@@ -38,14 +38,16 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
      * Retrieve client records and associated service names.
      * Conditionally applies a WHERE clause if provided.
      * @param array|null $conditions
+     * @param array|null $columns
      * @return array
      */
-    public function getClientWithService($conditions = null)
+    public function getClientWithService($conditions = null, $columns = ['*'])
     {
         try {
-            // Prepare the query to select clients and join with services
-            $clientQuery = $this->model->select('clients.*', 'services.service_name')
-                ->leftJoin('services', 'clients.service_id', '=', 'services.id');
+            // Prepare the query to select clients and include their associated service
+            $clientQuery = $this->model->select($columns)->with(['service' => function ($query) {
+                $query->select('id', 'service_name'); // Assuming 'id' is the primary key of 'services'
+            }]);
 
             // Add the 'where' conditions if they exist
             if ($conditions) {
@@ -53,7 +55,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
             }
 
             // Get the results and the count of rows
-            $clientData['data'] = $clientQuery->get()->toArray();
+            $clientData['data'] = $clientQuery->latest()->get();
             $clientData['total'] = $clientQuery->count();
 
             return $clientData;
@@ -90,15 +92,16 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
      */
     public function getDatatables()
     {
-        // Retrieve records from the database using the model, including the related 'clients' records, and sort by the latest records
-        $data = $this->model->select('clients.client_uid', 'clients.username', 'services.service_name')
-            ->leftJoin('services', 'clients.service_id', '=', 'services.id')
-            ->latest()
-            ->get();
+        // Retrieve records from the getClientWithService function
+        $clientData = $this->getClientWithService(null, ['client_uid', 'service_id', 'username']);
+        $data = $clientData['data'];
 
         // Initialize DataTables and add columns to the table
         return Datatables::of($data)
             ->addIndexColumn()
+            ->addColumn('service_name', function ($data) {
+                return $data->service->service_name;
+            })
             ->addColumn('action', function ($data) {
                 $editButton = '';
                 $deleteButton = '';
