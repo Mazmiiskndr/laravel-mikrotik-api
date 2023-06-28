@@ -78,22 +78,18 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
                 return $data->service->service_name;
             })
             ->addColumn('action', function ($data) {
-                $editButton = '';
+                $detailButton = '';
                 $deleteButton = '';
 
-                // Check if the current client is allowed to edit
-                // if (AccessControlHelper::isAllowedToPerformAction('edit_client')) {
-                //     // If client is allowed, show edit button
-                //     $editButton = '<button type="button" name="edit" class="edit btn btn-primary btn-sm" onclick="showClient(\'' . $data->client_uid . '\')"> <i class="fas fa-edit"></i></button>';
-                // }
+                $detailButton = '<button type="button" name="detail" class="detail btn btn-info btn-sm"> <i class="fas fa-eye"></i></button>';
 
                 // Check if the current client is allowed to delete
                 if (AccessControlHelper::isAllowedToPerformAction('delete_voucher_batch')) {
                     // If client is allowed, show delete button
-                    $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteClient(\'' . $data->client_uid . '\')"> <i class="fas fa-trash"></i></button>';
+                    $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteVoucherBatch(\'' . $data->voucher_batches_uid . '\')"> <i class="fas fa-trash"></i></button>';
                 }
 
-                return $editButton . $deleteButton;
+                return $detailButton . $deleteButton;
             })
             ->rawColumns(['action'])
             ->make(true);

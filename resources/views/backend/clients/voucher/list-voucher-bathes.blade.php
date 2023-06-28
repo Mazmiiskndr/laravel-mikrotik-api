@@ -15,6 +15,7 @@
             <h4 class="card-title">Table Voucher Batches</h4>
 
             <div>
+                {{-- TODO: --}}
                 {{-- /Start Button for Create New Voucher Batch --}}
                 @if ($permissions['isAllowedToCreateVoucherBatch'])
                 <x-button type="button" color="facebook " data-bs-toggle="modal" data-bs-target="#createNewVoucherBatch">
@@ -23,6 +24,7 @@
                 @endif
                 {{-- /End Button for Create New Voucher Batch --}}
 
+                {{-- TODO: --}}
                 {{-- /Start Button for Batch Delete --}}
                 @if ($permissions['isAllowedToDeleteVoucherBatches'])
                 <x-button type="button" color="danger" onclick="confirmDeleteVoucherBatches()">
@@ -38,7 +40,6 @@
     @if($permissions['isAllowedToListVoucherBatches'])
     {{-- Start List DataTable --}}
     <div class="card-body">
-        {{-- TODO: --}}
         @livewire('backend.client.voucher.list.data-table')
     </div>
     {{-- End List DataTable --}}
@@ -60,8 +61,8 @@
         // Only add the event listener if the checkbox actually exists
         if (selectAllCheckbox) {
                 selectAllCheckbox.addEventListener('click', function (event) {
-                // Get all the checkboxes with the class 'client-checkbox'
-                let checkboxes = document.getElementsByClassName('client-checkbox');
+                // Get all the checkboxes with the class 'voucherBatch-checkbox'
+                let checkboxes = document.getElementsByClassName('voucherBatch-checkbox');
 
                 // Set their checked property to the same as the 'select all' checkbox
                 Array.from(checkboxes).forEach(checkbox => (checkbox.checked = event.target.checked));
@@ -69,7 +70,7 @@
         }
 
         // Function to confirm Batch Delete
-        function DeleteVoucherBatches() {
+        function confirmDeleteVoucherBatches() {
             // Get all checked voucherBatch_uid
             let voucherBatchUids = Array.from(document.querySelectorAll('.voucherBatch-checkbox:checked')).map(el => el.value);
 
