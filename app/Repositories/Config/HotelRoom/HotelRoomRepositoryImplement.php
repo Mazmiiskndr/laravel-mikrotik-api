@@ -2,14 +2,16 @@
 
 namespace App\Repositories\Config\HotelRoom;
 
+use App\Helpers\ActionButtonsBuilder;
 use App\Models\Services;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Setting;
+use App\Traits\DataTablesTrait;
 use Yajra\DataTables\Facades\DataTables;
 
 class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomRepository
 {
-
+    use DataTablesTrait;
     /**
      * Model class to be used in this repository for the common methods inside Eloquent
      * Don't remove or change $this->model variable name
@@ -50,6 +52,38 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
         }
     }
 
+    // /**
+    //  * Fetches data from the database and formats it for DataTables.
+    //  * @return JsonResponse A JSON response suitable for DataTables.
+    //  */
+    // public function getDatatables()
+    // {
+    //     // Retrieve records from the database using the model, including the related 'Services' records, and sort by the latest records
+    //     $data = $this->servicesModel->select('id', 'service_name', 'cron_type', 'cron')
+    //         ->where('cron_type', '!=', null)
+    //         ->where('cron', '!=', '')
+    //         ->where('cron', '!=', 0)
+    //         ->get();
+
+    //     // Initialize the DataTables library using the fetched data
+    //     $dataTables = DataTables::of($data)
+    //         // Add an index column to the DataTable for easier reference
+    //         ->addIndexColumn()
+    //         // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
+    //         ->addColumn('action', function ($data) {
+    //             // Add a delete button with the record's 'id' as its ID and a 'fas fa-trash' icon
+    //             $button = '&nbsp;&nbsp;<button type="button" name="edit" class="delete btn btn-danger btn-sm" onclick="confirmDeleteService(\'' . $data->id . '\')"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
+
+    //             // Return the concatenated button HTML string
+    //             return $button;
+    //         })
+    //         // Create and return the DataTables response as a JSON object
+    //         ->make(true);
+
+    //     // Return the DataTables JSON response
+    //     return $dataTables;
+    // }
+
     /**
      * Fetches data from the database and formats it for DataTables.
      * @return JsonResponse A JSON response suitable for DataTables.
@@ -58,27 +92,38 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
     {
         // Retrieve records from the database using the model, including the related 'Services' records, and sort by the latest records
         $data = $this->servicesModel->select('id', 'service_name', 'cron_type', 'cron')
-            ->where('cron_type', '!=', null)
+        ->where('cron_type', '!=', null)
             ->where('cron', '!=', '')
             ->where('cron', '!=', 0)
             ->get();
 
-        // Initialize the DataTables library using the fetched data
-        $dataTables = DataTables::of($data)
-            // Add an index column to the DataTable for easier reference
-            ->addIndexColumn()
-            // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
-            ->addColumn('action', function ($data) {
-                // Add a delete button with the record's 'id' as its ID and a 'fas fa-trash' icon
-                $button = '&nbsp;&nbsp;<button type="button" name="edit" class="delete btn btn-danger btn-sm" onclick="confirmDeleteService(\'' . $data->id . '\')"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
+        $deletePermission = 'delete_admin';
+        $onclickDelete = 'confirmDeleteService';
 
-                // Return the concatenated button HTML string
-                return $button;
-            })
-            // Create and return the DataTables response as a JSON object
-            ->make(true);
+        // Format the data for DataTables
+        return $this->formatDataTablesResponse(
+            $data,
+            [
+                'action' => function ($data) use ($deletePermission, $onclickDelete) {
+                    return $this->getActionButtons($data, $deletePermission, $onclickDelete);
+                }
+            ]
+        );
+    }
 
-        // Return the DataTables JSON response
-        return $dataTables;
+    /**
+     * Generate action buttons for the DataTables row.
+     * @param $data
+     * @param $deletePermission
+     * @param $onclickDelete
+     * @return string HTML string for the action buttons
+     */
+    private function getActionButtons($data, $deletePermission, $onclickDelete)
+    {
+        return (new ActionButtonsBuilder())
+            ->setDeletePermission($deletePermission)
+            ->setOnclickDelete($onclickDelete)
+            ->setIdentity($data->id)
+            ->build();
     }
 }
