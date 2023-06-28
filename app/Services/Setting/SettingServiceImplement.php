@@ -9,15 +9,31 @@ use Exception;
 class SettingServiceImplement extends Service implements SettingService
 {
 
-    /**
-     * don't change $this->mainRepository variable name
-     * because used in extends service class
-     */
     protected $mainRepository;
-
+    /**
+     * Constructor.
+     * @param SettingRepository $mainRepository The main repository for settings.
+     */
     public function __construct(SettingRepository $mainRepository)
     {
         $this->mainRepository = $mainRepository;
+    }
+
+    /**
+     * Handles the method call to the repository and manages exceptions.
+     * @param string $method The method to call.
+     * @param array $parameters The parameters to pass to the method.
+     * @throws Exception If there is an error when calling the method.
+     * @return mixed The result of the method call.
+     */
+    private function handleRepositoryCall(string $method, array $parameters = [])
+    {
+        try {
+            return $this->mainRepository->{$method}(...$parameters);
+        } catch (Exception $exception) {
+            $errorMessage = "Error when calling $method: " . $exception->getMessage();
+            throw new Exception($errorMessage);
+        }
     }
 
     /**
@@ -25,14 +41,11 @@ class SettingServiceImplement extends Service implements SettingService
      * @param string $settingName The setting name.
      * @param string $moduleId The module id.
      * @return string Returns the setting value.
+     * @throws Exception If an error occurs while retrieving the setting.
      */
     public function getSetting($settingName, $moduleId)
     {
-        try {
-            return $this->mainRepository->getSetting($settingName, $moduleId);
-        } catch (Exception $exception) {
-            throw new Exception("Error getting data setting : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getSetting', [$settingName, $moduleId]);
     }
 
     /**
@@ -41,27 +54,21 @@ class SettingServiceImplement extends Service implements SettingService
      * @param string $moduleId The module id.
      * @param string $value The new value.
      * @return int The number of affected rows.
+     * @throws Exception If an error occurs while updating the setting.
      */
     public function updateSetting($settingName, $moduleId, $value)
     {
-        try {
-            return $this->mainRepository->updateSetting($settingName, $moduleId, $value);
-        } catch (Exception $exception) {
-            throw new Exception("Error updated setting : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('updateSetting', [$settingName, $moduleId, $value]);
     }
 
     /**
-     * Get the allowed permissions array for all actions.
-     * @return array
-     * @param  mixed $actions
+     * Gets the allowed permissions array for all actions.
+     * @param array $actions The actions.
+     * @return array The allowed permissions.
+     * @throws Exception If an error occurs while retrieving the permissions.
      */
     public function getAllowedPermissions($actions)
     {
-        try {
-            return $this->mainRepository->getAllowedPermissions($actions);
-        } catch (Exception $exception) {
-            throw new Exception("Error getting data permissions : " . $exception->getMessage());
-        }
+        return $this->handleRepositoryCall('getAllowedPermissions', [$actions]);
     }
 }

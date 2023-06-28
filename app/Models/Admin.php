@@ -36,14 +36,10 @@ class Admin extends Model
         });
     }
 
-    // App\Models\Admin.php
-
     public function modules()
     {
         return $this->belongsToMany(Module::class, 'admin_module', 'admin_id', 'module_id');
     }
-
-
 
     /**
      * group

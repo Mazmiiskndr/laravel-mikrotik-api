@@ -4,116 +4,78 @@ namespace App\Services\Nas;
 
 use LaravelEasyRepository\Service;
 use App\Repositories\Nas\NasRepository;
-use Illuminate\Support\Facades\Log;
-
+use Exception;
 class NasServiceImplement extends Service implements NasService
 {
-
-    /**
-     * don't change $this->mainRepository variable name
-     * because used in extends service class
-     */
     protected $mainRepository;
-
+    /**
+     * Constructor.
+     * @param NasRepository $mainRepository The main repository for settings.
+     */
     public function __construct(NasRepository $mainRepository)
     {
         $this->mainRepository = $mainRepository;
     }
 
+    /**
+     * Handles the method call to the repository and manages exceptions.
+     *
+     * @param string $method The method to call.
+     * @param array $parameters The parameters to pass to the method.
+     * @throws Exception If there is an error when calling the method.
+     * @return mixed The result of the method call.
+     */
+    private function handleRepositoryCall(string $method, array $parameters = [])
+    {
+        try {
+            return $this->mainRepository->{$method}(...$parameters);
+        } catch (Exception $exception) {
+            $errorMessage = "Error when calling $method: " . $exception->getMessage();
+            throw new Exception($errorMessage);
+        }
+    }
 
     /**
-     * getNasByShortname
-     *
-     * @param  mixed $shortName
-     * @return void
+     * Retrieves NAS (Network Access Server) by its shortname.
+     * @param string $shortName The shortname of the NAS.
+     * @return mixed The result of calling the `getNasByShortname` method of the `mainRepository` object.
+     * @throws Exception If an error occurs while retrieving NAS.
      */
     public function getNasByShortname($shortName)
     {
-        try {
-            return $this->mainRepository->getNasByShortname($shortName);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-            return [];
-        }
+        return $this->handleRepositoryCall('getNasByShortname', [$shortName]);
     }
 
     /**
-     * getNasParameters
-     *
-     * @param  mixed $shortName
-     * @return void
+     * Fetches all parameters related to NAS.
+     * @return mixed The result of calling the `getNasParameters` method of the `mainRepository` object.
+     * @throws Exception If an error occurs while retrieving NAS parameters.
      */
     public function getNasParameters()
     {
-        try {
-            return $this->mainRepository->getNasParameters();
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-            return [];
-        }
+        return $this->handleRepositoryCall('getNasParameters');
     }
 
     /**
-     * editNasProcess
-     *
-     * @param  mixed $shortName
-     * @return void
+     * Processes the data for editing a NAS.
+     * @param array $data The data to be processed for editing.
+     * @return mixed The result of calling the `editNasProcess` method of the `mainRepository` object.
+     * @throws Exception If an error occurs while editing NAS.
      */
     public function editNasProcess($data)
     {
-        try {
-            return $this->mainRepository->editNasProcess($data);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-            return [];
-        }
+        return $this->handleRepositoryCall('editNasProcess', [$data]);
     }
 
     /**
-     * getSetting
-     *
-     * @param  mixed $shortName
-     * @return void
-     */
-    public function getSetting($settingName, $moduleId)
-    {
-        try {
-            return $this->mainRepository->getSetting($settingName, $moduleId);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-            return [];
-        }
-    }
-
-    /**
-     * updateSetting
-     *
-     * @param  mixed $shortName
-     * @return void
-     */
-    public function updateSetting($settingName, $moduleId, $value)
-    {
-        try {
-            return $this->mainRepository->updateSetting($settingName, $moduleId, $value);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-            return [];
-        }
-    }
-
-    /**
-     * setupProcess
-     *
-     * @param  mixed $record
-     * @param  mixed $data
-     * @return void
+     * Performs setup process using provided record and data.
+     * @param mixed $record The record used in the setup process.
+     * @param array $data The data used in the setup process.
+     * @return mixed The result of calling the `setupProcess` method of the `mainRepository` object.
+     * @throws Exception If an error occurs during the setup process.
      */
     public function setupProcess($record, $data)
     {
-        try {
-            return $this->mainRepository->setupProcess($record, $data);
-        } catch (\Throwable $th) {
-            return Log::debug($th->getMessage());
-        }
+        return $this->handleRepositoryCall('setupProcess', [$record, $data]);
     }
 }

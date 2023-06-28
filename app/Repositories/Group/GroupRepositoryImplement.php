@@ -7,9 +7,7 @@ use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Group;
 use App\Models\Module;
 use App\Models\Page;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class GroupRepositoryImplement extends Eloquent implements GroupRepository
@@ -28,12 +26,8 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository
     }
 
     /**
-     * Fetches data from Redis, queries Group model, and generates a DataTables table.
-     * Edit and delete buttons are added based on the user's group permissions.
-     *
-     * @return DataTables instance with query on "groups" table, sorted by latest.
-     * The "action" column includes edit and delete buttons based on group permissions.
-     * Buttons are kept raw (not escaped). DataTables instance is returned as JSON.
+     * Generates a DataTables table with Group data from Redis, respecting user's permissions.
+     * @return JSON DataTables instance, with "action" column buttons (raw). Sorted by latest.
      */
     public function getDatatables()
     {
@@ -151,9 +145,6 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository
      */
     public function storeNewGroup($groupName, $permissions)
     {
-        // Start a database transaction
-        DB::beginTransaction();
-
         try {
             // Create Group
             $group = $this->model->create([
@@ -179,14 +170,11 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository
                 }
             }
 
-            // Commit the transaction
-            DB::commit();
-
             // Return the created group
             return $group;
         } catch (\Exception $e) {
-            // If something goes wrong, rollback the transaction
-            DB::rollback();
+            // Log the exception message for debugging and return false
+            Log::error("Error in creating group : " . $e->getMessage());
 
             // Return the exception
             return $e;
@@ -204,9 +192,6 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository
      */
     public function updateGroup($groupName, $permissions, $id)
     {
-        // Start a database transaction
-        DB::beginTransaction();
-
         try {
             // Find Group by id
             $group = $this->model->findOrFail($id);
@@ -240,14 +225,11 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository
                 $page->save();
             }
 
-            // Commit the transaction
-            DB::commit();
-
             // Return the updated group
             return $group;
         } catch (\Exception $e) {
-            // If something goes wrong, rollback the transaction
-            DB::rollback();
+            // Log the exception message for debugging and return false
+            Log::error("Error in updating group : " . $e->getMessage());
 
             // Return the exception
             return $e;

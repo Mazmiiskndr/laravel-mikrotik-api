@@ -19,11 +19,14 @@ class SocialPluginRepositoryImplement extends Eloquent implements SocialPluginRe
         $this->model = $model;
     }
 
-
+    /**
+     * Retrieves the parameters for the social plugin.
+     * @return Collection Returns a collection of setting records which contains setting name and its value.
+     */
     public function getSocialPluginParameters()
     {
-        // Get 2 line from setting table based on setting
-        $ads = $this->model->whereIn(
+        // Get records from setting table based on setting
+        $socialPlugins = $this->model->whereIn(
             'setting',
             [
                 'fb_app_id',
@@ -41,16 +44,12 @@ class SocialPluginRepositoryImplement extends Eloquent implements SocialPluginRe
             ]
         )->get();
 
-        return $ads;
+        return $socialPlugins;
     }
 
     /**
-     * This function updates or creates social plugin settings in a database based on the provided
-     * key-value pairs.
-     *
-     * @param settings The  parameter is an array that contains key-value pairs representing
-     * the social plugin settings to be updated or created. The keys represent the name of the setting,
-     * while the values represent the new value to be set for that setting.
+     * Updates or creates social plugin settings based on the given data.
+     * @param array $settings The settings to update or create.
      */
     public function updateSocialPluginSettings($settings)
     {

@@ -18,7 +18,7 @@ class Create extends Component
 
     // Listeners
     protected $listeners = [
-        'productCreated' => '$refresh',
+        'adminCreated' => '$refresh',
     ];
 
     // Validation Rules
@@ -131,6 +131,8 @@ class Create extends Component
      */
     public function closeModal()
     {
+        // Reset the form for the next client
+        $this->resetFields();
         $this->dispatchBrowserEvent('hide-modal');
     }
 

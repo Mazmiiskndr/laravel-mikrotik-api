@@ -1,7 +1,3 @@
-@php
-$configData = Helper::appClasses();
-@endphp
-
 @extends('layouts/layoutMaster')
 
 @section('title', 'Vouchers Print Setup')
@@ -75,36 +71,5 @@ $configData = Helper::appClasses();
 
 
 </div>
-
-@push('scripts')
-
-<script>
-    // Listen for 'message' event from the window
-    window.addEventListener('message', event => {
-        // Check if the event contains an error detail
-        if (event.detail && event.detail.error) {
-            const error = event.detail.error;
-            // Display an error message using Swal.fire
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: error,
-            });
-        }
-        // Check if the event contains a success detail
-        if (event.detail && event.detail.success) {
-            const success = event.detail.success;
-            // Display an success message using Swal.fire
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: success,
-                showConfirmButton: false,
-                timer: 1500
-            });
-        }
-    });
-</script>
-@endpush
 @endif
 @endsection

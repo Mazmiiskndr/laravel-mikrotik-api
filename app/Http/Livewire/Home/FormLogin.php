@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Home;
 
 use App\Services\Admin\AdminService;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class FormLogin extends Component
@@ -46,38 +47,46 @@ class FormLogin extends Component
     }
 
     /**
-     * submit
-     *
-     * @param  mixed $adminService
-     * @return void
+     * Handle the form submission.
+     * @param AdminService $adminService - The AdminService to use for admin authentication
+     * @return mixed - Returns a redirect response on success, or flashes an error message on failure
      */
     public function submit(AdminService $adminService)
     {
-        // Validate the input fields
-        $this->validate();
+        try {
+            // Validate the form input fields
+            $this->validate();
 
-        // Call the validateAdmin method from the AdminService to validate the credentials
-        $validationResult = $adminService->validateAdmin($this->username, $this->password);
+            // Attempt to validate the provided admin credentials using the AdminService
+            $validationResult = $adminService->validateAdmin($this->username, $this->password);
 
-        // If the validation is successful
-        if ($validationResult) {
-            // Get the session data from the validation result
-            $sessionData = $validationResult['session_data'];
+            // Check if the validation was successful
+            if ($validationResult['success']) {
+                // If the validation was successful, retrieve the session data from the validation result
+                $sessionData = $validationResult['session_data'];
 
-            // Set the session data for the authenticated user
-            session([
-                'user_uid' => $sessionData['user_uid'],
-                'fullname' => $sessionData['fullname'],
-                'login_status' => $sessionData['login_status'],
-                'role' => $sessionData['role'],
-                'username' => $sessionData['username'],
-            ]);
+                // Set the session data for the authenticated user
+                session([
+                    'user_uid'      => $sessionData['user_uid'],
+                    'fullname'      => $sessionData['fullname'],
+                    'login_status'  => $sessionData['login_status'],
+                    'role'          => $sessionData['role'],
+                    'username'      => $sessionData['username'],
+                ]);
 
-            // Redirect the user to the backend dashboard
-            return redirect()->route('backend.dashboard');
+                // Redirect the user to the backend dashboard
+                return redirect()->route('backend.dashboard');
+            }
+
+            // If the validation fails, flash an error message
+            return session()->flash('error', $validationResult['message']);
+        } catch (\Exception $e) {
+            // If there's an exception, log it for debugging
+            // Log::error('An error occurred during admin authentication: ' . $e->getMessage());
+
+            // Flash a general error message
+            return session()->flash('error', 'An error occurred : ' . $e->getMessage());
         }
-
-        // If the validation fails, flash an error message
-        return session()->flash('error', 'Invalid Username or Password!.');
     }
+
 }

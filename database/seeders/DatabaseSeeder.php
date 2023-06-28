@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PageSeeder::class);
         $this->call(SettingSeeder::class);
         $this->call(NasSeeder::class);
+        $this->call(AdTypeSeeder::class);
 
         Admin::factory(50)->create();
     }

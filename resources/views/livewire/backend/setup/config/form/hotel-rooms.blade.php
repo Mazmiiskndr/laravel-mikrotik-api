@@ -9,8 +9,8 @@
         <div class="modal-body">
             <div class="row">
                 <div class="col">
-                    <x-input-field id="hmsConnect" label="HMS Connect" model="hmsConnect"
-                        placeholder="Enter a HMS Connect.." required />
+                    <x-select-field id="hmsConnect" label="HMS Connect" model="hmsConnect" required
+                        :options="['1' => 'Active', '0' => 'Non Active']" />
                 </div>
             </div>
         </div>

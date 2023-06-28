@@ -1,7 +1,3 @@
-@php
-$configData = Helper::appClasses();
-@endphp
-
 @extends('layouts/layoutMaster')
 @section('title', 'Add New Group')
 @push('styles')
@@ -9,6 +5,7 @@ $configData = Helper::appClasses();
 @endpush
 
 @section('content')
+
 {{-- Is Allowed User To Add New Group --}}
 @if($permissions['isAllowedToAddNewGroup'])
 <h4 class="fw-bold py-3 mb-1"><span class="text-primary fw-light">Groups </span>/ Add New Group</h4>
@@ -35,8 +32,6 @@ $configData = Helper::appClasses();
         </div>
     </div>
 </div>
-@push('scripts')
-@endpush
-
 @endif
+
 @endsection

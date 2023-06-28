@@ -119,28 +119,17 @@ class Ads extends Component
         try {
             // Update the ads settings
             $adsService->updateAdsSettings($settings);
-
             // Show success message
             $this->dispatchSuccessEvent('Ads settings updated successfully.');
-
-            // Close the modal
-            $this->closeModal();
-
-            // Reset the form fields
-            $this->resetFields();
-
             // Emit the 'adsUpdated' event with a true status
             $this->emitUp('adsUpdated', true);
         } catch (\Throwable $th) {
             // Show error message
             $this->dispatchErrorEvent('An error occurred while updating ads settings: ' . $th->getMessage());
-
+        } finally {
             // Close the modal
             $this->closeModal();
         }
-
-        // Close the modal
-        $this->closeModal();
     }
 
     /**
@@ -149,6 +138,8 @@ class Ads extends Component
      */
     public function closeModal()
     {
+        // Reset the form for the next client
+        $this->resetFields();
         // Emit the 'closeModal' event
         $this->emit('closeModal');
     }

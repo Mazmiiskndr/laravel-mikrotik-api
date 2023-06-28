@@ -18,6 +18,21 @@ class Form extends Component
         'voucherUpdated' => '$refresh',
     ];
 
+    // Validation rules for the invoice property
+    protected $rules = [
+        // Each item in the invoice array must have a 'name' property that is required and a string
+        'invoice.0.name' => ['required', 'string', 'max:30'],
+        'invoice.*.name' => ['string', 'max:30'],
+    ];
+
+    // Validation messages for the invoice property
+    protected $messages = [
+        // Each item in the invoice array must have a 'name' property that is required and a string
+        'invoice.0.name.required' => "The invoice field is required",
+        'invoice.*.name.string'   => "The invoice field must be a string",
+        'invoice.*.name.max'      => "The invoice field may not be greater than 30 characters",
+    ];
+
     /**
      * Initializes the component.
      * Retrieves the setting 'how_to_use_voucher' using SettingService and sets up the 'invoice' property.
@@ -38,21 +53,6 @@ class Form extends Component
         // Emit the event with default data
         $this->emit('voucherUpdated', $this->invoice);
     }
-
-    // Validation rules for the invoice property
-    protected $rules = [
-        // Each item in the invoice array must have a 'name' property that is required and a string
-        'invoice.0.name' => ['required', 'string', 'max:30'],
-        'invoice.*.name' => ['string', 'max:30'],
-    ];
-
-    // Validation messages for the invoice property
-    protected $messages = [
-        // Each item in the invoice array must have a 'name' property that is required and a string
-        'invoice.0.name.required' => "The invoice field is required",
-        'invoice.*.name.string'   => "The invoice field must be a string",
-        'invoice.*.name.max'      => "The invoice field may not be greater than 30 characters",
-    ];
 
     /**
      * Handle property updates.

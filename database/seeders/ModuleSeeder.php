@@ -208,6 +208,7 @@ class ModuleSeeder extends Seeder
                 'icon_class' => NULL,
                 'root' => 0
             ],
+            // NOT MEGALOS STANDAR IF PREMIUM ACTIVE 👇
             [
                 'id' => 18,
                 'name' => 'premium',
@@ -216,7 +217,7 @@ class ModuleSeeder extends Seeder
                 'show_to' => 3,
                 'url' => NULL,
                 'extensible' => 0,
-                'active' => 0,
+                'active' => 1,
                 'icon_class' => NULL,
                 'root' => 0
             ],

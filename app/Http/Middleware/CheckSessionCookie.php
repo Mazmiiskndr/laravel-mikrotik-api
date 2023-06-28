@@ -19,7 +19,7 @@ class CheckSessionCookie
     public function handle(Request $request, Closure $next)
     {
         // Get all queued cookies
-        $sessionKey = Cookie::get('session_key') ?? $this->getQueuedSessionKey();
+        $sessionKey = Cookie::get('session_key') ?? \App\Helpers\SessionKeyHelper::getQueuedSessionKey();
         $redisKey = '_redis_key_prefix_' . $sessionKey;
 
         // Check session cookie!
@@ -31,25 +31,5 @@ class CheckSessionCookie
 
         // Sesi or cookie valid!
         return $next($request);
-    }
-
-    protected function getQueuedSessionKey()
-    {
-        // Get all queued cookies
-        $queuedCookies = Cookie::getQueuedCookies();
-        // Initialize the $sessionKey variable as null
-        $sessionKey = null;
-
-        // Iterate through each queued cookie
-        foreach ($queuedCookies as $cookie) {
-            // Check if the current cookie's name is 'session_key'
-            if ($cookie->getName() === 'session_key') {
-                // If found, set the $sessionKey variable with the cookie's value
-                $sessionKey = $cookie->getValue();
-                break;
-            }
-        }
-        // Return the session_key value if found, or null if not found
-        return $sessionKey;
     }
 }

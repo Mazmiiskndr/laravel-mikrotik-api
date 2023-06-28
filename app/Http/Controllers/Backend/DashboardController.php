@@ -11,15 +11,9 @@ use Illuminate\Support\Facades\Cookie;
 
 class DashboardController extends Controller
 {
-    protected $nasService;
-
-    public function __construct(NasService $nasService)
-    {
-        $this->nasService = $nasService;
-    }
-
     /**
-     * index
+     * Display the dashboard.
+     * @return \Illuminate\View\View
      */
     public function index()
     {

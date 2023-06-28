@@ -72,28 +72,17 @@ class Clients extends Component
         try {
             // Update the client settings
             $clientService->updateClientSettings($settings);
-
             // Show success message
             $this->dispatchSuccessEvent('Client settings updated successfully.');
-
-            // Close the modal
-            $this->closeModal();
-
-            // Reset the form fields
-            $this->resetFields();
-
             // Emit the 'clientUpdated' event with a true status
             $this->emitUp('clientUpdated', true);
         } catch (\Throwable $th) {
             // Show error message
             $this->dispatchErrorEvent('An error occurred while updating client settings: ' . $th->getMessage());
-
+        } finally {
             // Close the modal
             $this->closeModal();
         }
-
-        // Close Modal
-        $this->closeModal();
     }
 
     /**
@@ -102,13 +91,15 @@ class Clients extends Component
      */
     public function closeModal()
     {
+        // Reset the form for the next client
+        $this->resetFields();
         // Dispatch the 'closeModal' browser event
         $this->dispatchBrowserEvent('closeModal');
     }
 
     /**
      * Retrieves the CLIENT parameters using the ClientService and stores them
-     * in the corresponding Livewire properties. Renders the edit-router view.
+     * in the corresponding Livewire properties. Renders the `edit-clients` view.
      * @param  mixed $clientService
      * @return void
      */

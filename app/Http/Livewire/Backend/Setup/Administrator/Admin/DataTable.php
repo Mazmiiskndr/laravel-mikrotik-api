@@ -33,7 +33,6 @@ class DataTable extends Component
 
     /**
      * Get data for the DataTable.
-     *
      * @param AdminService $adminService Admin service instance
      * @return mixed
      */
@@ -52,7 +51,6 @@ class DataTable extends Component
 
     /**
      * Delete an admin.
-     *
      * @param AdminService $adminService Admin service instance
      * @param string $admin_uid Admin unique identifier
      */

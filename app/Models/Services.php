@@ -63,5 +63,5 @@ class Services extends Model
         'validfrom',
     ];
 
-  public $timestamps = false;
+    public $timestamps = false;
 }

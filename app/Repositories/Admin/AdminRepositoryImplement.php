@@ -34,14 +34,20 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
      * @param string $password The admin's password.
      * @return array|bool An array containing the session key, session data and the cookie, or false if the credentials are not valid.
      */
-    public function validateAdmin($username,$password)
+    public function validateAdmin($username, $password)
     {
         try {
             // Get Admin
             $admin = $this->model->where('username', strtolower($username))->first();
 
-            // Check if admin data is found, password is correct, and admin status is active
-            if ($admin && Hash::check($password, $admin->password) && $admin->status == 1) {
+            // Check if admin data is found, password is correct
+            if ($admin && Hash::check($password, $admin->password)) {
+
+                // Check if admin status is 1
+                if ($admin->status != 1) {
+                    // Return a message if the account is no longer active
+                    return ['success' => false, 'message' => 'Your account is no longer active'];
+                }
 
                 // Prepare session data
                 $sessionData = $this->prepareSessionData($admin);
@@ -56,14 +62,15 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
                 $this->saveLoginLog($username);
 
                 // Return session key, session data, and cookie
-                return ['session_key' => $sessionKey, 'session_data' => $sessionData, 'cookie' => $cookie];
+                return ['success' => true, 'session_key' => $sessionKey, 'session_data' => $sessionData, 'cookie' => $cookie];
             }
         } catch (\Exception $e) {
             // Log the exception message for debugging and return false
-            Log::error("Error in validateAdmin: " . $e->getMessage());
+            Log::error("Error in Validate Account : " . $e->getMessage());
+            throw $e;
         }
         // Invalid login credentials or an error occurred
-        return false;
+        return ['success' => false, 'message' => 'Invalid Username or Password!.'];
     }
 
     /**
@@ -93,7 +100,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
      */
     public function getDatatables()
     {
-        // Retrieve records from the database using the model, including the related 'group' records, and sort by the latest records
+        // Retrieve records from the database using the model, including the related 'admin' records, and sort by the latest records
         $data = $this->model->with('group')->latest()->get();
 
         // Initialize DataTables and add columns to the table
@@ -106,15 +113,15 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
                 $editButton = '';
                 $deleteButton = '';
 
-                // Check if the current group is allowed to edit
+                // Check if the current admin is allowed to edit
                 if (AccessControlHelper::isAllowedToPerformAction('edit_admin')) {
-                    // If group is allowed, show edit button
+                    // If admin is allowed, show edit button
                     $editButton = '<button type="button" name="edit" class="edit btn btn-primary btn-sm" onclick="showAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-edit"></i></button>';
                 }
 
-                // Check if the current group is allowed to delete
+                // Check if the current admin is allowed to delete
                 if (AccessControlHelper::isAllowedToPerformAction('delete_admin')) {
-                    // If group is allowed, show delete button
+                    // If admin is allowed, show delete button
                     $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-trash"></i></button>';
                 }
 
@@ -247,7 +254,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
         return $admin;
     }
 
-    // -------------------------------- *** PRIVATE FUNCTIONS BELOW THIS LINE *** ----------------------------------------------------------- //
+    // 👇 **** PRIVATE FUNCTIONS **** 👇
 
     /**
      * Prepare session data.

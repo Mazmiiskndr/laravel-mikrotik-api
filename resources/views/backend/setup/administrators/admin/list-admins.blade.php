@@ -1,7 +1,3 @@
-@php
-$configData = Helper::appClasses();
-@endphp
-
 @extends('layouts/layoutMaster')
 @section('title', 'List Admins')
 @push('styles')
@@ -20,7 +16,7 @@ $configData = Helper::appClasses();
 
             @if ($permissions['isAllowedToAddNewAdmin'])
             <x-button type="button" color="facebook" data-bs-toggle="modal" data-bs-target="#createNewAdmin">
-                <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add new Admin
+                <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Admin
             </x-button>
             {{-- /Create Button for Add New Admin --}}
             @endif
@@ -36,29 +32,21 @@ $configData = Helper::appClasses();
     @endif
 
     @push('scripts')
-    <script>
-        // Hide Modal
-        window.addEventListener('hide-modal', () => {
-            $('#createNewAdmin').modal('hide');
-            $('#updateAdminModal').modal('hide');
-        });
-        window.addEventListener('show-modal', () => {
-            $('#updateAdminModal').modal('show');
-        });
-    </script>
+    <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
+    <script src="{{ asset('assets/js/backend/setup/administrator/admin/admin-management.js') }}"></script>
     @endpush
 </div>
 @endif
 
-@if($permissions['isAllowedToEditAdmin'])
+@if($permissions['isAllowedToAddNewAdmin'])
 {{-- START FORM CREATE ADMIN --}}
 @livewire('backend.setup.administrator.admin.create')
 {{-- END FORM CREATE ADMIN --}}
 @endif
-@if($permissions['isAllowedToDeleteAdmin'])
+@if($permissions['isAllowedToEditAdmin'])
 {{-- START FORM EDIT ADMIN --}}
 @livewire('backend.setup.administrator.admin.edit')
-{{-- EDITa FORM EDIT ADMIN --}}
+{{-- END FORM EDIT ADMIN --}}
 @endif
 
 @endsection

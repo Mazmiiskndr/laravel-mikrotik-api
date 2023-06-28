@@ -20,9 +20,8 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository{
     }
 
     /**
-     * getClientParameters
-     *
-     * @return void
+     * Retrieves client parameters from the settings table.
+     * @return Collection The collection of client parameters.
      */
     public function getClientParameters()
     {
@@ -32,11 +31,9 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository{
         return $settings;
     }
 
-
     /**
-     * updateClientSettings
-     *
-     * @param  mixed $settings
+     * Updates or creates client settings based on the provided parameters.
+     * @param array $settings The array of settings to update or create.
      * @return void
      */
     public function updateClientSettings($settings)

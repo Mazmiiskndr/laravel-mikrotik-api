@@ -3,7 +3,7 @@
         <div class="row">
 
             <div class="col-12 mb-3">
-                <x-select-field id="idService" label="Group" model="idService" required
+                <x-select-field id="idService" label="Service" model="idService" required
                     :options="$services->pluck('service_name', 'id')->toArray()" />
             </div>
 

@@ -120,7 +120,6 @@ class UsersData extends Component
         return view('livewire.backend.setup.config.form.users-data');
     }
 
-
     /**
      * Updates user data settings.
      * @param UserDataService $userDataService
@@ -129,44 +128,22 @@ class UsersData extends Component
     {
         // Validate the form
         $this->validate();
-
-        // Declare the public variable names
-        $variables = [
-            'id_column', 'name_column', 'email_column', 'phone_number_column', 'room_number_column', 'date_column', 'first_name_column',
-            'last_name_column', 'mac_column', 'location_column', 'gender_column', 'birthday_column', 'login_with_column', 'display_id',
-            'display_name', 'display_email', 'display_phone_number', 'display_room_number', 'display_date', 'display_first_name',
-            'display_last_name', 'display_mac', 'display_location', 'display_gender', 'display_birthday', 'display_login_with'
-        ];
-
-        // Declare the settings
-        $settings = [];
-
-        // Fill the settings array with public variable values
-        foreach ($variables as $variable) {
-            $settings[$variable] = $this->$variable;
-        }
-
+        // Get the settings from the form and store them in a variable
+        $settings = $this->getVariables();
         try {
             // Update the user Data settings
             $userDataService->updateUserDataSettings($settings);
-
             // Show Message Success
             $this->dispatchSuccessEvent('User Data settings updated successfully.');
-            // Close the modal
-            $this->closeModal();
-            // Reset the form fields
-            $this->resetFields();
             // Emit the 'userDataUpdated' event with a true status
             $this->emitUp('userDataUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating user Data settings: ' . $th->getMessage());
+        } finally {
             // Close the modal
             $this->closeModal();
         }
-
-        // Close Modal
-        $this->closeModal();
     }
 
     /**
@@ -177,10 +154,7 @@ class UsersData extends Component
      */
     public function resetForm(UserDataService $userDataService)
     {
-        /**
-         * Get the USERDATA parameters using the UserDataService
-         * @var UserData $userData
-         */
+        // Get the USERDATA parameters using the UserDataService
         $userDataParameters = $userDataService->getUserDataParameters();
         // Convert the received data into an associative array and fill it into a Livewire variable
         $this->setLivewireVariables($userDataParameters);
@@ -191,28 +165,10 @@ class UsersData extends Component
      */
     public function closeModal()
     {
+        // Reset the form for the next client
+        $this->resetFields();
         $this->emit('closeModal');
     }
-
-    /**
-     * The function resets the values of public variables to an empty string.
-     */
-    public function resetFields()
-    {
-        // Declare the public variable names
-        $variables = [
-            'id_column', 'name_column', 'email_column', 'phone_number_column', 'room_number_column', 'date_column', 'first_name_column',
-            'last_name_column', 'mac_column', 'location_column', 'gender_column', 'birthday_column', 'login_with_column', 'display_id',
-            'display_name', 'display_email', 'display_phone_number', 'display_room_number', 'display_date', 'display_first_name',
-            'display_last_name', 'display_mac', 'display_location', 'display_gender', 'display_birthday', 'display_login_with'
-        ];
-
-        // Reset the public variable values
-        foreach ($variables as $variable) {
-            $this->$variable = '';
-        }
-    }
-
 
     /**
      * Sets Livewire variables based on user data parameters.
@@ -227,4 +183,54 @@ class UsersData extends Component
             }
         }
     }
+
+    /**
+     * Returns an array of public variable names.
+     *
+     * @return array The array containing the names of all public variables
+     */
+    public function getVariableNames()
+    {
+        return [
+            'id_column', 'name_column', 'email_column', 'phone_number_column', 'room_number_column', 'date_column', 'first_name_column',
+            'last_name_column', 'mac_column', 'location_column', 'gender_column', 'birthday_column', 'login_with_column', 'display_id',
+            'display_name', 'display_email', 'display_phone_number', 'display_room_number', 'display_date', 'display_first_name',
+            'display_last_name', 'display_mac', 'display_location', 'display_gender', 'display_birthday', 'display_login_with'
+        ];
+    }
+
+    /**
+     * The function resets the values of public variables to an empty string.
+     */
+    public function resetFields()
+    {
+        // Retrieve the public variable names
+        $variables = $this->getVariableNames();
+
+        // Reset the public variable values
+        foreach ($variables as $variable) {
+            $this->$variable = '';
+        }
+    }
+
+    /**
+     * Retrieves all public variable names and their current values.
+     * @return array The array containing the names and values of all public variables
+     */
+    public function getVariables()
+    {
+        // Retrieve the public variable names
+        $variables = $this->getVariableNames();
+
+        // Declare the settings
+        $settings = [];
+
+        // Fill the settings array with public variable values
+        foreach ($variables as $variable) {
+            $settings[$variable] = $this->$variable;
+        }
+
+        return $settings;
+    }
+
 }

@@ -1,7 +1,3 @@
-@php
-$configData = Helper::appClasses();
-@endphp
-
 @extends('layouts/layoutMaster')
 
 @section('title', 'Dashboard')
@@ -27,7 +23,7 @@ $configData = Helper::appClasses();
             </li>
         </ul>
 
-        <div class="tab-content" style="background-color: transparent;padding: 0;">
+        <div class="tab-content" style="background-color: transparent;padding: 0;border: none !important">
             <div class="tab-pane fade show active" id="tabMonitoring" role="tabpanel">
                 @if($isAllowedToAdministrator)
                 @livewire('backend.dashboard.list-statistic')

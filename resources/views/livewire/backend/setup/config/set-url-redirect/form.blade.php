@@ -4,7 +4,7 @@
 
             <div class="col-12">
                 <x-input-field id="url" label="URL After Login" model="url" placeholder="https://www.example.com/.."
-                    required />
+                    required tooltip="User will be redirected to this URL after sucessful log in to hotspot." />
             </div>
 
             <div class="mt-3">

@@ -1,7 +1,3 @@
-@php
-$configData = Helper::appClasses();
-@endphp
-
 @extends('layouts/layoutMaster')
 @section('title', 'List Configs')
 @push('styles')
@@ -40,10 +36,13 @@ $configData = Helper::appClasses();
             </div>
         </div>
     </div>
-
-
 </div>
 
+@push('scripts')
+<script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
+<script src="{{ asset('assets/js/backend/setup/config/hotel-room/hotel-room-management.js') }}"></script>
+@endpush
 
 @endif
+
 @endsection

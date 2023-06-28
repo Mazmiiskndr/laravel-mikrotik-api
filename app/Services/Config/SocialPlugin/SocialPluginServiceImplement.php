@@ -4,58 +4,53 @@ namespace App\Services\Config\SocialPlugin;
 
 use LaravelEasyRepository\Service;
 use App\Repositories\Config\SocialPlugin\SocialPluginRepository;
-use Illuminate\Support\Facades\Log;
 
 class SocialPluginServiceImplement extends Service implements SocialPluginService
 {
-
-    /**
-     * don't change $this->mainRepository variable name
-     * because used in extends service class
-     */
     protected $mainRepository;
-
+    /**
+     * Constructor.
+     * @param SocialPluginRepository $mainRepository The main repository for settings.
+     */
     public function __construct(SocialPluginRepository $mainRepository)
     {
         $this->mainRepository = $mainRepository;
     }
 
     /**
-     * This function tries to retrieve social plugin parameters from the main repository and logs any
-     * errors.
-     *
-     * @return The `getSocialPluginParameters()` function is returning the result of calling the
-     * `getSocialPluginParameters()` method on the `` object. If an exception is caught,
-     * the function logs the error message using the `Log::debug()` method. The return value of the
-     * function depends on the implementation of the `getSocialPluginParameters()` method in the
-     * `` object.
+     * Handles the method call to the repository and manages exceptions.
+     * @param string $method The method to call.
+     * @param array $parameters The parameters to pass to the method.
+     * @throws \Exception If there is an error when calling the method.
+     * @return mixed The result of the method call.
      */
-    public function getSocialPluginParameters()
+    private function handleRepositoryCall(string $method, array $parameters = [])
     {
         try {
-            return $this->mainRepository->getSocialPluginParameters();
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
+            return $this->mainRepository->{$method}(...$parameters);
+        } catch (\Exception $exception) {
+            $errorMessage = "Error when calling $method: " . $exception->getMessage();
+            throw $exception;
         }
     }
 
     /**
-     * This function updates social plugin settings and logs any errors that occur.
-     *
-     * @param settings The parameter `` is an array containing the updated settings for a
-     * social plugin. The function `updateSocialPluginSettings` is responsible for updating the social
-     * plugin settings in the main repository with the new values provided in the `` array. If
-     * the update is successful, the function returns the updated
-     *
-     * @return the result of calling the `updateSocialPluginSettings` method on the `mainRepository`
-     * object with the `` parameter.
+     * Retrieves the parameters for the social plugin.
+     * @return mixed Returns a collection of setting records which contains setting name and its value.
+     * @throws \Exception if an error occurs during the repository method call.
+     */
+    public function getSocialPluginParameters()
+    {
+        return $this->handleRepositoryCall('getSocialPluginParameters');
+    }
+
+    /**
+     * Updates or creates social plugin settings based on the given data.
+     * @param array $settings The settings to update or create.
+     * @throws \Exception if an error occurs during the repository method call.
      */
     public function updateSocialPluginSettings($settings)
     {
-        try {
-            return $this->mainRepository->updateSocialPluginSettings($settings);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-        }
+        return $this->handleRepositoryCall('updateSocialPluginSettings', [$settings]);
     }
 }

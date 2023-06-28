@@ -40,17 +40,17 @@ class PageSeeder extends Seeder
                 'id' => 3,
                 'page' => 'add_new_client',
                 'title' => 'Add New Client',
-                'url' => 'clients/pg/add_new_client',
+                'url' => '#',
                 'module_id' => 3,
                 'allowed_groups' => '1,2',
-                'show_menu' => 1,
+                'show_menu' => 0,
                 'show_to' => NULL
             ],
             [
                 'id' => 4,
                 'page' => 'edit_client',
                 'title' => 'Edit Client',
-                'url' => 'clients/pg/edit_client',
+                'url' => '#',
                 'module_id' => 3,
                 'allowed_groups' => '1,2',
                 'show_menu' => 0,
@@ -60,7 +60,7 @@ class PageSeeder extends Seeder
                 'id' => 5,
                 'page' => 'delete_client',
                 'title' => 'Delete Client',
-                'url' => 'clients/pg/delete_client',
+                'url' => '#',
                 'module_id' => 3,
                 'allowed_groups' => '1,2',
                 'show_menu' => 0,
@@ -80,7 +80,7 @@ class PageSeeder extends Seeder
                 'id' => 8,
                 'page' => 'add_new_service',
                 'title' => 'Add New Service',
-                'url' => 'services/pg/add_new_service',
+                'url' => 'services/add-new-service',
                 'module_id' => 4,
                 'allowed_groups' => '1,2',
                 'show_menu' => 1,
@@ -90,7 +90,7 @@ class PageSeeder extends Seeder
                 'id' => 9,
                 'page' => 'edit_service',
                 'title' => 'Edit Service',
-                'url' => 'services/pg/edit_service',
+                'url' => 'services/edit-service',
                 'module_id' => 4,
                 'allowed_groups' => '1,2',
                 'show_menu' => 0,
@@ -134,7 +134,7 @@ class PageSeeder extends Seeder
                 'url' => 'setup/admin/list-groups',
                 'module_id' => 10,
                 'allowed_groups' => '1',
-                'show_menu' => 0,
+                'show_menu' => 1,
                 'show_to' => NULL
             ],
             // *** TODO: ***
@@ -551,12 +551,13 @@ class PageSeeder extends Seeder
                 'show_menu' => 0,
                 'show_to' => NULL
             ],
+            // NOT MEGALOS STANDAR IF PREMIUM SERVICES AND EDIT SERVICES ACTIVE 👇
             [
                 'id' => 68,
                 'page' => 'premium_services',
                 'title' => 'Premium Services',
-                'url' => 'services/pg/premium_services',
-                'module_id' => 18,
+                'url' => 'services/premium-services',
+                'module_id' => 4,
                 'allowed_groups' => '1,2',
                 'show_menu' => 1,
                 'show_to' => 4
@@ -565,8 +566,8 @@ class PageSeeder extends Seeder
                 'id' => 69,
                 'page' => 'edit_premium_service',
                 'title' => 'Edit Premium Service',
-                'url' => 'services/pg/edit_premium_service',
-                'module_id' => 18,
+                'url' => 'services/edit-premium-services',
+                'module_id' => 4,
                 'allowed_groups' => '1,2',
                 'show_menu' => 0,
                 'show_to' => 4

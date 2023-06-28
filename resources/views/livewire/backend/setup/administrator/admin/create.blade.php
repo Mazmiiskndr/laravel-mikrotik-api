@@ -5,18 +5,18 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalCenterTitle">Add New Admin</h5>
-                        <x-button color="close" dismiss="true" click="closeModal"/>
+                    <x-button color="close" dismiss="true" click="closeModal" />
                 </div>
                 <form wire:submit.prevent="storeNewAdmin" method="POST">
                     <div class="modal-body">
 
                         {{-- FORM INPUT CHOOSE GROUP AND USERNAME --}}
                         <div class="row">
-                            <div class="col">
+                            <div class="col-lg-6 col-12">
                                 <x-select-field id="groupId" label="Group" model="groupId" required
                                     :options="$groups->pluck('name', 'id')->toArray()" />
                             </div>
-                            <div class="col">
+                            <div class="col-lg-6 col-12">
                                 <x-input-field id="username" label="Username" model="username"
                                     placeholder="Enter a Username.." required />
                             </div>
@@ -24,17 +24,18 @@
 
                         {{-- FORM INPUT PASSWORD, CONFIRM PASSWORD AND STATUS --}}
                         <div class="row mt-3">
-                            <div class="col">
+                            <div class="col-lg-4 col-6">
                                 <x-input-field type="password" id="password" label="Password" model="password"
                                     placeholder="Enter a Password.." required />
                             </div>
-                            <div class="col">
+                            <div class="col-lg-4 col-6">
                                 <x-input-field type="password" id="confirmPassword" label="Confirm Password"
                                     model="password_confirmation" placeholder="Enter a Confirm Password.." required />
                             </div>
-                            <div class="col">
+                            <div class="col-lg-4 col-12">
                                 <x-select-field id="status" label="Status" model="status" required
-                                    :options="['1' => 'Active', '0' => 'Not Active']" />
+                                    :options="['1' => 'Active', '0' => 'Not Active']"
+                                    tooltip="Not active administrator cannot log in to Megalos." />
                             </div>
                         </div>
 
@@ -46,11 +47,11 @@
 
                         {{-- FORM INPUT FULL NAME AND EMAIL ADDRESS --}}
                         <div class="row">
-                            <div class="col">
+                            <div class="col-lg-6 col-12">
                                 <x-input-field id="fullName" label="Full Name" model="fullName"
                                     placeholder="Enter a Full Name.." required />
                             </div>
-                            <div class="col">
+                            <div class="col-lg-6 col-12">
                                 <x-input-field type="email" id="emailAddress" label="Email Address" model="emailAddress"
                                     placeholder="Enter a Email Address.." required />
                             </div>

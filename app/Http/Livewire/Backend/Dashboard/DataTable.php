@@ -29,20 +29,31 @@ class DataTable extends Component
      */
     public function getDatatable(MikrotikApiService $mikrotikApiService)
     {
-        // Retrieve the Mikrotik configuration settings
-        $config = MikrotikConfigHelper::getMikrotikConfig();
+        try {
+            // Retrieve the Mikrotik configuration settings
+            $config = MikrotikConfigHelper::getMikrotikConfig();
 
-        // Load the data from the Mikrotik API service.
-        $leasesData = $mikrotikApiService->getDhcpLeasesDatatables($config['ip'], $config['username'], $config['password']);
+            // Load the data from the Mikrotik API service.
+            $leasesData = $mikrotikApiService->getDhcpLeasesDatatables($config['ip'], $config['username'], $config['password']);
 
-        // If the leases data is empty, emit a 'leasesDataEmpty' Livewire event and return empty data structure
-        if (empty($leasesData)) {
-            $this->emit('leasesDataEmpty');
-            return response()->json(['data' => []]); // Return empty data structure
+            // If the leases data is empty, emit a 'leasesDataEmpty' Livewire event and return empty data structure
+            if (empty($leasesData)) {
+                $this->emit('leasesDataEmpty');
+                return response()->json(['data' => []]); // Return empty data structure
+            }
+
+            // If the leases data is not empty, return it
+            return $leasesData;
+        } catch (\Exception $e) {
+            // Handle error and send a valid DataTables response
+            return response()->json([
+                'draw' => intval(request()->get('draw')),
+                'recordsTotal' => 0,
+                'recordsFiltered' => 0,
+                'data' => []
+            ]);
         }
-
-        // If the leases data is not empty, return it
-        return $leasesData;
     }
+
 
 }

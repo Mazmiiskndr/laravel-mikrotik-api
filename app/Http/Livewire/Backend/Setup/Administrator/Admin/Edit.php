@@ -121,7 +121,6 @@ class Edit extends Component
 
     /**
      * Update admin details.
-     *
      * @param  AdminService $adminService
      * @return void
      */
@@ -145,30 +144,25 @@ class Edit extends Component
 
             // Show Message Success
             $this->dispatchSuccessEvent('Admin successfully updated.');
-            // Close the modal
-            $this->closeModal();
-            // Reset the form fields
-            $this->resetFields();
             // Emit the 'adminUpdated' event with a true status
             $this->emit('adminUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating admin: ' . $th->getMessage());
-            // Close the modal
+        } finally {
+            // Ensure the modal is closed
             $this->closeModal();
         }
-
-        // Close Modal
-        $this->closeModal();
     }
 
     /**
      * Close the Modal
-     *
      * @return void
      */
     public function closeModal()
     {
+        // Reset the form for the next client
+        $this->resetFields();
         $this->dispatchBrowserEvent('hide-modal');
     }
 

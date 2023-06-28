@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('client_uid')->unique();
             $table->unsignedBigInteger('service_id');
-            $table->string('customer_id', 50);
+            $table->string('customer_id', 50)->nullable();
             $table->string('username', 50);
             $table->string('password', 100);
             $table->tinyInteger('enable_user')->default(0);

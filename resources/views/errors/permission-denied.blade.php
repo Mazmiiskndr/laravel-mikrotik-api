@@ -32,17 +32,17 @@
             <p class="mb-4 mx-2">Oops! 😖 You do not have permission to access this page.</p>
             <a href="#" class="btn btn-primary mb-4" onclick="javascript:window.history.back(-1);return false;">
                 Back</a>
-            <div class="mt-4">
+            {{-- <div class="mt-4">
                 <img src="{{ asset('assets/img/illustrations/page-misc-error.png') }}" alt="page-misc-error" width="225"
                     class="img-fluid" />
-            </div>
+            </div> --}}
         </div>
     </div>
-    <div class="container-fluid misc-bg-wrapper">
+    {{-- <div class="container-fluid misc-bg-wrapper">
         <img src="{{ asset('assets/img/illustrations/bg-shape-image-light.png') }}" alt="page-misc-error"
             data-app-light-img="illustrations/bg-shape-image-light.png"
             data-app-dark-img="illustrations/bg-shape-image-dark.png" />
-    </div>
+    </div> --}}
     <!-- /Error -->
     <!-- Page JS -->
 </body>

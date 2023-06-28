@@ -22,14 +22,14 @@ class HotelRooms extends Component
     // Validation rules
     protected $rules = [
         // Required fields
-        'hmsConnect' => 'required|numeric|min:1|max:1',
+        'hmsConnect' => 'required|numeric|min:0|max:1',
     ];
 
     // Validation messages
     protected $messages = [
         'hmsConnect.required' => 'HMS Connect cannot be empty!',
         'hmsConnect.numeric' => 'HMS Connect must be numeric!',
-        'hmsConnect.min' => 'HMS Connect must have a minimum length of 1!',
+        'hmsConnect.min' => 'HMS Connect must have a minimum length of 0!',
         'hmsConnect.max' => 'HMS Connect must have a maximum length of 1!',
     ];
 
@@ -70,25 +70,17 @@ class HotelRooms extends Component
         try {
             // Update the HOTEL ROOM settings
             $hotelRoomService->updateHotelRoomSettings($settings);
-
             // Show Message Success
             $this->dispatchSuccessEvent('Hotel Room settings updated successfully.');
-            // Close the modal
-            $this->closeModal();
-            // Reset the form fields
-            $this->resetFields();
-
             // Emit the 'hotelRoomUpdated' event with a true status
             $this->emitUp('hotelRoomUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating hotel room settings: ' . $th->getMessage());
+        } finally {
             // Close the modal
             $this->closeModal();
         }
-
-        // Close Modal
-        $this->closeModal();
     }
 
     /**
@@ -97,6 +89,8 @@ class HotelRooms extends Component
      */
     public function closeModal()
     {
+        // Reset the form for the next client
+        $this->resetFields();
         $this->emit('closeModal');
     }
 
