@@ -90,14 +90,12 @@ class ActionButtonsBuilder
     }
 
     /**
-     * Build the HTML string for the edit and delete buttons according to the given permissions and identity.
+     * Build the HTML string for the edit button according to the given permissions and identity.
      * @return string
      */
-    public function build()
+    private function buildEditButton()
     {
-        // Initialize empty strings for the edit and delete buttons
         $editButton = '';
-        $deleteButton = '';
 
         // Check if the current user is allowed to perform the edit action
         if ($this->editPermission && AccessControlHelper::isAllowedToPerformAction($this->editPermission)) {
@@ -110,6 +108,17 @@ class ActionButtonsBuilder
             }
         }
 
+        return $editButton;
+    }
+
+    /**
+     * Build the HTML string for the delete button according to the given permissions and identity.
+     * @return string
+     */
+    private function buildDeleteButton()
+    {
+        $deleteButton = '';
+
         // Check if the delete permission is given, the current user is allowed to perform the delete action, and the service is not the default service (ID != 1)
         if ($this->deletePermission && AccessControlHelper::isAllowedToPerformAction($this->deletePermission)) {
             // Check if it's not the case of delete_service permission with identity 1
@@ -119,7 +128,17 @@ class ActionButtonsBuilder
             }
         }
 
-        // Return the action buttons HTML
-        return $editButton . $deleteButton;
+        return $deleteButton;
     }
+
+    /**
+     * Build the HTML string for the edit and delete buttons according to the given permissions and identity.
+     * @return string
+     */
+    public function build()
+    {
+        // Generate the action buttons HTML
+        return $this->buildEditButton() . $this->buildDeleteButton();
+    }
+
 }
