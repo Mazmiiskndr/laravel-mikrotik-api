@@ -2,17 +2,17 @@
 
 namespace App\Repositories\Group;
 
-use App\Helpers\AccessControlHelper;
+use App\Helpers\ActionButtonsBuilder;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Group;
 use App\Models\Module;
 use App\Models\Page;
+use App\Traits\DataTablesTrait;
 use Illuminate\Support\Facades\Log;
-use Yajra\DataTables\Facades\DataTables;
 
 class GroupRepositoryImplement extends Eloquent implements GroupRepository
 {
-
+    use DataTablesTrait;
     /**
      * Model class to be used in this repository for the common methods inside Eloquent
      * Don't remove or change $this->model variable name
@@ -32,33 +32,22 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository
     public function getDatatables()
     {
         // Retrieve records from the database using the model, sort by the latest records
-        $data = $this->model->select('groups.*')->latest()->get();
+        $data = $this->model->latest()->get();
 
-        // Initialize DataTables and add columns to the table
-        return Datatables::of($data)
-            ->addIndexColumn()
-            ->addColumn('action', function ($data) {
-                $editButton = '';
-                $deleteButton = '';
+        $editRoute = 'backend.setup.admin.edit-group';
+        $editPermission = 'edit_group';
+        $onclickEdit = 'showGroup';
+        $editButton = 'link';
 
-                // Check if the current group is allowed to edit
-                if (AccessControlHelper::isAllowedToPerformAction('edit_group')) {
-                    // If group is allowed, show edit button
-                    $editButton = '<a href="' . route('backend.setup.admin.edit-group', $data->id) . '" class="btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</a>';
+        // Format the data for DataTables
+        return $this->formatDataTablesResponse(
+            $data,
+            [
+                'action' => function ($data) use ($editRoute,$editPermission, $editButton, $onclickEdit) {
+                    return $this->getActionButtons($data, $editRoute, $editPermission, $editButton, $onclickEdit);
                 }
-
-                // TODO: Delete Group
-                // Check if the current group is allowed to delete
-                // if (AccessControlHelper::isAllowedToPerformAction('delete_group')) {
-                //     // If group is allowed, show delete button
-                //     $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteGroup(\'' . $data->id . '\')"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
-                // }
-
-                return $editButton . $deleteButton ?: null;
-            })
-
-            ->rawColumns(['action'])
-            ->make(true);
+            ]
+        );
     }
 
     /**
@@ -83,7 +72,6 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository
             ->get();
         return $data;
     }
-
 
     /**
      * Retrieves data from 'groups' and 'pages' tables based on group ID.
@@ -234,5 +222,27 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository
             // Return the exception
             return $e;
         }
+    }
+
+    // 👇 **** PRIVATE FUNCTIONS **** 👇
+
+    /**
+     * Generate action buttons for the DataTables row.
+     * @param $data
+     * @param $editRoute
+     * @param $editPermission
+     * @param $editButton
+     * @param $onclickEdit
+     * @return string HTML string for the action buttons
+     */
+    private function getActionButtons($data, $editRoute, $editPermission, $editButton, $onclickEdit)
+    {
+        return (new ActionButtonsBuilder())
+            ->setEditRoute($editRoute)
+            ->setEditPermission($editPermission)
+            ->setOnclickEdit($onclickEdit)
+            ->setType($editButton)
+            ->setIdentity($data->id)
+            ->build();
     }
 }
