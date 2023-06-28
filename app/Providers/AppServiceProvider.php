@@ -19,7 +19,8 @@ class AppServiceProvider extends ServiceProvider
         \App\Repositories\Config\HotelRoom\HotelRoomRepository::class           => \App\Repositories\Config\HotelRoom\HotelRoomRepositoryImplement::class,
         \App\Repositories\Config\UserData\UserDataRepository::class             => \App\Repositories\Config\UserData\UserDataRepositoryImplement::class,
         \App\Repositories\Config\SocialPlugin\SocialPluginRepository::class     => \App\Repositories\Config\SocialPlugin\SocialPluginRepositoryImplement::class,
-        \App\Repositories\Config\VoucherPrint\VoucherPrintRepository::class     => \App\Repositories\Config\VoucherPrint\VoucherPrintRepositoryImplement::class
+        \App\Repositories\Config\VoucherPrint\VoucherPrintRepository::class     => \App\Repositories\Config\VoucherPrint\VoucherPrintRepositoryImplement::class,
+        \App\Repositories\Client\Voucher\VoucherRepository::class                => \App\Repositories\Client\Voucher\VoucherRepositoryImplement::class
     ];
 
     /**

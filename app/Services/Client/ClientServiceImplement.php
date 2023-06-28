@@ -37,13 +37,14 @@ class ClientServiceImplement extends Service implements ClientService
 
     /**
      * Retrieve client records and associated service names.
+     * Conditionally applies a WHERE clause if provided.
      * @param array|null $conditions
+     * @param array|null $columns
      * @return array
-     * @throws Exception if an error occurs during the repository method call.
      */
-    public function getClientWithService($conditions = null)
+    public function getClientWithService($conditions = null, $columns = ['*'])
     {
-        return $this->handleRepositoryCall('getClientWithService', [$conditions]);
+        return $this->handleRepositoryCall('getClientWithService', [$conditions,$columns]);
     }
 
     /**
