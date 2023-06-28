@@ -5,13 +5,14 @@ namespace App\Repositories\Report;
 use App\Helpers\AccessControlHelper;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\RadAcct;
+use App\Traits\DataTablesTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class ReportRepositoryImplement extends Eloquent implements ReportRepository
 {
-
+    use DataTablesTrait;
     /**
      * Model class to be used in this repository for the common methods inside Eloquent
      * Don't remove or change $this->model variable name
@@ -80,26 +81,27 @@ class ReportRepositoryImplement extends Eloquent implements ReportRepository
         // Retrieve records from the database using getAllRadAcct function
         $data = $this->getAllRadAcct()['activeSessions'];
 
-        // Initialize DataTables and add columns to the table
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->addColumn('firstuse', function ($data) {
-                return $data->firsttime;
-            })
-            ->addColumn('sessionstart', function ($data) {
-                return $data->starttime;
-            })
-            ->addColumn('onlinetime', function ($data) {
-                return gmdate('j\d H:i:s', $data->oltime);
-            })
-            ->addColumn('ipaddress', function ($data) {
-                return $data->ipaddress;
-            })
-            ->addColumn('macaddress', function ($data) {
-                return $data->macaddress;
-            })
-            ->rawColumns(['firstuse', 'sessionstart', 'onlinetime', 'ipaddress', 'macaddress'])
-            ->make(true);
+        // Format the data for DataTables
+        return $this->formatDataTablesResponse(
+            $data,
+            [
+                'firstuse' => function ($data) {
+                    return $data->firsttime;
+                },
+                'sessionstart' => function ($data) {
+                    return $data->starttime;
+                },
+                'onlinetime' => function ($data) {
+                    return gmdate('j\d H:i:s', $data->oltime);
+                },
+                'ipaddress' => function ($data) {
+                    return $data->ipaddress;
+                },
+                'macaddress' => function ($data) {
+                    return $data->macaddress;
+                },
+            ]
+        );
     }
 
     /**

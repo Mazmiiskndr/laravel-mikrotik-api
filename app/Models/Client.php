@@ -42,8 +42,6 @@ class Client extends Model
         'validfrom',
     ];
 
-
-
     /**
      * boot
      *
@@ -56,5 +54,10 @@ class Client extends Model
         static::creating(function ($model) {
             $model->client_uid = str()->uuid();
         });
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(Services::class, 'service_id','id');
     }
 }

@@ -2,17 +2,19 @@
 
 namespace App\Repositories\ServiceMegalos;
 
-use App\Helpers\AccessControlHelper;
+use App\Helpers\ActionButtonsBuilder;
 use App\Models\RadGroupCheck;
 use App\Models\RadGroupReply;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Services;
+use App\Traits\DataTablesTrait;
 use Exception;
 use Illuminate\Support\Facades\Log;
-use Yajra\DataTables\Facades\DataTables;
 
 class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegalosRepository
 {
+    // For using DataTablesTrait and ActionButtonDatatablesTrait methods
+    use DataTablesTrait;
 
     /**
      * Model class to be used in this repository for the common methods inside Eloquent
@@ -31,88 +33,77 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
     }
 
     /**
-     * Retrieves records from a database, initializes DataTables, adds columns to DataTable.
-     * @return DataTables Yajra JSON response.
+     * Retrieves non-premium service records from the database, formats and initializes them for DataTables.
+     * @return array An array of the formatted data for DataTables.
      */
     public function getDatatables()
     {
-        // Retrieve records from the database using the model, including the related 'services' records, and sort by the latest records
-        $data = $this->model->where('for_purchase', 0)->select('id', 'service_name', 'cost', 'currency', 'idle_timeout', 'ul_rate', 'dl_rate')->orderBy('id', 'DESC')->get();
+        // Retrieve and format the service data
+        $data = $this->getServiceData(0, ['id', 'service_name', 'cost', 'currency', 'idle_timeout', 'ul_rate', 'dl_rate']);
+        $editRoute = 'backend.services.edit-service';
+        $editPermission = 'edit_service';
+        $deletePermission = 'delete_service';
+        $onclickDelete = 'showAdmin';
+        $editButton = 'link';
 
-        // Initialize DataTables and add columns to the table
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->addColumn('currency_cost', function ($data) {
-                return $data->currency . ' ' . number_format($data->cost, 2);
-            })
-            ->addColumn('idle_timeout', function ($data) {
-                return $data->idle_timeout . ' Seconds';
-            })
-            ->addColumn('upload_rate', function ($data) {
-                return $data->ul_rate . ' Kbps';
-            })
-            ->addColumn('download_rate', function ($data) {
-                return $data->dl_rate . ' Kbps';
-            })
-            ->addColumn('action', function ($data) {
-                $editButton = '';
-                $deleteButton = '';
-
-                // Check if the current service is allowed to edit
-                if (AccessControlHelper::isAllowedToPerformAction('edit_service')) {
-                    // If service is allowed, show edit button
-                    $editButton = '<a href="' . route('backend.services.edit-service', $data->id) . '" class="edit btn btn-primary btn-sm" > <i class="fas fa-edit"></i></a>';
+        // Format the data for DataTables
+        return $this->formatDataTablesResponse(
+            $data,
+            [
+                'currency_cost' => function ($data) {
+                    return $data->currency . ' ' . number_format($data->cost, 2);
+                },
+                'idle_timeout' => function ($data) {
+                    return $data->idle_timeout . ' Seconds';
+                },
+                'upload_rate' => function ($data) {
+                    return $data->ul_rate . ' Kbps';
+                },
+                'download_rate' => function ($data) {
+                    return $data->dl_rate . ' Kbps';
+                },
+                'action' => function ($data) use ($editRoute, $editPermission, $deletePermission, $editButton, $onclickDelete) {
+                    $actionButtonBuilder = $this->getActionButtonBuilder($editRoute, $editPermission, $editButton, $data);
+                    return $actionButtonBuilder
+                    ->setDeletePermission($deletePermission)
+                    ->setOnclickDelete($onclickDelete)
+                    ->build();
                 }
-                // If the current service is not the DefaultService
-                if($data->id != 1){
-                    // Check if the current service is allowed to delete
-                    if (AccessControlHelper::isAllowedToPerformAction('delete_service')) {
-                        // If service is allowed, show delete button
-                        $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteService(\'' . $data->id . '\')"> <i class="fas fa-trash"></i></button>';
-                    }
-                }
-
-                return $editButton . $deleteButton;
-            })
-            ->rawColumns(['action'])
-            ->make(true);
+            ]
+        );
     }
 
     /**
-     * Retrieves records from a database, initializes DataTables Premium Services, adds columns to DataTable.
-     * @return DataTables Yajra JSON response.
+     * Retrieves premium service records from the database, formats and initializes them for DataTables.
+     * @return array An array of the formatted data for DataTables.
      */
     public function getPremiumServicesDatatables()
     {
-        // Retrieve records from the database using the model, including the related 'services' records, and sort by the latest records
-        $data = $this->model->where('for_purchase', 1)->select('id', 'service_name', 'ul_rate', 'dl_rate', 'purchase_duration','unit_time_purchase')->orderBy('id', 'DESC')->get();
+        // Retrieve and format the service data
+        $data = $this->getServiceData(1, ['id', 'service_name', 'ul_rate', 'dl_rate', 'purchase_duration', 'unit_time_purchase']);
+        $editRoute = 'backend.services.edit-premium-service';
+        $editPermission = 'edit_premium_service';
+        $editButton = 'link';
 
-        // Initialize DataTables and add columns to the table
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->addColumn('upload_rate', function ($data) {
-                return $data->ul_rate . ' Kbps';
-            })
-            ->addColumn('download_rate', function ($data) {
-                return $data->dl_rate . ' Kbps';
-            })
-            ->addColumn('purchase_duration', function ($data) {
-                return $data->purchase_duration . ' ' . ucwords($data->unit_time_purchase);
-            })
-            ->addColumn('action', function ($data) {
-                $editButton = '';
-                $deleteButton = '';
-
-                // Check if the current service is allowed to edit
-                if (AccessControlHelper::isAllowedToPerformAction('edit_premium_service')) {
-                    // If service is allowed, show edit button
-                    $editButton = '<a href="' . route('backend.services.edit-premium-service', $data->id) . '" class="edit btn btn-primary btn-sm" > <i class="fas fa-edit"></i></a>';
+        // Format the data for DataTables
+        return $this->formatDataTablesResponse(
+            $data,
+            [
+                'upload_rate' => function ($data) {
+                    return $data->ul_rate . ' Kbps';
+                },
+                'download_rate' => function ($data) {
+                    return $data->dl_rate . ' Kbps';
+                },
+                'purchase_duration' => function ($data) {
+                    return $data->purchase_duration . ' ' . ucwords($data->unit_time_purchase);
+                },
+                'action' => function ($data) use ($editRoute, $editPermission, $editButton) {
+                    $actionButtonBuilder = $this->getActionButtonBuilder($editRoute, $editPermission, $editButton, $data);
+                    return $actionButtonBuilder->build();
                 }
-
-                return $editButton . $deleteButton;
-            })
-            ->rawColumns(['action'])
-            ->make(true);
+            ]
+        );
     }
 
     /**
@@ -388,6 +379,38 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
     }
 
     // ***** 👇 PRIVATE FUNCTIONS 👇 *****
+
+    /**
+     * Generate an ActionButtonsBuilder instance with common settings.
+     * @param $editRoute
+     * @param $editPermission
+     * @param $editButton
+     * @param $data
+     * @return ActionButtonsBuilder The configured ActionButtonsBuilder instance.
+     */
+    private function getActionButtonBuilder($editRoute, $editPermission, $editButton, $data)
+    {
+        return (new ActionButtonsBuilder())
+        ->setEditRoute($editRoute)
+        ->setEditPermission($editPermission)
+        ->setType($editButton)
+            ->setIdentity($data->id);
+    }
+
+    /**
+     * Get the service data from the database.
+     * @param  int   $forPurchase
+     * @param  array $selectFields
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    private function getServiceData(int $forPurchase, array $selectFields): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->model
+            ->where('for_purchase', $forPurchase)
+            ->select($selectFields)
+            ->orderBy('id', 'DESC')
+            ->get();
+    }
 
     /**
      * Define logic for setting idle timeout.
