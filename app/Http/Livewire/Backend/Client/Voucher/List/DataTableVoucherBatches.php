@@ -21,7 +21,7 @@ class DataTableVoucherBatches extends Component
     ];
 
     /**
-     * Render the component `data-table`.
+     * Render the component `data-table-voucher-batches`.
      * @return \Illuminate\View\View
      */
     public function render()
@@ -31,7 +31,7 @@ class DataTableVoucherBatches extends Component
 
     /**
      * Get data `list-voucher-batches` for the DataTable.
-     * @param VoucherService $voucherService Client service instance
+     * @param VoucherService $voucherService Voucher service instance
      * @return mixed
      */
     public function getDataTable(VoucherService $voucherService)

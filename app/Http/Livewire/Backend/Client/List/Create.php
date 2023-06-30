@@ -70,18 +70,8 @@ class Create extends Component
         // Validate the form data before submit
         $this->validate($clientService->getRules(), $clientService->getMessages());
 
-        // List of properties to include in the new client
-        $properties = [
-            'idService', 'username', 'password', 'simultaneousUse', 'validFrom', 'validTo',
-            'identificationNo', 'emailAddress', 'firstName', 'lastName', 'placeOfBirth',
-            'dateOfBirth', 'phone', 'address', 'notes'
-        ];
-
-        // Collect property values into an associative array
-        $newClient = array_reduce($properties, function ($carry, $property) {
-            $carry[$property] = $this->$property;
-            return $carry;
-        }, []);
+        // List of properties to include in the client
+        $newClient = $this->prepareClientData();
 
         try {
             // Attempt to create the new client
@@ -91,13 +81,8 @@ class Create extends Component
             if ($client === null) {
                 throw new \Exception('Failed to create the client');
             }
-
             // Notify the frontend of success
             $this->dispatchSuccessEvent('Client was created successfully.');
-
-            // Reset the form for the next client
-            $this->resetFields();
-
             // Let other components know that an client was created
             $this->emit('clientCreated', true);
         } catch (\Throwable $th) {
@@ -130,5 +115,25 @@ class Create extends Component
         $this->phone = null;
         $this->address = null;
         $this->notes = null;
+    }
+
+    /**
+     * Prepares the client data for the update operation.
+     * @return array
+     */
+    protected function prepareClientData(): array
+    {
+        // List of properties to include in the new client
+        $properties = [
+            'idService', 'username', 'password', 'simultaneousUse', 'validFrom', 'validTo',
+            'identificationNo', 'emailAddress', 'firstName', 'lastName', 'placeOfBirth',
+            'dateOfBirth', 'phone', 'address', 'notes'
+        ];
+
+        // Collect property values into an associative array
+        return array_reduce($properties, function ($carry, $property) {
+            $carry[$property] = $this->$property;
+            return $carry;
+        }, []);
     }
 }
