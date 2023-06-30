@@ -16,6 +16,18 @@
 
             <div>
                 {{-- TODO: BUTTON DISCONNECT AND BUTTON BLOCK MAC ADDRESS --}}
+                {{-- /Start Button for Disconnect --}}
+                <x-button type="button" color="youtube btn-sm">
+                    <i class="tf-icons fas fa-power-off ti-xs me-1"></i>&nbsp; Disconnect
+                </x-button>
+                {{-- /End Button for Disconnect --}}
+
+                {{-- /Start Button for Block Mac Addresses --}}
+                <x-button type="button" color="warning btn-sm">
+                    <i class="tf-icons fas fa-ban ti-xs me-1"></i>&nbsp; Block Mac Addresses
+                </x-button>
+                {{-- /End Button for Block Mac Addresses --}}
+
                 {{-- /Start Button for Export To CSV --}}
                 @livewire('backend.report.list-online-user.save-to-excel')
                 {{-- /End Button for Export To CSV --}}

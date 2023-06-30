@@ -4,12 +4,15 @@ namespace App\Http\Livewire\Backend\Profile;
 
 use App\Models\Group;
 use App\Services\Admin\AdminService;
+use App\Traits\CloseModalTrait;
 use App\Traits\LivewireMessageEvents;
 use Livewire\Component;
 
 class EditMyProfile extends Component
 {
+    // Traits LivewireMessageEvents and CloseModalTrait
     use LivewireMessageEvents;
+    use CloseModalTrait;
 
     // Properties Public Variables
     public $admin_uid, $group_id, $group_name, $username, $password, $fullname, $email, $status, $status_name;
@@ -157,17 +160,6 @@ class EditMyProfile extends Component
             // Ensure the modal is closed
             $this->closeModal();
         }
-    }
-
-    /**
-     * Close the Modal
-     * @return void
-     */
-    public function closeModal()
-    {
-        // Reset the form for the next client
-        $this->resetFields();
-        $this->dispatchBrowserEvent('hide-my-profile-modal');
     }
 
     /**

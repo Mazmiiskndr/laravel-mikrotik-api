@@ -102,7 +102,7 @@
 
 @if($permissions['isAllowedToCreateVoucherBatch'])
 {{-- START FORM CREATE VOUCHER BATCH --}}
-{{-- @livewire('backend.voucherBatch.list.create') --}}
+@livewire('backend.client.voucher.list.create')
 {{-- END FORM CREATE VOUCHER BATCH --}}
 @endif
 

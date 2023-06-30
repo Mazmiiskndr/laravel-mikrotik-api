@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Backend\Setup\Ads;
 use App\Models\Ad;
 use App\Models\AdType;
 use App\Services\Config\Ads\AdsService;
+use App\Traits\CloseModalTrait;
 use App\Traits\LivewireMessageEvents;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -13,8 +14,9 @@ class Edit extends Component
 {
     // File Uploads for the Ads property
     use WithFileUploads;
-    // LivewireMessageEvents for showing messages
+    // Traits LivewireMessageEvents and CloseModalTrait
     use LivewireMessageEvents;
+    use CloseModalTrait;
     // Properties Public Variables
     public $ads_id, $type, $deviceType, $imageBanner, $title, $urlForImage = "http://", $position, $timeToShow, $timeToHide, $shortDescription;
     // Ads Type
@@ -140,24 +142,17 @@ class Edit extends Component
         try {
             // Update the ad dataAd
             $adService->updateAd($newAd, $this->ads_id);
-
             // Show Message Success
             $this->dispatchSuccessEvent('Ad successfully updated.');
-            // Close the modal
-            $this->closeModal();
-            // Reset the form fields
-            $this->resetFields();
             // Emit the 'adUpdated' event with a true status
             $this->emit('adUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent($th->getMessage());
-            // Close the modal
+        }finally{
+            // Reset the form fields
             $this->closeModal();
         }
-
-        // Close Modal
-        $this->closeModal();
     }
 
     /**
@@ -184,17 +179,6 @@ class Edit extends Component
         $this->timeToHide = ($ad->time_to_hide != 0) ? date('Y-m-d', $ad->time_to_hide) : null;
 
         $this->shortDescription = $ad->short_description;
-    }
-
-
-    /**
-     * Close the modal.
-     */
-    public function closeModal()
-    {
-        // Reset the form for the next client
-        $this->resetFields();
-        $this->dispatchBrowserEvent('hide-modal');
     }
 
     /**
