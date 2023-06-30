@@ -18,7 +18,7 @@
                 {{-- TODO: --}}
                 {{-- /Start Button for Create New Voucher Batch --}}
                 @if ($permissions['isAllowedToCreateVoucherBatch'])
-                <x-button type="button" color="facebook " data-bs-toggle="modal" data-bs-target="#createNewVoucherBatch">
+                <x-button type="button" color="facebook btn-sm" data-bs-toggle="modal" data-bs-target="#createNewVoucherBatch">
                     <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Voucher Batch
                 </x-button>
                 @endif
@@ -27,7 +27,7 @@
                 {{-- TODO: --}}
                 {{-- /Start Button for Batch Delete --}}
                 @if ($permissions['isAllowedToDeleteVoucherBatches'])
-                <x-button type="button" color="danger" onclick="confirmDeleteVoucherBatches()">
+                <x-button type="button" color="danger btn-sm" onclick="confirmDeleteVoucherBatches()">
                     <i class="tf-icons fas fa-trash-alt ti-xs me-1"></i>&nbsp; Batch Delete
                 </x-button>
                 @endif

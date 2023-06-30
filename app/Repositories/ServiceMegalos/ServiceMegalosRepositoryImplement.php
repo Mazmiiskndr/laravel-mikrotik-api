@@ -43,7 +43,7 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
         $editRoute = 'backend.services.edit-service';
         $editPermission = 'edit_service';
         $deletePermission = 'delete_service';
-        $onclickDelete = 'showAdmin';
+        $onclickDelete = 'confirmDeleteService';
         $editButton = 'link';
 
         // Format the data for DataTables

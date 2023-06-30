@@ -18,7 +18,7 @@
             <div>
                 {{-- /Start Button for Create New Client --}}
                 @if ($permissions['isAllowedToAddNewClient'])
-                <x-button type="button" color="facebook " data-bs-toggle="modal"
+                <x-button type="button" color="facebook btn-sm" data-bs-toggle="modal"
                     data-bs-target="#createNewClient">
                     <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Client
                 </x-button>
@@ -27,7 +27,7 @@
 
                 {{-- /Start Button for Batch Delete --}}
                 @if ($permissions['isAllowedToBatchDeleteClients'])
-                <x-button type="button" color="danger" onclick="confirmDeleteBatch()">
+                <x-button type="button" color="danger btn-sm" onclick="confirmDeleteBatch()">
                     <i class="tf-icons fas fa-trash-alt ti-xs me-1"></i>&nbsp; Batch Delete
                 </x-button>
                 @endif

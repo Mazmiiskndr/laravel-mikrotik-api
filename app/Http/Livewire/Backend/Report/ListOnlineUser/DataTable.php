@@ -26,4 +26,5 @@ class DataTable extends Component
     {
         return $reportService->getDatatables();
     }
+
 }

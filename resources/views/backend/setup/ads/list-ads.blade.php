@@ -16,7 +16,7 @@
             <h4 class="card-title">Table Ads</h4>
 
             @if ($permissions['isAllowedToAddAd'])
-            <x-button type="button" color="facebook" data-bs-toggle="modal" data-bs-target="#createNewAd">
+            <x-button type="button" color="facebook btn-sm" data-bs-toggle="modal" data-bs-target="#createNewAd">
                 <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Ad
             </x-button>
             {{-- /Create Button for Add New Admin --}}

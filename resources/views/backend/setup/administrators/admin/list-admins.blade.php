@@ -15,7 +15,7 @@
             <h4 class="card-title">Table Admins</h4>
 
             @if ($permissions['isAllowedToAddNewAdmin'])
-            <x-button type="button" color="facebook" data-bs-toggle="modal" data-bs-target="#createNewAdmin">
+            <x-button type="button" color="facebook btn-sm" data-bs-toggle="modal" data-bs-target="#createNewAdmin">
                 <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Admin
             </x-button>
             {{-- /Create Button for Add New Admin --}}

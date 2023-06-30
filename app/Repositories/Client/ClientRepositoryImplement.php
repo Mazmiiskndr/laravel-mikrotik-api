@@ -12,6 +12,7 @@ use App\Models\RadUserGroup;
 use App\Models\Services;
 use App\Traits\DataTablesTrait;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 
@@ -192,7 +193,6 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
             'notes.max'                => 'Notes cannot be more than 100 characters!',
         ];
     }
-
     /**
      * Stores a new client using the provided request data.
      * @param array $request The data used to create the new client.
@@ -201,16 +201,27 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
      */
     public function storeNewClient($request)
     {
+        // Start a new database transaction.
+        DB::beginTransaction();
+
         try {
             // Create new client, radcheck, radacct, and radusergroup entries
             $client = $this->createClient($request);
             $this->createRadCheck($client, $request);
             $this->createRadAcct($client);
             $this->createRadUserGroup($client);
+
+            // Commit the transaction (apply the changes).
+            DB::commit();
+
             return $client;
         } catch (\Exception $e) {
-            // If an exception occurred during the create process, log the error message.
+            // If an exception occurred during the create process, rollback the transaction.
+            DB::rollBack();
+
+            // Log the error message.
             Log::error("Failed to store new client : " . $e->getMessage());
+
             // Rethrow the exception to be caught in the Livewire component.
             throw $e;
         }
@@ -225,6 +236,9 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
      */
     public function updateClient($clientUid, $data)
     {
+        // Start a new database transaction.
+        DB::beginTransaction();
+
         try {
             // Get the client from the database.
             $client = $this->getClientByUid($clientUid);
@@ -238,12 +252,17 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
                 $this->updateRadAcct($client);
                 $this->updateRadUserGroup($client);
 
+                // Commit the transaction (apply the changes).
+                DB::commit();
+
                 return $client;
             } else {
                 throw new \Exception("Client with UID $clientUid not found.");
             }
         } catch (\Exception $e) {
-            // If an exception occurred during the update process, log the error message.
+            // Rollback the Transaction.
+            DB::rollBack();
+            // Log the error message
             Log::error("Failed to update client : " . $e->getMessage());
             // Rethrow the exception to be caught in the Livewire component.
             throw $e;
