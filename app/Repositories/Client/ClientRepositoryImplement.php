@@ -193,6 +193,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
             'notes.max'                => 'Notes cannot be more than 100 characters!',
         ];
     }
+
     /**
      * Stores a new client using the provided request data.
      * @param array $request The data used to create the new client.
