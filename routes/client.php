@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     Backend\Client\ClientController,
     Backend\Client\Voucher\VoucherBatchController,
+    Backend\Client\Voucher\VoucherActiveController,
 };
 
 // Grouping routes that require check.session.cookie middleware
@@ -18,6 +19,7 @@ Route::middleware(['check.session.cookie'])->group(function () {
         Route::prefix('voucher')->name('voucher.')->group(function () {
             // Route for configs list page
             Route::get('list-voucher-batches', [VoucherBatchController::class, 'index'])->name('list-voucher-batches');
+            Route::get('list-active-vouchers', [VoucherActiveController::class, 'index'])->name('list-active-vouchers');
         });
 
     });
