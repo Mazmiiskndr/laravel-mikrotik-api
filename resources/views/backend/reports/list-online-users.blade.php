@@ -16,11 +16,9 @@
 
             <div>
                 {{-- TODO: BUTTON DISCONNECT AND BUTTON BLOCK MAC ADDRESS --}}
-                {{-- /Start Button for Create New Service --}}
-                <x-link-button color="success" route="backend.services.add-new-service" icon="fas fa-file-excel">
-                    Import to CSV
-                </x-link-button>
-                {{-- /End Button for Create New Service --}}
+                {{-- /Start Button for Export To CSV --}}
+                @livewire('backend.report.list-online-user.export-csv')
+                {{-- /End Button for Export To CSV --}}
 
             </div>
 
