@@ -14,11 +14,11 @@ $canBatchDelete = App\Helpers\AccessControlHelper::isAllowedToPerformAction('bat
                 </th>
                 @endif
                 <th>No</th>
-                <th>Created Date</th>
                 <th>Service Name</th>
                 <th>Quantity</th>
-                <th>Created By</th>
                 <th>Note</th>
+                <th>Created By</th>
+                <th>Created Date</th>
                 @if($canDelete)
                 <th>Action</th>
                 @endif
@@ -54,11 +54,11 @@ $canBatchDelete = App\Helpers\AccessControlHelper::isAllowedToPerformAction('bat
     document.addEventListener('DOMContentLoaded', function () {
         var columns = [
             { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
-            { data: 'create_date', name: 'create_date' },
             { data: 'service_name', name: 'service_name' },
             { data: 'quantity', name: 'quantity' },
+            { data: 'note', name: 'note' },
             { data: 'created_by', name: 'created_by' },
-            { data: 'note', name: 'note' }
+            { data: 'create_date', name: 'create_date' }
         ];
 
         if (canBatchDelete) {

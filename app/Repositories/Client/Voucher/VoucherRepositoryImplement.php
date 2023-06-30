@@ -113,7 +113,7 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
                 return date('d F Y H:i', $data->voucherBatch->created);
             })
             ->addColumn('valid_until', function ($data) {
-                return ($data->valid_until == 0) ? $data->valid_until : '-';
+                return ($data->valid_until == 0) ? '-' : $data->valid_until;
             })
             ->addColumn('created_by', function ($data) {
                 return $data->voucherBatch->created_by;
