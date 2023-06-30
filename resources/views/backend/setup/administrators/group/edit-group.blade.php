@@ -18,10 +18,9 @@
             <div class="card-header">
                 <div class="d-flex justify-content-between">
                     <h4 class="card-title">Edit Group</h4>
-                    <a href="{#" class="btn btn-sm btn-youtube text-white"
-                        onclick="javascript:window.history.back(-1);return false;">
+                    <x-button type="button" color="youtube btn-sm text-white" onclick="javascript:window.history.back(-1);return false;">
                         <i class="tf-icons fas fa-backward ti-xs me-1"></i>&nbsp; Back
-                    </a>
+                    </x-button>
                 </div>
             </div>
 

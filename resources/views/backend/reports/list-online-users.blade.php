@@ -17,11 +17,9 @@
             <div>
                 {{-- TODO: BUTTON DISCONNECT AND BUTTON BLOCK MAC ADDRESS --}}
                 {{-- /Start Button for Create New Service --}}
-                {{-- @if ($permissions['isAllowedToAddNewService'])
-                <a href="{{ route('backend.services.add-new-service') }}" class="btn btn-facebook text-white">
-                    <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Service
-                </a>
-                @endif --}}
+                <x-link-button color="success" route="backend.services.add-new-service" icon="fas fa-file-excel">
+                    Import to CSV
+                </x-link-button>
                 {{-- /End Button for Create New Service --}}
 
             </div>
