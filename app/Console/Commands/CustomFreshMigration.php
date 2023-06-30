@@ -64,6 +64,6 @@ class CustomFreshMigration extends Command
         $this->call('db:seed', ['--force' => true]);
         // Add your custom message here
         $this->info('Migration and seeding with ignore freeradius tables successful.');
-        $this->info('*** Created by Moch Azmi Iskandar ***');
+        $this->info('*** Created by ' . config('variables.creatorName') ?? "PT. Varnion Technology Semesta" . ' ***');
     }
 }
