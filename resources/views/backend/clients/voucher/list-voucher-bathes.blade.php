@@ -40,7 +40,7 @@
     @if($permissions['isAllowedToListVoucherBatches'])
     {{-- Start List DataTable --}}
     <div class="card-body">
-        @livewire('backend.client.voucher.list.data-table')
+        @livewire('backend.client.voucher.list.data-table-voucher-batches')
     </div>
     {{-- End List DataTable --}}
     @endif
@@ -102,7 +102,7 @@
 
 @if($permissions['isAllowedToCreateVoucherBatch'])
 {{-- START FORM CREATE VOUCHER BATCH --}}
-{{-- @livewire('backend.voucherBatch.list.create') --}}
+@livewire('backend.client.voucher.list.create')
 {{-- END FORM CREATE VOUCHER BATCH --}}
 @endif
 

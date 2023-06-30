@@ -14,7 +14,8 @@ use App\Http\Livewire\Backend\Setup\{
 // Import Livewire DataTables Controllers
 use App\Http\Livewire\Backend\{
     Client\List\DataTable as DataTableClient,
-    Client\Voucher\List\DataTable as DataTableVoucherBatch,
+    Client\Voucher\List\DataTableVoucherBatches as DataTableVoucherBatches,
+    Client\Voucher\List\DataTableActiveVouchers as DataTableActiveVouchers,
     Service\List\DataTable as DataTableService,
     Service\Premium\DataTable as DataTablePremiumService,
     Report\ListOnlineUser\DataTable as DataTableOnlineUsers,
@@ -50,7 +51,8 @@ Route::middleware(['check.session.cookie'])->group(function () {
         Route::prefix('client/')->group(function () {
             // Route for getting datatable data for clients
             Route::get('getDataTable', [DataTableClient::class, 'getDataTable'])->name('client.getDataTable');
-            Route::get('voucherBatches/getDataTable', [DataTableVoucherBatch::class, 'getDataTable'])->name('voucherBatches.getDataTable');
+            Route::get('voucherBatches/getDataTable', [DataTableVoucherBatches::class, 'getDataTable'])->name('voucherBatches.getDataTable');
+            Route::get('activeVouchers/getDataTable', [DataTableActiveVouchers::class, 'getDataTable'])->name('activeVouchers.getDataTable');
         });
 
         Route::prefix('service/')->group(function () {

@@ -59,10 +59,10 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
     }
 
     /**
-     * Retrieves records from a database, initializes DataTables, adds columns to DataTable.
-     * @return DataTables Yajra JSON response.
+     * Retrieves Voucher Batches records from a database, initializes DataTables, and adds columns to DataTable.
+     * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
      */
-    public function getDatatables()
+    public function getDatatableVoucherBatches()
     {
         // Retrieve records from the getClientWithService function
         $voucherBathesData = $this->getVoucherBatchesWithService();
@@ -92,6 +92,43 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
                 return $detailButton . $deleteButton;
             })
             ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    /**
+     * Retrieves Active Vouchers records from a database, initializes DataTables, and adds columns to DataTable.
+     * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
+     */
+    public function getDatatableActiveVouchers()
+    {
+        $data = $this->model->with('voucherBatch.service')
+        ->where('status', 'active')
+        ->latest()
+        ->get();
+
+        // Initialize DataTables and add columns to the table
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('create_date', function ($data) {
+                return date('d F Y H:i', $data->voucherBatch->created);
+            })
+            ->addColumn('valid_until', function ($data) {
+                return ($data->valid_until == 0) ? $data->valid_until : '-';
+            })
+            ->addColumn('created_by', function ($data) {
+                return $data->voucherBatch->created_by;
+            })
+            ->addColumn('service_name', function ($data) {
+                return $data->voucherBatch->service->service_name;
+            })
+            ->addColumn('voucher_batch_id', function ($data) {
+                $detailButton = '';
+                // TODO: CREATE DETAIL VOUCHER BATCHES
+                $detailButton = '<button type="button" name="detail" class="detail btn btn-info btn-sm"> <i class="fas fa-eye"></i>&nbsp; Detail</button>';
+
+                return $detailButton;
+            })
+            ->rawColumns(['voucher_batch_id'])
             ->make(true);
     }
 }

@@ -6,7 +6,7 @@ use App\Services\Client\Voucher\VoucherService;
 use App\Traits\LivewireMessageEvents;
 use Livewire\Component;
 
-class DataTable extends Component
+class DataTableVoucherBatches extends Component
 {
     // Import trait for displaying messages from Livewire's events
     use LivewireMessageEvents;
@@ -26,7 +26,7 @@ class DataTable extends Component
      */
     public function render()
     {
-        return view('livewire.backend.client.voucher.list.data-table');
+        return view('livewire.backend.client.voucher.list.data-table-voucher-batches');
     }
 
     /**
@@ -36,6 +36,6 @@ class DataTable extends Component
      */
     public function getDataTable(VoucherService $voucherService)
     {
-        return $voucherService->getDatatables();
+        return $voucherService->getDatatableVoucherBatches();
     }
 }

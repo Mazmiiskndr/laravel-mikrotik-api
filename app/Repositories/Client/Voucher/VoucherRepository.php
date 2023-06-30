@@ -16,8 +16,15 @@ interface VoucherRepository extends Repository{
     public function getVoucherBatchesWithService($conditions, $columns);
 
     /**
-     * Retrieves records from a database, initializes DataTables, adds columns to DataTable.
-     * @return DataTables Yajra JSON response.
+     * Retrieves voucher batch records from a database, initializes DataTables, and adds columns to DataTable.
+     * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
      */
-    public function getDatatables();
+    public function getDatatableVoucherBatches();
+
+    /**
+     * Retrieves active voucher records from a database, initializes DataTables, and adds columns to DataTable.
+     * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
+     */
+    public function getDatatableActiveVouchers();
+
 }
