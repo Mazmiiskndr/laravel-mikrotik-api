@@ -6,17 +6,18 @@ use LaravelEasyRepository\Service;
 use App\Repositories\Client\Voucher\VoucherRepository;
 use Exception;
 
-class VoucherServiceImplement extends Service implements VoucherService{
+class VoucherServiceImplement extends Service implements VoucherService
+{
 
-     /**
+    /**
      * don't change $this->mainRepository variable name
      * because used in extends service class
      */
-     protected $mainRepository;
+    protected $mainRepository;
 
     public function __construct(VoucherRepository $mainRepository)
     {
-      $this->mainRepository = $mainRepository;
+        $this->mainRepository = $mainRepository;
     }
 
     /**
@@ -43,17 +44,26 @@ class VoucherServiceImplement extends Service implements VoucherService{
      * @param array|null $columns
      * @return array
      */
-    public function getVoucherBatchesWithService($conditions = null , $columns = ['*'])
+    public function getVoucherBatchesWithService($conditions = null, $columns = ['*'])
     {
         return $this->handleRepositoryCall('getVoucherBatchesWithService', [$conditions, $columns]);
     }
 
     /**
-     * Retrieves records from a database, initializes DataTables, adds columns to DataTable.
-     * @return DataTables Yajra JSON response.
+     * Retrieves voucher batch records from a database, initializes DataTables, and adds columns to DataTable.
+     * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
      */
-    public function getDatatables()
+    public function getDatatableVoucherBatches()
     {
-        return $this->handleRepositoryCall('getDatatables');
+        return $this->handleRepositoryCall('getDatatableVoucherBatches');
+    }
+
+    /**
+     * Retrieves active voucher records from a database, initializes DataTables, and adds columns to DataTable.
+     * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
+     */
+    public function getDatatableActiveVouchers()
+    {
+        return $this->handleRepositoryCall('getDatatableActiveVouchers');
     }
 }

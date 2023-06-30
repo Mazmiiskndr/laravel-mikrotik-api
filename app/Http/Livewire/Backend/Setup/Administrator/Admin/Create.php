@@ -4,12 +4,15 @@ namespace App\Http\Livewire\Backend\Setup\Administrator\Admin;
 
 use App\Models\Group;
 use App\Services\Admin\AdminService;
+use App\Traits\CloseModalTrait;
 use App\Traits\LivewireMessageEvents;
 use Livewire\Component;
 
 class Create extends Component
 {
+    // Traits LivewireMessageEvents and CloseModalTrait
     use LivewireMessageEvents;
+    use CloseModalTrait;
     // Properties Public Variables
     public $groupId, $username, $password, $status, $fullName, $emailAddress, $password_confirmation;
 
@@ -124,16 +127,6 @@ class Create extends Component
             // Ensure the modal is closed
             $this->closeModal();
         }
-    }
-
-    /**
-     * Close the modal.
-     */
-    public function closeModal()
-    {
-        // Reset the form for the next client
-        $this->resetFields();
-        $this->dispatchBrowserEvent('hide-modal');
     }
 
     /**

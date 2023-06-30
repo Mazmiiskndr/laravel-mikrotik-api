@@ -4,13 +4,15 @@ namespace App\Http\Livewire\Backend\Client\List;
 
 use App\Services\Client\ClientService;
 use App\Services\ServiceMegalos\ServiceMegalosService;
+use App\Traits\CloseModalTrait;
 use App\Traits\LivewireMessageEvents;
 use Livewire\Component;
 
 class Edit extends Component
 {
-    // Traits LivewireMessageEvents
+    // Traits LivewireMessageEvents and CloseModalTrait
     use LivewireMessageEvents;
+    use CloseModalTrait;
 
     // Properties Public For Create Clients
     public $clientUid, $idService, $username, $password, $simultaneousUse, $validFrom, $validTo,
@@ -108,16 +110,6 @@ class Edit extends Component
             // Ensure the modal is closed
             $this->closeModal();
         }
-    }
-
-    /**
-     * Close the modal.
-     */
-    public function closeModal()
-    {
-        // Reset the form for the next client
-        $this->resetFields();
-        $this->dispatchBrowserEvent('hide-modal');
     }
 
     /**

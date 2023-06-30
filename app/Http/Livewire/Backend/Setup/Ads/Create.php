@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Backend\Setup\Ads;
 
 use App\Models\AdType;
 use App\Services\Config\Ads\AdsService;
+use App\Traits\CloseModalTrait;
 use App\Traits\LivewireMessageEvents;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -12,8 +13,9 @@ class Create extends Component
 {
     // File Uploads for the Ads property
     use WithFileUploads;
-    // LivewireMessageEvents for showing messages
+    // Traits LivewireMessageEvents and CloseModalTrait
     use LivewireMessageEvents;
+    use CloseModalTrait;
     // Properties for inserting a new ad
     public $type, $deviceType, $imageBanner, $title, $urlForImage = "http://", $position, $timeToShow, $timeToHide, $shortDescription;
     // Ads Type
@@ -136,16 +138,6 @@ class Create extends Component
             // Ensure the modal is closed
             $this->closeModal();
         }
-    }
-
-    /**
-     * Close the modal.
-     */
-    public function closeModal()
-    {
-        // Reset the form for the next client
-        $this->resetFields();
-        $this->dispatchBrowserEvent('hide-modal');
     }
 
     /**

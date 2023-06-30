@@ -88,6 +88,8 @@ class EditRouter extends Component
     {
         // Reset the form for the next client
         $this->resetFields();
+        // Reset the validation error messages
+        $this->resetErrorBag();
         $this->dispatchBrowserEvent('closeModal');
     }
 

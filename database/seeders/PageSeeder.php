@@ -215,7 +215,7 @@ class PageSeeder extends Seeder
                 'url' => '#',
                 'module_id' => 12,
                 'allowed_groups' => '1,2',
-                'show_menu' => 1,
+                'show_menu' => 0,
                 'show_to' => NULL
             ],
             [
@@ -252,7 +252,7 @@ class PageSeeder extends Seeder
                 'id' => 30,
                 'page' => 'list_active_vouchers',
                 'title' => 'List Active Vouchers',
-                'url' => 'clients/pg/list_active_vouchers',
+                'url' => 'clients/voucher/list-active-vouchers',
                 'module_id' => 12,
                 'allowed_groups' => '1,2',
                 'show_menu' => 1,

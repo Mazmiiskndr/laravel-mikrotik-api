@@ -96,7 +96,7 @@ $navbarDetached = ($navbarDetached ?? '');
     @push('scripts')
     <script>
         // Hide Modal
-        window.addEventListener('hide-my-profile-modal', () => {
+        window.addEventListener('hide-modal', () => {
             $('#updateMyProfileModal').modal('hide');
         });
         window.addEventListener('show-my-profile-modal', () => {
