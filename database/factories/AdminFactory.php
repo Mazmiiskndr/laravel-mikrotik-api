@@ -20,7 +20,6 @@ class AdminFactory extends Factory
     public function definition()
     {
         return [
-            'group_id' => $this->faker->numberBetween(1, 2),
             'username' => $this->faker->unique()->userName,
             'password' => bcrypt('password'),
             'fullname' => $this->faker->name,

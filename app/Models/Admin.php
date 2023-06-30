@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UseUuid as Model;
 
 class Admin extends Model
 {
@@ -13,7 +13,7 @@ class Admin extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
-        'admin_uid',
+        'id',
         'group_id',
         'username',
         'password',
@@ -22,23 +22,9 @@ class Admin extends Model
         'status',
     ];
 
-    /**
-     * boot
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->admin_uid = str()->uuid();
-        });
-    }
-
     public function modules()
     {
-        return $this->belongsToMany(Module::class, 'admin_module', 'admin_id', 'module_id');
+        return $this->belongsToMany(Module::class, 'admin_module', 'id', 'module_id');
     }
 
     /**
