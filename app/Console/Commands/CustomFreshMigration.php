@@ -20,7 +20,7 @@ class CustomFreshMigration extends Command
      *
      * @var string
      */
-    protected $description = 'Custom fresh migration that ignores specific tables';
+    protected $description = 'Custom fresh migration that ignores freeradius tables';
 
     /**
      * List of tables to ignore.
@@ -62,5 +62,8 @@ class CustomFreshMigration extends Command
 
         // Run the seeders.
         $this->call('db:seed', ['--force' => true]);
+        // Add your custom message here
+        $this->info('Migration and seeding with ignore freeradius tables successful.');
+        $this->info('*** Created by Moch Azmi Iskandar ***');
     }
 }
