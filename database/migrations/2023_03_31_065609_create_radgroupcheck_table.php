@@ -15,7 +15,7 @@ return new class extends Migration
     {
         if (!Schema::hasTable('radgroupcheck')) {
             Schema::create('radgroupcheck', function (Blueprint $table) {
-                $table->id();
+                $table->uuid('id')->primary();
                 $table->string('groupname', 64);
                 $table->string('attribute', 64);
                 $table->string('op', 2)->default("==");

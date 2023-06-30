@@ -15,7 +15,7 @@ return new class extends Migration
     {
         if (!Schema::hasTable('nas')) {
             Schema::create('nas', function (Blueprint $table) {
-                $table->id();
+                $table->uuid('id')->primary();
                 $table->string('nasname', 128);
                 $table->string('shortname', 32)->nullable();
                 $table->string('type', 30)->default("other");

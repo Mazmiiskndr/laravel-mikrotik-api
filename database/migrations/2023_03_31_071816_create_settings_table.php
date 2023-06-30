@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('settings', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('module_id');
+            $table->uuid('id')->primary();
+            $table->string('module_id');
             $table->string('setting', 255);
             $table->string('value', 255)->nullable();
             $table->string('flag_module', 100)->nullable();

@@ -16,7 +16,7 @@ return new class extends Migration
     {
         if (!Schema::hasTable('radcheck')) {
             Schema::create('radcheck', function (Blueprint $table) {
-                $table->id();
+                $table->uuid('id')->primary();
                 $table->string('username', 64);
                 $table->string('attribute', 64);
                 $table->string('op', 2)->default("==");

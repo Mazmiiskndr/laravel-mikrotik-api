@@ -14,9 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('fb_page_like_records', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('page_id');
-            $table->unsignedBigInteger('user_id');
+            $table->uuid('id')->primary();
+            $table->string('page_id');
+            $table->string('user_id');
             $table->dateTime('action_time')->nullable();
             $table->string('email', 200)->nullable();
             $table->timestamps();

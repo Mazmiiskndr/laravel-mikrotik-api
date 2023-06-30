@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('ad', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('file_name', 100);
             $table->string('thumb_file_name', 100);
             $table->string('title', 200);
