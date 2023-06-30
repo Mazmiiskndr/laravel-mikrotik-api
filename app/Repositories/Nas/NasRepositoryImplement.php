@@ -7,6 +7,7 @@ use App\Models\Nas;
 use App\Models\RouterOsApi;
 use App\Models\Setting;
 use App\Services\Setting\SettingService;
+use Illuminate\Support\Facades\DB;
 
 class NasRepositoryImplement extends Eloquent implements NasRepository
 {
@@ -106,11 +107,17 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      */
     public function editNasProcess($data)
     {
+        // Start a new database transaction.
+        DB::beginTransaction();
         try {
             // Updates NAS table and Mikrotik API parameters.
             $this->updateNasTable($data);
             $this->updateMikrotikApiParameters($data);
+            // Commit the transaction (apply the changes).
+            DB::commit();
         } catch (\Exception $e) {
+            // If an exception occurred during the create process, rollback the transaction.
+            DB::rollBack();
             // In case of exception, return the exception message.
             return $e->getMessage();
         }
