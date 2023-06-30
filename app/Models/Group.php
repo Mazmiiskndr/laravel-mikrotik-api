@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UseUuid as Model;
 
 class Group extends Model
 {
@@ -31,7 +31,7 @@ class Group extends Model
     public function modules()
     {
         return $this->belongsToMany(Module::class, 'pages', 'allowed_groups', 'module_id')
-        ->distinct()
+            ->distinct()
             ->with('pages');
     }
 }

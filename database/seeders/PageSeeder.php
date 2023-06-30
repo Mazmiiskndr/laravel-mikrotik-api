@@ -2,720 +2,103 @@
 
 namespace Database\Seeders;
 
-use App\Models\Page;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-
-class PageSeeder extends Seeder
+class PageSeeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public static function getPages($old_id): array|bool
     {
-        $pages = [
-            [
-                'id' => 1,
-                'page' => 'index',
-                'title' => 'Main Homepage',
-                'url' => 'home',
-                'module_id' => 2,
-                'allowed_groups' => '1,2',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 2,
-                'page' => 'list_clients',
-                'title' => 'List Clients',
-                'url' => 'clients/list-clients',
-                'module_id' => 3,
-                'allowed_groups' => '1,2',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 3,
-                'page' => 'add_new_client',
-                'title' => 'Add New Client',
-                'url' => '#',
-                'module_id' => 3,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 4,
-                'page' => 'edit_client',
-                'title' => 'Edit Client',
-                'url' => '#',
-                'module_id' => 3,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 5,
-                'page' => 'delete_client',
-                'title' => 'Delete Client',
-                'url' => '#',
-                'module_id' => 3,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 7,
-                'page' => 'list_services',
-                'title' => 'List Services',
-                'url' => 'services/list-services',
-                'module_id' => 4,
-                'allowed_groups' => '1,2',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 8,
-                'page' => 'add_new_service',
-                'title' => 'Add New Service',
-                'url' => 'services/add-new-service',
-                'module_id' => 4,
-                'allowed_groups' => '1,2',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 9,
-                'page' => 'edit_service',
-                'title' => 'Edit Service',
-                'url' => 'services/edit-service',
-                'module_id' => 4,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 10,
-                'page' => 'delete_service',
-                'title' => 'Delete Service',
-                'url' => 'services/pg/delete_service',
-                'module_id' => 4,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            // TODO: MY ACCOUNT
-            // [
-            //     'id' => 11,
-            //     'page' => 'my_account',
-            //     'title' => 'My Account',
-            //     'url' => 'administrators/pg/my_account',
-            //     'module_id' => 10,
-            //     'allowed_groups' => '1',
-            //     'show_menu' => 1,
-            //     'show_to' => NULL
-            // ],
-            [
-                'id' => 12,
-                'page' => 'list_admins',
-                'title' => 'List Admins',
-                'url' => 'setup/admin/list-admins',
-                'module_id' => 10,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 13,
-                'page' => 'list_groups',
-                'title' => 'List Groups',
-                'url' => 'setup/admin/list-groups',
-                'module_id' => 10,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            // *** TODO: ***
-            [
-                'id' => 14,
-                'page' => 'add_new_admin',
-                'title' => 'Add New Admin',
-                'url' => '#',
-                'module_id' => 10,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 15,
-                'page' => 'add_new_group',
-                'title' => 'Add New Group',
-                'url' => 'setup/admin/add-new-group',
-                'module_id' => 10,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 16,
-                'page' => 'edit_admin',
-                'title' => 'Edit Admin',
-                'url' => '#',
-                'module_id' => 10,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 17,
-                'page' => 'edit_group',
-                'title' => 'Edit Group',
-                'url' => 'setup/admin/edit-group',
-                'module_id' => 10,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 18,
-                'page' => 'delete_admin',
-                'title' => 'Delete Admin',
-                'url' => '#',
-                'module_id' => 10,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 19,
-                'page' => 'delete_group',
-                'title' => 'Delete Group',
-                'url' => 'administrators/pg/delete_group',
-                'module_id' => 10,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 25,
-                'page' => 'list_online_users',
-                'title' => 'List Online Users',
-                'url' => 'reports/list-online-users',
-                'module_id' => 7,
-                'allowed_groups' => '1,2',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 26,
-                'page' => 'create_voucher_batch',
-                'title' => 'Create Voucher Batch',
-                'url' => '#',
-                'module_id' => 12,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 27,
-                'page' => 'list_voucher_batches',
-                'title' => 'List Voucher Batches',
-                'url' => 'clients/voucher/list-voucher-batches',
-                'module_id' => 12,
-                'allowed_groups' => '1,2',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 28,
-                'page' => 'delete_voucher_batch',
-                'title' => 'Delete Voucher Batch',
-                'url' => '#',
-                'module_id' => 12,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 29,
-                'page' => 'delete_voucher_batches',
-                'title' => 'Delete Voucher Batches',
-                'url' => '#',
-                'module_id' => 12,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 30,
-                'page' => 'list_active_vouchers',
-                'title' => 'List Active Vouchers',
-                'url' => 'clients/voucher/list-active-vouchers',
-                'module_id' => 12,
-                'allowed_groups' => '1,2',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 37,
-                'page' => 'voucher_logs',
-                'title' => 'Voucher Logs',
-                'url' => 'reports/pg/voucher_logs',
-                'module_id' => 7,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 39,
-                'page' => 'search_traffic',
-                'title' => 'Search Traffic',
-                'url' => 'reports/pg/search_traffic',
-                'module_id' => 7,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 40,
-                'page' => 'set_url_redirect',
-                'title' => 'Set URL Redirect',
-                'url' => 'setup/set-url-redirect',
-                'module_id' => 9,
-                'allowed_groups' => '1,2',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
+        if ($old_id) {
+            # code...
+            $pages = [
+                [2, 'index', 'Main Homepage', 'home', '1,2', 1, NULL],
+                [3, 'list_clients', 'List Clients', 'clients/list-clients', '1,2', 1, NULL],
+                [3, 'batch_delete_clients', 'Batch Delete Clients', '#', '1,2', 0, NULL],
+                [3, 'delete_client', 'Delete Client', '#', '1,2', 0, NULL],
+                [3, 'edit_client', 'Edit Client', '#', '1,2', 0, NULL],
+                [3, 'add_new_client', 'Add New Client', '#', '1,2', 0, NULL],
+                [4, 'list_services', 'List Services', 'services/list-services', '1,2', 1, NULL],
+                [4, 'edit_premium_service', 'Edit Premium Service', 'services/edit-premium-services', '1,2', 0, 4],
+                [4, 'premium_services', 'Premium Services', 'services/premium-services', '1,2', 1, 4],
+                [4, 'add_new_service', 'Add New Service', 'services/add-new-service', '1,2', 1, NULL],
+                [4, 'edit_service', 'Edit Service', 'services/edit-service', '1,2', 0, NULL],
+                [4, 'delete_service', 'Delete Service', 'services/pg/delete_service', '1', 0, NULL],
+                [7, 'traffic_reports', 'Traffic Reports', 'reports/pg/traffic_reports', '1', 0, NULL],
+                [7, 'online_users_csv', 'Online Users CSV', 'reports/pg/online_users_csv', '1', 0, NULL],
+                [7, 'traffic_reports_csv', 'Traffic Reports CSV', 'reports/pg/traffic_reports_csv', '1', 0, NULL],
+                [7, 'list_online_users', 'List Online Users', 'reports/list-online-users', '1,2', 1, NULL],
+                [7, 'search_traffic', 'Search Traffic', 'reports/pg/search_traffic', '1', 1, NULL],
+                [7, 'voucher_logs', 'Voucher Logs', 'reports/pg/voucher_logs', '1', 1, NULL],
+                [9, 'vouchers_print_setup', 'Vouchers Print Setup', 'setup/voucher-print-setup', '1', 1, NULL],
+                [9, 'set_url_redirect', 'Set URL Redirect', 'setup/set-url-redirect', '1,2', 1, NULL],
+                [10, 'list_groups', 'List Groups', 'setup/admin/list-groups', '1', 1, NULL],
+                [10, 'list_admins', 'List Admins', 'setup/admin/list-admins', '1', 1, NULL],
+                [10, 'add_new_admin', 'Add New Admin', '#', '1', 0, NULL],
+                [10, 'add_new_group', 'Add New Group', 'setup/admin/add-new-group', '1', 1, NULL],
+                [10, 'edit_admin', 'Edit Admin', '#', '1', 0, NULL],
+                [10, 'delete_group', 'Delete Group', 'administrators/pg/delete_group', '1', 0, NULL],
+                [10, 'delete_admin', 'Delete Admin', '#', '1', 0, NULL],
+                [10, 'edit_group', 'Edit Group', 'setup/admin/edit-group', '1', 0, NULL],
+                [12, 'list_active_vouchers', 'List Active Vouchers', 'clients/pg/list_active_vouchers', '1,2', 1, NULL],
+                [12, 'edit_hotel_room', 'Edit Hotel Room', 'clients/pg/edit_hotel_room', '1,2', 0, NULL],
+                [12, 'delete_voucher_batches', 'Delete Voucher Batches', '#', '1,2', 0, NULL],
+                [12, 'delete_voucher_batch', 'Delete Voucher Batch', '#', '1,2', 0, NULL],
+                [12, 'list_voucher_batches', 'List Voucher Batches', 'clients/voucher/list-voucher-batches', '1,2', 1, NULL],
+                [12, 'create_voucher_batch', 'Create Voucher Batch', '#', '1,2', 1, NULL],
+                [13, 'hotel_rooms', 'Hotel Rooms', 'clients/pg/hotel_rooms', '1,2', 1, NULL],
+                [13, 'edit_all_static_hotel_rooms', 'Edit All Static Rooms', 'clients/pg/edit_all_static_hotel_rooms', '1,2', 0, NULL],
+                [13, 'hotel_rooms_csv', 'Hotel Rooms CSV', 'client/pg/hotel_rooms_csv', '1,2', 0, NULL],
+                [13, 'add_hotel_room', 'Add Hotel Room', 'clients/pg/add_hotel_room', '1,2', 1, NULL],
+                [14, 'list_ads', 'Ads - List', 'setup/ads/list-ads', '1,2', 1, NULL],
+                [14, 'add_ad', 'Ads - Add', 'ads/pg/add_ad', '1,2', 0, NULL],
+                [14, 'edit_ad', 'Ads - Edit', 'ads/pg/edit_ad', '1,2', 0, NULL],
+                [14, 'delete_ad', 'Ads - Delete', 'ads/pg/delete_ad', '1,2', 0, NULL],
+                [15, 'add_mac', 'Add Mac Address', 'clients/pg/add_mac', '1', 1, NULL],
+                [15, 'batch_delete_macs', 'Batch Delete Macs', 'clients/pg/batch_delete_macs', '1,2', 0, NULL],
+                [15, 'search_mac', 'Search Mac', 'clients/pg/search_mac', '1', 1, NULL],
+                [15, 'list_macs', 'List Bypassed Mac', 'clients/pg/list_macs', '1', 1, NULL],
+                [15, 'list_blocked_macs', 'List Blocked Mac', 'clients/pg/list_blocked_macs', '1', 1, NULL],
+                [15, 'edit_mac', 'Edit Mac', 'clients/pg/edit_mac', '1', 0, NULL],
+                [15, 'delete_mac', 'Delete Mac', 'clients/pg/delete_mac', '1', 0, NULL],
+                [16, 'find_users_data', 'Find Users Data', 'users_data/pg/find_users_data', '1', 1, NULL],
+                [16, 'users_data', 'Users Data', 'users_data/pg/view_users_data', '1', 1, NULL],
+                [16, 'delete', 'Delete Users Data', 'users_data/pg/delete', '1', 0, NULL],
+                [16, 'users_data_csv', 'Users Data CSV', 'users_data/pg/users_data_csv', '1', 0, NULL],
+                [16, 'print_users_data', 'Print Users Data', 'users_data/pg/print_users_data', '1', 0, NULL],
+                [17, 'login_with_facebook', 'Login With Facebook', 'social_plugins/pg/login_with_facebook', '1,2', 0, NULL],
+                [17, 'login_with_linkedin', 'Login With Linkedin', 'social_plugins/pg/login_with_linkedin', '1,2', 0, NULL],
+                [17, 'login_with_google', 'Login With Google', 'social_plugins/pg/login_with_google', '1,2', 0, NULL],
+                [17, 'login_with_instagram', 'Login With Instagram', 'social_plugins/pg/login_with_instagram', '1,2', 0, NULL],
+                [17, 'login_with_twitter', 'Login With Twitter', 'social_plugins/pg/login_with_twitter', '1,2', 0, NULL],
+                [17, 'edit_fb_login_action', 'Edit Facebook Login Action', 'social_plugins/pg/edit_fb_login_action', '1,2', 0, NULL],
+                [17, 'edit_fb_page', 'Edit Facebook Page', 'social_plugins/pg/edit_fb_page', '1,2', 0, NULL],
+                [17, 'list_social_plugins', 'List Social Plugins', 'social_plugins/pg/list_social_plugins', '1,2', 1, NULL],
+                [18, 'list_voucher_batches', 'List Premium Voucher Batches', 'premium/pg/list_voucher_batches', '1', 1, NULL],
+                [18, 'list_active_vouchers', 'List Active Premium Vouchers', 'premium/pg/list_active_vouchers', '1', 1, NULL],
+                [18, 'list_expired_vouchers', 'List Expired Premium Vouchers', 'premium/pg/list_expired_vouchers', '1', 1, NULL],
+                [18, 'create_premium_voucher_batch', 'Create Premium Voucher Batch', 'premium/pg/create_voucher_batch', '1', 1, NULL],
+                [19, 'list_config', 'List Configs', '/setup/config/list-configs', '1', 1, 19],
+                [19, 'config_hotel_rooms', 'Config Hotel Rooms', '/setup/config/list-configs/hotel_rooms', '1', 1, 19]
+            ];
 
-            [
-                'id' => 41,
-                'page' => 'traffic_reports_csv',
-                'title' => 'Traffic Reports CSV',
-                'url' => 'reports/pg/traffic_reports_csv',
-                'module_id' => 7,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 42,
-                'page' => 'online_users_csv',
-                'title' => 'Online Users CSV',
-                'url' => 'reports/pg/online_users_csv',
-                'module_id' => 7,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 43,
-                'page' => 'traffic_reports',
-                'title' => 'Traffic Reports',
-                'url' => 'reports/pg/traffic_reports',
-                'module_id' => 7,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 44,
-                'page' => 'edit_hotel_room',
-                'title' => 'Edit Hotel Room',
-                'url' => 'clients/pg/edit_hotel_room',
-                'module_id' => 12,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
+            $newPages = [];
 
-            [
-                'id' => 45,
-                'page' => 'hotel_rooms',
-                'title' => 'Hotel Rooms',
-                'url' => 'clients/pg/hotel_rooms',
-                'module_id' => 13,
-                'allowed_groups' => '1,2',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 46,
-                'page' => 'add_hotel_room',
-                'title' => 'Add Hotel Room',
-                'url' => 'clients/pg/add_hotel_room',
-                'module_id' => 13,
-                'allowed_groups' => '1,2',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 47,
-                'page' => 'list_ads',
-                'title' => 'Ads - List',
-                'url' => 'setup/ads/list-ads',
-                'module_id' => 14,
-                'allowed_groups' => '1,2',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 48,
-                'page' => 'add_ad',
-                'title' => 'Ads - Add',
-                'url' => 'ads/pg/add_ad',
-                'module_id' => 14,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
+            foreach ($pages as $page) {
+                # code...
+                if ($old_id == $page[0]) {
+                    # code...
+                    $newPages[] = [
+                        'page' => $page[1],
+                        'title' => $page[2],
+                        'url' => $page[3],
+                        'allowed_groups' => $page[4],
+                        'show_menu' => $page[5],
+                        'show_to' => $page[6],
+                    ];
+                }
+            }
 
-            [
-                'id' => 49,
-                'page' => 'edit_ad',
-                'title' => 'Ads - Edit',
-                'url' => 'ads/pg/edit_ad',
-                'module_id' => 14,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL,
-            ],
-            [
-                'id' => 50,
-                'page' => 'delete_ad',
-                'title' => 'Ads - Delete',
-                'url' => 'ads/pg/delete_ad',
-                'module_id' => 14,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL,
-            ],
-            [
-                'id' => 51,
-                'page' => 'list_macs',
-                'title' => 'List Bypassed Mac',
-                'url' => 'clients/pg/list_macs',
-                'module_id' => 15,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL,
-            ],
-            [
-                'id' => 52,
-                'page' => 'list_blocked_macs',
-                'title' => 'List Blocked Mac',
-                'url' => 'clients/pg/list_blocked_macs',
-                'module_id' => 15,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL,
-            ],
-            [
-                'id' => 53,
-                'page' => 'add_mac',
-                'title' => 'Add Mac Address',
-                'url' => 'clients/pg/add_mac',
-                'module_id' => 15,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL,
-            ],
-            [
-                'id' => 54,
-                'page' => 'edit_mac',
-                'title' => 'Edit Mac',
-                'url' => 'clients/pg/edit_mac',
-                'module_id' => 15,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL,
-            ],
-            [
-                'id' => 55,
-                'page' => 'delete_mac',
-                'title' => 'Delete Mac',
-                'url' => 'clients/pg/delete_mac',
-                'module_id' => 15,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL,
-            ],
-            [
-                'id' => 56,
-                'page' => 'find_users_data',
-                'title' => 'Find Users Data',
-                'url' => 'users_data/pg/find_users_data',
-                'module_id' => 16,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL,
-            ],
-            [
-                'id' => 57,
-                'page' => 'users_data',
-                'title' => 'Users Data',
-                'url' => 'users_data/pg/view_users_data',
-                'module_id' => 16,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL,
-            ],
-            [
-                'id' => 58,
-                'page' => 'print_users_data',
-                'title' => 'Print Users Data',
-                'url' => 'users_data/pg/print_users_data',
-                'module_id' => 16,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 59,
-                'page' => 'users_data_csv',
-                'title' => 'Users Data CSV',
-                'url' => 'users_data/pg/users_data_csv',
-                'module_id' => 16,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 60,
-                'page' => 'delete',
-                'title' => 'Delete Users Data',
-                'url' => 'users_data/pg/delete',
-                'module_id' => 16,
-                'allowed_groups' => '1',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 61,
-                'page' => 'list_social_plugins',
-                'title' => 'List Social Plugins',
-                'url' => 'social_plugins/pg/list_social_plugins',
-                'module_id' => 17,
-                'allowed_groups' => '1,2',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 62,
-                'page' => 'login_with_facebook',
-                'title' => 'Login With Facebook',
-                'url' => 'social_plugins/pg/login_with_facebook',
-                'module_id' => 17,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 63,
-                'page' => 'edit_fb_page',
-                'title' => 'Edit Facebook Page',
-                'url' => 'social_plugins/pg/edit_fb_page',
-                'module_id' => 17,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 64,
-                'page' => 'edit_fb_login_action',
-                'title' => 'Edit Facebook Login Action',
-                'url' => 'social_plugins/pg/edit_fb_login_action',
-                'module_id' => 17,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 65,
-                'page' => 'login_with_twitter',
-                'title' => 'Login With Twitter',
-                'url' => 'social_plugins/pg/login_with_twitter',
-                'module_id' => 17,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 66,
-                'page' => 'login_with_instagram',
-                'title' => 'Login With Instagram',
-                'url' => 'social_plugins/pg/login_with_instagram',
-                'module_id' => 17,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 67,
-                'page' => 'login_with_google',
-                'title' => 'Login With Google',
-                'url' => 'social_plugins/pg/login_with_google',
-                'module_id' => 17,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            // NOT MEGALOS STANDAR IF PREMIUM SERVICES AND EDIT SERVICES ACTIVE 👇
-            [
-                'id' => 68,
-                'page' => 'premium_services',
-                'title' => 'Premium Services',
-                'url' => 'services/premium-services',
-                'module_id' => 4,
-                'allowed_groups' => '1,2',
-                'show_menu' => 1,
-                'show_to' => 4
-            ],
-            [
-                'id' => 69,
-                'page' => 'edit_premium_service',
-                'title' => 'Edit Premium Service',
-                'url' => 'services/edit-premium-services',
-                'module_id' => 4,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => 4
-            ],
-            [
-                'id' => 70,
-                'page' => 'create_premium_voucher_batch',
-                'title' => 'Create Premium Voucher Batch',
-                'url' => 'premium/pg/create_voucher_batch',
-                'module_id' => 18,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 71,
-                'page' => 'list_voucher_batches',
-                'title' => 'List Premium Voucher Batches',
-                'url' => 'premium/pg/list_voucher_batches',
-                'module_id' => 18,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 72,
-                'page' => 'list_active_vouchers',
-                'title' => 'List Active Premium Vouchers',
-                'url' => 'premium/pg/list_active_vouchers',
-                'module_id' => 18,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 73,
-                'page' => 'list_expired_vouchers',
-                'title' => 'List Expired Premium Vouchers',
-                'url' => 'premium/pg/list_expired_vouchers',
-                'module_id' => 18,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 74,
-                'page' => 'hotel_rooms_csv',
-                'title' => 'Hotel Rooms CSV',
-                'url' => 'client/pg/hotel_rooms_csv',
-                'module_id' => 13,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 75,
-                'page' => 'vouchers_print_setup',
-                'title' => 'Vouchers Print Setup',
-                'url' => 'setup/voucher-print-setup',
-                'module_id' => 9,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 76,
-                'page' => 'list_config',
-                'title' => 'List Configs',
-                'url' => '/setup/config/list-configs',
-                'module_id' => 19,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => 19
-            ],
-            [
-                'id' => 81,
-                'page' => 'config_hotel_rooms',
-                'title' => 'Config Hotel Rooms',
-                'url' => '/setup/config/list-configs/hotel_rooms',
-                'module_id' => 19,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => 19
-            ],
-            [
-                'id' => 84,
-                'page' => 'search_mac',
-                'title' => 'Search Mac',
-                'url' => 'clients/pg/search_mac',
-                'module_id' => 15,
-                'allowed_groups' => 1,
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 85,
-                'page' => 'edit_all_static_hotel_rooms',
-                'title' => 'Edit All Static Rooms',
-                'url' => 'clients/pg/edit_all_static_hotel_rooms',
-                'module_id' => 13,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 86,
-                'page' => 'login_with_linkedin',
-                'title' => 'Login With Linkedin',
-                'url' => 'social_plugins/pg/login_with_linkedin',
-                'module_id' => 17,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 87,
-                'page' => 'batch_delete_macs',
-                'title' => 'Batch Delete Macs',
-                'url' => 'clients/pg/batch_delete_macs',
-                'module_id' => 15,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ],
-            [
-                'id' => 88,
-                'page' => 'batch_delete_clients',
-                'title' => 'Batch Delete Clients',
-                'url' => '#',
-                'module_id' => 3,
-                'allowed_groups' => '1,2',
-                'show_menu' => 0,
-                'show_to' => NULL
-            ]
-        ];
-
-        foreach ($pages as $page) {
-            Page::insert($page);
+            return $newPages;
         }
+
+        return false;
     }
 }

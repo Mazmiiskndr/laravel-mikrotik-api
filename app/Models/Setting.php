@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UseUuid as Model;
 
 class Setting extends Model
 {
@@ -13,6 +13,7 @@ class Setting extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
+        'id',
         'module_id',
         'setting',
         'value',
@@ -20,4 +21,9 @@ class Setting extends Model
     ];
 
     public $timestamps = false;
+
+    public function module()
+    {
+        return $this->belongsTo(Module::class, 'module_id', 'id');
+    }
 }

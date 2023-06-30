@@ -16,7 +16,6 @@ class ServicesSeeder extends Seeder
     public function run()
     {
         Services::create([
-            'id' => 1,
             'service_name' => 'DefaultService',
             'type' => 'Regular',
             'burst_mode' => '0',
