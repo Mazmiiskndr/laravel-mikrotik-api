@@ -7,18 +7,8 @@ use Livewire\Component;
 
 class DataTableActiveVouchers extends Component
 {
-
-    // Listeners
-    protected $listeners = [
-        // TODO:
-        // 'clientCreated' => 'refreshDataTable',
-        // 'clientUpdated' => 'refreshDataTable',
-        // 'confirmClient' => 'deleteClient',
-        // 'deleteBatch'   => 'deleteBatchClient',
-    ];
-
     /**
-     * Render the component `data-table`.
+     * Render the component `data-table-active-vouchers`.
      * @return \Illuminate\View\View
      */
     public function render()
@@ -27,8 +17,8 @@ class DataTableActiveVouchers extends Component
     }
 
     /**
-     * Get data `list-voucher-batches` for the DataTable.
-     * @param VoucherService $voucherService Client service instance
+     * Get data `list-active-vouchers` for the DataTable.
+     * @param VoucherService $voucherService Voucher service instance
      * @return mixed
      */
     public function getDataTable(VoucherService $voucherService)

@@ -72,17 +72,7 @@ class Edit extends Component
         $this->validate($clientService->getRules($this->clientUid), $clientService->getMessages());
 
         // List of properties to include in the client
-        $properties = [
-            'idService', 'username', 'password', 'simultaneousUse', 'validFrom', 'validTo',
-            'identificationNo', 'emailAddress', 'firstName', 'lastName', 'placeOfBirth',
-            'dateOfBirth', 'phone', 'address', 'notes'
-        ];
-
-        // Collect property values into an associative array
-        $clientData = array_reduce($properties, function ($carry, $property) {
-            $carry[$property] = $this->$property;
-            return $carry;
-        }, []);
+        $clientData = $this->prepareClientData();
 
         try {
             // Attempt to update the client
@@ -92,17 +82,10 @@ class Edit extends Component
             if ($client === null) {
                 throw new \Exception('Failed to update the client');
             }
-
             // Notify the frontend of success
             $this->dispatchSuccessEvent('Client was successfully updated.');
-
-            // Reset the form for the next client
-            $this->resetFields();
-
             // Let other components know that an client was updated
-            $this->emit('clientUpdated',
-                true
-            );
+            $this->emit('clientUpdated',true);
         } catch (\Throwable $th) {
             // Notify the frontend of the error
             $this->dispatchErrorEvent('An error occurred while updating client: ' . $th->getMessage());
@@ -148,29 +131,55 @@ class Edit extends Component
     {
         // Fetch the client using the provided service
         $client = $clientService->getClientByUid($clientUid);
-        // If a client was found
+        // If a client was found, load the client's data into the component's properties
         if ($client) {
-
-
-            // Load the client's data into the component's properties
-            $this->clientUid = $client->client_uid;
-            $this->idService = $client->service_id;
-            $this->username = $client->username;
-            $this->password = $client->password;
-            $this->simultaneousUse = ($client->simultaneous_use != 0 || !empty($client->simultaneous_use)) ? $client->simultaneous_use : null;
-            $this->validFrom = ($client->validfrom != 0 || !empty($client->validfrom) ) ? date('Y-m-d H:i', $client->validfrom) : null ;
-            $this->validTo = ($client->valid_until != 0 || !empty($client->valid_until)) ? date('Y-m-d H:i', $client->valid_until) : null;
-            $this->identificationNo = $client->identification;
-            $this->emailAddress = $client->email;
-            $this->firstName = $client->first_name;
-            $this->lastName = $client->last_name;
-            $this->placeOfBirth = $client->birth_place;
-            $this->dateOfBirth = (strtotime($client->birth_date) != 0 || !empty($client->birth_date)) ? date('Y-m-d H:i', $client->birth_date) : null;
-            $this->phone = $client->phone;
-            $this->address = $client->address;
-            $this->notes = $client->note;
+            $this->populateClientData($client);
         }
         $this->dispatchBrowserEvent('show-modal');
+    }
+
+    /**
+     * Prepares the client data for the update operation.
+     * @return array
+     */
+    protected function prepareClientData(): array
+    {
+        // List of properties to include in the update client
+        $clientProperties = [
+            'idService', 'username', 'password', 'simultaneousUse', 'validFrom', 'validTo',
+            'identificationNo', 'emailAddress', 'firstName', 'lastName', 'placeOfBirth',
+            'dateOfBirth', 'phone', 'address', 'notes'
+        ];
+
+        // Return Collect property values into an associative array
+        return array_reduce($clientProperties, function ($carry, $property) {
+            $carry[$property] = $this->$property;
+            return $carry;
+        }, []);
+    }
+
+    /**
+     * Populate the component's properties with the client's data.
+     * @param  object  $client
+     */
+    protected function populateClientData(object $client): void
+    {
+        $this->clientUid = $client->client_uid;
+        $this->idService = $client->service_id;
+        $this->username = $client->username;
+        $this->password = $client->password;
+        $this->simultaneousUse = ($client->simultaneous_use != 0 || !empty($client->simultaneous_use)) ? $client->simultaneous_use : null;
+        $this->validFrom = ($client->validfrom != 0 || !empty($client->validfrom)) ? date('Y-m-d H:i', $client->validfrom) : null;
+        $this->validTo = ($client->valid_until != 0 || !empty($client->valid_until)) ? date('Y-m-d H:i', $client->valid_until) : null;
+        $this->identificationNo = $client->identification;
+        $this->emailAddress = $client->email;
+        $this->firstName = $client->first_name;
+        $this->lastName = $client->last_name;
+        $this->placeOfBirth = $client->birth_place;
+        $this->dateOfBirth = (strtotime($client->birth_date) != 0 || !empty($client->birth_date)) ? date('Y-m-d H:i', $client->birth_date) : null;
+        $this->phone = $client->phone;
+        $this->address = $client->address;
+        $this->notes = $client->note;
     }
 
 }
