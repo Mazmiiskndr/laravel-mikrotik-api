@@ -17,7 +17,7 @@
             <div>
                 {{-- TODO: BUTTON DISCONNECT AND BUTTON BLOCK MAC ADDRESS --}}
                 {{-- /Start Button for Export To CSV --}}
-                @livewire('backend.report.list-online-user.export-csv')
+                @livewire('backend.report.list-online-user.save-to-excel')
                 {{-- /End Button for Export To CSV --}}
 
             </div>
