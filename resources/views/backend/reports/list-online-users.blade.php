@@ -16,13 +16,9 @@
 
             <div>
                 {{-- TODO: BUTTON DISCONNECT AND BUTTON BLOCK MAC ADDRESS --}}
-                {{-- /Start Button for Create New Service --}}
-                {{-- @if ($permissions['isAllowedToAddNewService'])
-                <a href="{{ route('backend.services.add-new-service') }}" class="btn btn-facebook text-white">
-                    <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Service
-                </a>
-                @endif --}}
-                {{-- /End Button for Create New Service --}}
+                {{-- /Start Button for Export To CSV --}}
+                @livewire('backend.report.list-online-user.save-to-excel')
+                {{-- /End Button for Export To CSV --}}
 
             </div>
 

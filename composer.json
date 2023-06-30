@@ -17,6 +17,7 @@
     "laravel/sanctum": "^2.14",
     "laravel/tinker": "^2.7",
     "livewire/livewire": "^2.12",
+    "maatwebsite/excel": "^3.1",
     "predis/predis": "^2.1",
     "yajra/laravel-datatables": "^9.0",
     "yaza/laravel-repository-service": "^3.2"

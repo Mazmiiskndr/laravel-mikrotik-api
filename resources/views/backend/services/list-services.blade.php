@@ -17,9 +17,9 @@
             <div>
                 {{-- /Start Button for Create New Service --}}
                 @if ($permissions['isAllowedToAddNewService'])
-                <a href="{{ route('backend.services.add-new-service') }}" class="btn btn-facebook text-white">
-                    <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Service
-                </a>
+                <x-link-button color="facebook" route="backend.services.add-new-service" icon="fas fa-plus-circle">
+                    Add New Service
+                </x-link-button>
                 @endif
                 {{-- /End Button for Create New Service --}}
 
