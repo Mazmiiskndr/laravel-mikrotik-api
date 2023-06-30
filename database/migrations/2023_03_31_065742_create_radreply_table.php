@@ -13,13 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('radreply', function (Blueprint $table) {
-            $table->id();
-            $table->string('username', 64)->unique();
-            $table->string('attribute', 64);
-            $table->string('op', 2)->default("=");
-            $table->string('value', 253);
-        });
+        if (!Schema::hasTable('radreply')) {
+            Schema::create('radreply', function (Blueprint $table) {
+                $table->id();
+                $table->string('username', 64)->unique();
+                $table->string('attribute', 64);
+                $table->string('op', 2)->default("=");
+                $table->string('value', 253);
+            });
+        }
     }
 
     /**
