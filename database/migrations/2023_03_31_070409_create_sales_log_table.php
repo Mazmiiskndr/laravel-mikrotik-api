@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('sales_log', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('password', 100);
             $table->string('mac', 50);
             $table->string('ip', 50);

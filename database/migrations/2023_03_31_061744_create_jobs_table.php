@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('jobs', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->uuid('job_uid')->unique();
             $table->string('command', 10)->default("disconnect");
             $table->string('username', 100);

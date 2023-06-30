@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('goose_db_version', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->bigInteger('version_id');
             $table->tinyInteger('is_applied')->default(1);
             $table->timestamps();

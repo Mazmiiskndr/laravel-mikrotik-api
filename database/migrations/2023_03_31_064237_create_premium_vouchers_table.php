@@ -14,9 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('premium_vouchers', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->uuid('premium_voucher_uid')->unique();
-            $table->unsignedBigInteger('voucher_batch_id');
+            $table->string('voucher_batch_id');
             $table->string('username', 100);
             $table->string('password', 100);
             $table->integer('valid_until')->default(0);

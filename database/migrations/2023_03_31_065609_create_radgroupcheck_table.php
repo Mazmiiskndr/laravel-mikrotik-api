@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('radgroupcheck', function (Blueprint $table) {
-            $table->id();
-            $table->string('groupname',64);
+            $table->uuid('id')->primary();
+            $table->string('groupname', 64);
             $table->string('attribute', 64);
             $table->string('op', 2)->default("==");
             $table->string('value', 253);

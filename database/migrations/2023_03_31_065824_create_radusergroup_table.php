@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('radusergroup', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('username', 64)->unique();
             $table->string('groupname', 64);
             $table->string('priority', 2)->default(1);

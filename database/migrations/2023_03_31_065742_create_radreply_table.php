@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('radreply', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('username', 64)->unique();
             $table->string('attribute', 64);
             $table->string('op', 2)->default("=");

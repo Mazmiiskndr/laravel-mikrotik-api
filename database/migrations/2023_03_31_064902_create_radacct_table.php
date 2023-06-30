@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('radacct', function (Blueprint $table) {
-            $table->id('radacctid');
+            $table->uuid('radacctid')->primary();
             $table->string('acctsessionid', 64);
             $table->string('acctuniqueid', 32);
             $table->string('username', 64);
