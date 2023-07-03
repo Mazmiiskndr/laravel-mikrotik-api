@@ -27,6 +27,7 @@
 
     @push('scripts')
     <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
+    <script src="{{ asset('assets/js/backend/client/voucher/list-active-vouchers-management.js') }}"></script>
     @endpush
 </div>
 @endif
