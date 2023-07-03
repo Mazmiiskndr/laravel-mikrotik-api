@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Admin;
+use App\Models\RadAcct;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -26,5 +27,6 @@ class DatabaseSeeder extends Seeder
         $this->call(AdTypeSeeder::class);
 
         Admin::factory(50)->create();
+        RadAcct::factory(50)->create();
     }
 }

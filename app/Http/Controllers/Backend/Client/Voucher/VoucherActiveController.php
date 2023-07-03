@@ -30,6 +30,6 @@ class VoucherActiveController extends Controller
         // Retrieve the permissions from the request's attributes which were set in the 'checkPermissions' middleware
         $permissions = $request->attributes->get('permissions');
         // Return the view with the permissions.
-        return view('backend.clients.voucher.list-active-vouchers', compact('permissions'));
+        return view('backend.clients.vouchers.list-active-vouchers', compact('permissions'));
     }
 }
