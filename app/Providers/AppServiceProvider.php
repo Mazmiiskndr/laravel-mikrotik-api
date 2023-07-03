@@ -43,16 +43,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        try {
+        /* Checks if the protocol is https and forces it to be https. */
+        if (ProtocolCheck::check()) {
             //code...
-            $https = ProtocolCheck::check();
-            if ($https) {
-                URL::forceScheme('https');
-            }
-        } catch (\Throwable $th) {
-            //throw $th;
+            URL::forceScheme('https');
         }
-
         /* Sets the default string length for database migrations to 200 characters. */
         Schema::defaultStringLength(200);
     }

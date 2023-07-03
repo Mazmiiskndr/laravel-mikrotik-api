@@ -16,7 +16,7 @@ class MenuHelper
     public static function generateMenuHtml()
     {
         // Fetch the admin data along with the group and modules relationship
-        $admin = Admin::with(['group.modules.pages'])->where('admin_uid', session('user_uid'))->first();
+        $admin = Admin::with(['group.modules.pages'])->where('id', session('user_uid'))->first();
 
         // Build the menu data based on the fetched admin data
         $menuData = self::buildMenuData($admin);

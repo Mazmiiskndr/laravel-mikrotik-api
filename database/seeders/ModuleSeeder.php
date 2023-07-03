@@ -254,8 +254,8 @@ class ModuleSeeder extends Seeder
                 'pages_data' => 19,
             ],
             [
-                'name' => 'dummy_module',
-                'title' => 'Dummy Module',
+                'name' => 'router',
+                'title' => 'Router',
                 'is_parent' => 0,
                 'show_to' => NULL,
                 'url' => NULL,
@@ -263,7 +263,7 @@ class ModuleSeeder extends Seeder
                 'active' => 0,
                 'icon_class' => NULL,
                 'root' => 0,
-                'settings_data' => 'dummy',
+                'settings_data' => 'default',
                 'pages_data' => null,
             ]
         ];
