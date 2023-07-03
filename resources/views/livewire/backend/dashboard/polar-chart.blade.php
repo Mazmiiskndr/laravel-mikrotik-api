@@ -1,7 +1,7 @@
 <div class="col-lg-6 col-12 mb-4">
     <div class="card">
         <div class="card-header">
-            <h5 class="card-title mb-0">User Active</h5>
+            <h5 class="card-title mb-0">Active Users</h5>
         </div>
         <div class="card-body">
             @if ($chartData)
