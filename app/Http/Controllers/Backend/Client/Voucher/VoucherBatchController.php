@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Client\Voucher;
 
 use App\Http\Controllers\Controller;
+use App\Services\Client\Voucher\VoucherService;
 use Illuminate\Http\Request;
 
 class VoucherBatchController extends Controller
@@ -30,6 +31,27 @@ class VoucherBatchController extends Controller
         // Retrieve the permissions from the request's attributes which were set in the 'checkPermissions' middleware
         $permissions = $request->attributes->get('permissions');
         // Return the view with the permissions.
-        return view('backend.clients.voucher.list-voucher-bathes', compact('permissions'));
+        return view('backend.clients.vouchers.list-voucher-bathes', compact('permissions'));
+    }
+
+    /**
+     * Show the datatable for detail a voucher batch.
+     * @param  \App\Services\Client\Voucher\VoucherService  $voucherService
+     * @param  int  $voucherBatchId
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     * This method retrieves permissions from the request's attributes,
+     * set by 'checkPermissions' middleware, and returns a view with these permissions.
+     */
+    public function show(VoucherService $voucherService, $voucherBatchId, Request $request)
+    {
+        // Retrieve the permissions from the request's attributes which were set in the 'checkPermissions' middleware
+        // $permissions = $request->attributes->get('permissions');
+        // TODO:
+        // $dataVouchers = $voucherService->getVouchersByBatchId($voucherBatchId);
+        // dd($dataVouchers);
+
+        // Return the view with the permissions and dataVouchers.
+        return view('backend.clients.vouchers.voucher-batch-detail', compact('voucherBatchId'));
     }
 }

@@ -16,6 +16,13 @@ interface VoucherRepository extends Repository{
     public function getVoucherBatchesWithService($conditions, $columns);
 
     /**
+     * Retrieve Voucher records based on voucher_batches_id
+     * @param int $voucherBatchesId
+     * @return Collection
+     */
+    public function getVouchersByBatchId($voucherBatchesId);
+
+    /**
      * Retrieves voucher batch records from a database, initializes DataTables, and adds columns to DataTable.
      * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
      */
@@ -26,5 +33,11 @@ interface VoucherRepository extends Repository{
      * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
      */
     public function getDatatableActiveVouchers();
+
+    /**
+     * Retrieves Detail Voucher Batch records from a database, initializes DataTables, and adds columns to DataTable.
+     * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
+     */
+    public function getDatatableDetailVoucherBatch($voucherBatchesId);
 
 }

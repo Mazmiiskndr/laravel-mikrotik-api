@@ -50,6 +50,16 @@ class VoucherServiceImplement extends Service implements VoucherService
     }
 
     /**
+     * Retrieve Voucher records based on voucher_batches_id
+     * @param int $voucherBatchesId
+     * @return Collection
+     */
+    public function getVouchersByBatchId($voucherBatchesId)
+    {
+        return $this->handleRepositoryCall('getVouchersByBatchId', [$voucherBatchesId]);
+    }
+
+    /**
      * Retrieves voucher batch records from a database, initializes DataTables, and adds columns to DataTable.
      * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
      */
@@ -65,5 +75,14 @@ class VoucherServiceImplement extends Service implements VoucherService
     public function getDatatableActiveVouchers()
     {
         return $this->handleRepositoryCall('getDatatableActiveVouchers');
+    }
+
+    /**
+     * Retrieves Detail Voucher Batch records from a database, initializes DataTables, and adds columns to DataTable.
+     * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
+     */
+    public function getDatatableDetailVoucherBatch($voucherBatchesId)
+    {
+        return $this->handleRepositoryCall('getDatatableDetailVoucherBatch', [$voucherBatchesId]);
     }
 }
