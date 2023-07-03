@@ -47,7 +47,6 @@
 
 </div>
 @push('scripts')
-{{-- TODO: --}}
 <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
 {{-- <script src="{{ asset('assets/js/backend/service/service-management.js') }}"></script> --}}
 @endpush

@@ -44,7 +44,6 @@
     @endif
 
     @push('scripts')
-    {{-- TODO: --}}
     <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
     <script src="{{ asset('assets/js/backend/client/voucher/list-voucher-batches-management.js') }}"></script>
     @endpush

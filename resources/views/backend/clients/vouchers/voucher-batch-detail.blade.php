@@ -14,7 +14,7 @@
             <h4 class="card-title">Table Vouchers</h4>
             <div>
 
-                {{-- TODO: PRINT THIS VOUCHER BATCH AND SAVE TO EXCEL --}}
+                {{-- TODO: PRINT THIS VOUCHER BATCH --}}
                 {{-- /Start Button for Print This Voucher Batch --}}
                 <x-button id="print_voucher" data-fancybox type="button" color="primary btn-sm">
                     <i class="tf-icons fas fa-print ti-xs me-1"></i>&nbsp; Print This Voucher Batch
@@ -31,13 +31,11 @@
 
     {{-- Start List DataTable --}}
     <div class="card-body">
-        {{-- TODO: --}}
         @livewire('backend.client.voucher.list.data-table-detail-voucher-batch',['voucherBatchId' => $voucherBatchId])
     </div>
     {{-- End List DataTable --}}
 
     @push('scripts')
-    {{-- TODO: --}}
     <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
     <script src="{{ asset('assets/js/backend/client/voucher/voucher-batch-detail-management.js') }}"></script>
     @endpush
