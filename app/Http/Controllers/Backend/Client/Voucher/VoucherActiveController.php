@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Client\Voucher;
 
 use App\Http\Controllers\Controller;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 
 class VoucherActiveController extends Controller
@@ -32,4 +33,5 @@ class VoucherActiveController extends Controller
         // Return the view with the permissions.
         return view('backend.clients.vouchers.list-active-vouchers', compact('permissions'));
     }
+
 }

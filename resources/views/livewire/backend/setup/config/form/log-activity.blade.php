@@ -28,10 +28,3 @@
         </div>
     </form>
 </div>
-
-{{-- TODO:  --}}
-{{-- <div class="form-check form-switch">
-    <label class="form-check-label" for="logActivitySwitch">On</label>
-    <input wire:model="logActivity" wire:change="updateActivity" class="form-check-input" type="checkbox" //
-        id="logActivitySwitch">
-    </div> --}}

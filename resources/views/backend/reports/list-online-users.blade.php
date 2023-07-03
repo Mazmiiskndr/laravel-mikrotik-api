@@ -28,9 +28,9 @@
                 </x-button>
                 {{-- /End Button for Block Mac Addresses --}}
 
-                {{-- /Start Button for Export To CSV --}}
+                {{-- /Start Button for Export To Excel --}}
                 @livewire('backend.report.list-online-user.save-to-excel')
-                {{-- /End Button for Export To CSV --}}
+                {{-- /End Button for Export To Excel --}}
 
             </div>
 
@@ -47,7 +47,6 @@
 
 </div>
 @push('scripts')
-{{-- TODO: --}}
 <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
 {{-- <script src="{{ asset('assets/js/backend/service/service-management.js') }}"></script> --}}
 @endpush
