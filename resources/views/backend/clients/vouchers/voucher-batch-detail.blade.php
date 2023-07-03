@@ -22,9 +22,7 @@
                 {{-- /End Button for Print This Voucher Batch --}}
 
                 {{-- /Start Button for Export To Excel --}}
-                <x-button type="button" color="success btn-sm">
-                    <i class="tf-icons fas fa-file-excel ti-xs me-1"></i>&nbsp; Save to Excel
-                </x-button>
+                @livewire('backend.client.voucher.list.save-to-excel',['voucherBatchId' => $voucherBatchId])
                 {{-- /End Button for Export To Excel --}}
 
             </div>
