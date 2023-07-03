@@ -31,14 +31,20 @@
 
                 {{-- START CHART --}}
                 <!-- Line Charts -->
-                @livewire('backend.dashboard.line-chart')
+                <div class="row">
+                    @livewire('backend.dashboard.line-chart')
+                </div>
 
                 <!-- Polar Area Chart -->
-                @livewire('backend.dashboard.polar-chart')
+                <div class="row">
+                    @livewire('backend.dashboard.polar-chart')
 
-                {{-- TODO: --}}
-                <!-- Radar Chart -->
-                {{-- @livewire('backend.dashboard.radar-chart') --}}
+                    {{-- TODO: Change radar chart to bar chart --}}
+                    <!-- Bar Chart -->
+                    @livewire('backend.dashboard.radar-chart')
+
+                </div>
+
                 {{-- END CHART --}}
             </div>
 
@@ -53,9 +59,4 @@
 </div>
 
 
-@push('scripts')
-<!-- Apex Chart -->
-<script src="{{ asset('assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
-
-@endpush
 @endsection

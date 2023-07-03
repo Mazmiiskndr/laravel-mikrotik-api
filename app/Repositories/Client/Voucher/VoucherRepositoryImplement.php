@@ -59,6 +59,22 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
     }
 
     /**
+     * Retrieve Voucher records based on voucher_batches_id
+     * @param int $voucherBatchesId
+     * @return Collection
+     */
+    public function getVouchersByBatchId($voucherBatchesId)
+    {
+        try {
+            return $this->model->where('voucher_batch_id', $voucherBatchesId)->get();
+        } catch (Exception $e) {
+            // Log the exception message and return an empty collection
+            Log::error("Error getting vouchers by batch id : " . $e->getMessage());
+            return collect();
+        }
+    }
+
+    /**
      * Retrieves Voucher Batches records from a database, initializes DataTables, and adds columns to DataTable.
      * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
      */
@@ -81,7 +97,7 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
                 $detailButton = '';
                 $deleteButton = '';
 
-                $detailButton = '<button type="button" name="detail" class="detail btn btn-info btn-sm"> <i class="fas fa-eye"></i></button>';
+                $detailButton = '<a href="' . route('backend.clients.voucher.voucher-batch-detail', $data->id) . '" name="detail" class="detail btn btn-info btn-sm"> <i class="fas fa-eye"></i></a>';
 
                 // Check if the current client is allowed to delete
                 if (AccessControlHelper::isAllowedToPerformAction('delete_voucher_batch')) {
@@ -123,12 +139,37 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
             })
             ->addColumn('voucher_batch_id', function ($data) {
                 $detailButton = '';
-                // TODO: CREATE DETAIL VOUCHER BATCHES
-                $detailButton = '<button type="button" name="detail" class="detail btn btn-info btn-sm"> <i class="fas fa-eye"></i>&nbsp; Detail</button>';
+                $detailButton = '<a href="' . route('backend.clients.voucher.voucher-batch-detail', $data->voucherBatch->id) . '" name="detail" class="detail btn btn-info btn-sm"> <i class="fas fa-eye"></i>&nbsp; Detail</a>';
 
                 return $detailButton;
             })
             ->rawColumns(['voucher_batch_id'])
+            ->make(true);
+    }
+
+    /**
+     * Retrieves Detail Voucher Batch records from a database, initializes DataTables, and adds columns to DataTable.
+     * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
+     */
+    public function getDatatableDetailVoucherBatch($voucherBatchesId)
+    {
+        // Retrieve records from the getClientWithService function
+        $data = $this->getVouchersByBatchId($voucherBatchesId);
+
+        // Initialize DataTables and add columns to the table
+        return DataTables::of($data)
+            ->addIndexColumn()
+            // TODO: FOR TOTAL TIME USED
+            ->addColumn('first_use', function ($data) {
+                return ($data->first_use == 0) ? '-' : $data->first_use;
+            })
+            ->addColumn('valid_until', function ($data) {
+                return ($data->valid_until == 0) ? '-' : $data->valid_until;
+            })
+            ->addColumn('status', function ($data) {
+                return ucfirst($data->status);
+            })
+            ->rawColumns(['action'])
             ->make(true);
     }
 }

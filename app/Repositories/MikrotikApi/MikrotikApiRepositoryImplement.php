@@ -11,18 +11,23 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
 {
 
     /**
-     * Define RouterOS API endpoints
+     * 👇 Define RouterOS API endpoints 👇
      */
-    // END POINT ROUTER API OS
-    const ENDPOINT_ACTIVE = "/ip/hotspot/active/print";
-    const ENDPOINT_IP_BINDING = "/ip/hotspot/ip-binding/print";
-    const ENDPOINT_RESOURCE = "/system/resource/print";
-    const ENDPOINT_MONITOR_TRAFFIC = "/interface/monitor-traffic";
+    // END POINT ROUTER OS API
+    const ENDPOINT_ACTIVE_ROUTER_OS = "/ip/hotspot/active/print";
+    const ENDPOINT_IP_BINDING_ROUTER_OS = "/ip/hotspot/ip-binding/print";
+    const ENDPOINT_RESOURCE_ROUTER_OS = "/system/resource/print";
+    const ENDPOINT_MONITOR_TRAFFIC_ROUTER_OS = "/interface/monitor-traffic";
+
+    /**
+     * 👇 Define CURL API endpoints 👇
+     */
     // END POINT CURL
     const ENDPOINT_ACTIVE_CURL = "ip/hotspot/active/print";
     const ENDPOINT_IP_BINDING_CURL = "ip/hotspot/ip-binding/print";
     const ENDPOINT_RESOURCE_CURL = "system/resource/print";
     const ENDPOINT_MONITOR_TRAFFIC_CURL = "interface/monitor-traffic";
+
 
     /**
      * Model class to be used in this repository for the common methods inside Eloquent
@@ -87,8 +92,8 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     //         }
 
     //         // Fetch list of active users and IP bindings
-    //         $userActive = $this->model->comm(self::ENDPOINT_ACTIVE);
-    //         $ipBindings = $this->model->comm(self::ENDPOINT_IP_BINDING);
+    //         $userActive = $this->model->comm(self::ENDPOINT_ACTIVE_ROUTER_OS);
+    //         $ipBindings = $this->model->comm(self::ENDPOINT_IP_BINDING_ROUTER_OS);
 
     //         // Filter bypassed IP bindings
     //         $ipBindingBypassed = array_filter($ipBindings, function ($binding) {
@@ -158,7 +163,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     //         }
 
     //         // Fetch system resource data
-    //         $systemResource = $this->model->comm(self::ENDPOINT_RESOURCE);
+    //         $systemResource = $this->model->comm(self::ENDPOINT_RESOURCE_ROUTER_OS);
 
     //         if (empty($systemResource[0])) {
     //             Log::error('Failed to get Mikrotik resource data: Empty response.');
@@ -201,7 +206,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
 
     //     $interface  = env('MIKROTIK_INTERFACE');
     //     // Send the request to the monitor traffic endpoint
-    //     $response = $this->model->comm(self::ENDPOINT_MONITOR_TRAFFIC, [
+    //     $response = $this->model->comm(self::ENDPOINT_MONITOR_TRAFFIC_ROUTER_OS, [
     //         "interface" => $interface,
     //         "once" => ""
     //     ]);
@@ -210,8 +215,8 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     //         // Get the traffic data
     //         $trafficData = $response[0];
 
-    //         $uploadTraffic = isset($trafficData['tx-bits-per-second']) ? round($trafficData['tx-bits-per-second'] / 1000) : 0;
-    //         $downloadTraffic = isset($trafficData['rx-bits-per-second']) ? round($trafficData['rx-bits-per-second'] / 1000) : 0;
+    //         $uploadTraffic = isset($trafficData['tx-bits-per-second']) ? round($trafficData['tx-bits-per-second']) : 0;
+    //         $downloadTraffic = isset($trafficData['rx-bits-per-second']) ? round($trafficData['rx-bits-per-second']) : 0;
 
     //         return [
     //             'uploadTraffic' => $uploadTraffic ,

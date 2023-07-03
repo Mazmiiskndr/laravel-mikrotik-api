@@ -13,6 +13,8 @@
 </div>
 
 @push('scripts')
+{{-- Apex Chart --}}
+<script src="{{ asset('assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
 <script>
     // Define the polling interval
     let pollingInterval;
