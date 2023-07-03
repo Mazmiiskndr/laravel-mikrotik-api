@@ -97,7 +97,7 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
                 $detailButton = '';
                 $deleteButton = '';
 
-                $detailButton = '<button type="button" name="detail" class="detail btn btn-info btn-sm"> <i class="fas fa-eye"></i></button>';
+                $detailButton = '<a href="' . route('backend.clients.voucher.voucher-batch-detail', $data->id) . '" name="detail" class="detail btn btn-info btn-sm"> <i class="fas fa-eye"></i></a>';
 
                 // Check if the current client is allowed to delete
                 if (AccessControlHelper::isAllowedToPerformAction('delete_voucher_batch')) {

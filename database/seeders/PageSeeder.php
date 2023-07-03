@@ -275,7 +275,7 @@ class PageSeeder extends Seeder
                 'url' => 'reports/pg/search_traffic',
                 'module_id' => 7,
                 'allowed_groups' => '1',
-                'show_menu' => 1,
+                'show_menu' => 0,
                 'show_to' => NULL
             ],
             [
