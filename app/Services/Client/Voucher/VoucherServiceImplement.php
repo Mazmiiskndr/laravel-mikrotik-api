@@ -85,4 +85,26 @@ class VoucherServiceImplement extends Service implements VoucherService
     {
         return $this->handleRepositoryCall('getDatatableDetailVoucherBatch', [$voucherBatchesId]);
     }
+
+    /**
+     * Stores a new voucher batch using the provided request data.
+     * @param array $request The data used to create the new voucher batch.
+     * @return Model|mixed The newly created voucher batch.
+     * @throws \Exception if an error occurs while creating the voucher batch.
+     */
+    public function storeNewVoucherBatch($request)
+    {
+        return $this->handleRepositoryCall('storeNewVoucherBatch', [$request]);
+    }
+
+    /**
+     * Deletes a voucher batch and its associated vouchers.
+     * @param int $voucherBatchId The id of the voucher batch to delete.
+     * @return void
+     * @throws \Exception if an error occurs while deleting the voucher batch or its associated vouchers.
+     */
+    public function deleteVoucherBatch($voucherBatchId)
+    {
+        return $this->handleRepositoryCall('deleteVoucherBatch', [$voucherBatchId]);
+    }
 }

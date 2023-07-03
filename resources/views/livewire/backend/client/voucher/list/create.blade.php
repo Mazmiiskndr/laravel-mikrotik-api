@@ -31,7 +31,7 @@
                             <div class="col-lg-4 col-12">
                                 <x-input-field type="number" id="quantity" label="Quantity" model="quantity"
                                     placeholder="Enter a Quantity.." required
-                                    tooltip="Number of vouchers code you want to make." />
+                                    tooltip="Number of vouchers code you want to make."/>
                             </div>
                         </div>
 
@@ -39,7 +39,7 @@
                         <div class="row mt-3">
                             <div class="col-lg-12 col-12">
                                 <x-input-field type="text" id="notes" label="Notes" model="notes"
-                                    placeholder="Enter a Notes.." required
+                                    placeholder="Enter a Notes.."
                                     tooltip="Internal note for this voucher batch, won't be shown to voucher's user." />
                             </div>
                         </div>
