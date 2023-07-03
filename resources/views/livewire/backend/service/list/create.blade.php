@@ -77,12 +77,12 @@
         <div class="row">
             <div class="col-lg-6 col-md-6 col-12 mb-3">
                 <x-input-group type="number" id="downloadBurstRate" label="Download Burst Rate"
-                    model="downloadBurstRate" placeholder="Download Burst Rate" appendText="Kbps" required
+                    model="downloadBurstRate" placeholder="Download Burst Rate" appendText="Kbps"
                     tooltip="Temporary additional download rate applies if average rate in last burst-time seconds is below burst-threshold; stops when it equals or exceeds the threshold." />
             </div>
             <div class="col-lg-6 col-md-6 col-12 mb-3">
                 <x-input-group type="number" id="uploadBurstRate" label="Upload Burst Rate" model="uploadBurstRate"
-                    placeholder="Upload Burst Rate" appendText="Kbps" required
+                    placeholder="Upload Burst Rate" appendText="Kbps"
                     tooltip="Temporary additional upload rate applies similarly, triggered below and stopping at the burst-threshold." />
             </div>
         </div>
@@ -91,12 +91,12 @@
         <div class="row">
             <div class="col-lg-5 col-md-4 col-12 mb-3">
                 <x-input-group type="number" id="downloadBurstTime" label="Download Burst Time"
-                    model="downloadBurstTime" placeholder="Download Burst Time" appendText="Seconds" required
+                    model="downloadBurstTime" placeholder="Download Burst Time" appendText="Seconds"
                     tooltip="See download burst rate explanation." />
             </div>
             <div class="col-lg-4 col-md-4 col-6 mb-3">
                 <x-input-group type="number" id="uploadBurstTime" label="Upload Burst Time" model="uploadBurstTime"
-                    placeholder="Upload Burst Time" appendText="Seconds" required
+                    placeholder="Upload Burst Time" appendText="Seconds"
                     tooltip="See upload burst rate explanation." />
             </div>
             <div class="col-lg-3 col-md-4 col-6 mb-3">
@@ -123,7 +123,7 @@
             </div>
             <div class="col-lg-4 col-md-4 col-6 mb-3">
                 <x-input-field type="number" id="timeLimit" label="Time Limit" model="timeLimit"
-                    placeholder="Enter a Time Limit.." required
+                    placeholder="Enter a Time Limit.."
                     tooltip="Limit usage by time, after this limit is reached the user become invalid." />
             </div>
             <div class="col-lg-3 col-md-3 col-6 mb-3">
@@ -145,7 +145,7 @@
         <div class="row">
             <div class="col-lg-6 col-md-6 col-12 mb-3">
                 <x-input-field type="text" id="validFrom" label="Valid From" model="validFrom"
-                    placeholder="(YYYY-MM-DD HH:MM:SS)" required
+                    placeholder="(YYYY-MM-DD HH:MM:SS)"
                     tooltip="User can be used after this specified time." />
             </div>
             <div class="col-lg-6 col-md-6 col-12 mb-3">
@@ -162,7 +162,7 @@
         <div class="row">
             <div class="col-lg-8 col-md-8 col-6 mb-3">
                 <x-input-field type="text" id="validity" label="Validity" model="validity"
-                    placeholder="Enter a Validity.." required
+                    placeholder="Enter a Validity.."
                     tooltip="How long a user can be used before become invalid." />
             </div>
 
@@ -185,7 +185,7 @@
         <div class="row">
             <div class="col-lg-8 col-md-6 col-6 mb-3">
                 <x-input-field type="number" id="timeDuration" label="Time Duration" model="timeDuration"
-                    placeholder="Enter a Time Duration.." required />
+                    placeholder="Enter a Time Duration.." />
             </div>
             <div class="col-lg-2 col-md-6 col-6 mb-3">
                 <x-select-field id="unitTimeDuration" model="unitTimeDuration" label="Unit Time Duration" :options="[
