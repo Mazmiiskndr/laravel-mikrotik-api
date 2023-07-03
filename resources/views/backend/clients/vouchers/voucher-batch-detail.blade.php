@@ -16,7 +16,7 @@
 
                 {{-- TODO: PRINT THIS VOUCHER BATCH AND SAVE TO EXCEL --}}
                 {{-- /Start Button for Print This Voucher Batch --}}
-                <x-button type="button" color="primary btn-sm">
+                <x-button id="print_voucher" data-fancybox type="button" color="primary btn-sm">
                     <i class="tf-icons fas fa-print ti-xs me-1"></i>&nbsp; Print This Voucher Batch
                 </x-button>
                 {{-- /End Button for Print This Voucher Batch --}}

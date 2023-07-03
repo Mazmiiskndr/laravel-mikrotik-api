@@ -4,6 +4,7 @@
         <thead>
             <tr>
                 <th>No</th>
+                <th>S/N</th>
                 <th>Username</th>
                 <th>Password</th>
                 <th>Total Time Used</th>
@@ -19,6 +20,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         var columns = [
             { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
+            { data: 'serial_number', name: 'serial_number' },
             { data: 'username', name: 'username' },
             { data: 'password', name: 'password' },
             { data: 'first_use', name: 'first_use' },

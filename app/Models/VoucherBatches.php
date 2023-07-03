@@ -36,8 +36,19 @@ class VoucherBatches extends Model
         });
     }
 
+    /**
+     * Get the data service.
+     */
     public function service()
     {
         return $this->belongsTo(Services::class, 'service_id', 'id');
+    }
+
+    /**
+     * Get the vouchers for the voucher batch.
+     */
+    public function vouchers()
+    {
+        return $this->hasMany(Voucher::class, 'voucher_batch_id');
     }
 }

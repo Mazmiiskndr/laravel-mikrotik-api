@@ -20,14 +20,12 @@
     @if($permissions['isAllowedToListActiveVouchers'])
     {{-- Start List DataTable --}}
     <div class="card-body">
-        {{-- TODO:  --}}
         @livewire('backend.client.voucher.list.data-table-active-vouchers')
     </div>
     {{-- End List DataTable --}}
     @endif
 
     @push('scripts')
-    {{-- TODO: --}}
     <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
     @endpush
 </div>

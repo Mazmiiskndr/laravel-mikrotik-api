@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('first_use')->default(0);
             $table->string('status', 50)->default("active");
             $table->tinyInteger('clean_up')->default(0);
+            $table->string('serial_number', 100)->nullable();
             $table->timestamps();
             $table->foreign('voucher_batch_id')
                 ->references('id')

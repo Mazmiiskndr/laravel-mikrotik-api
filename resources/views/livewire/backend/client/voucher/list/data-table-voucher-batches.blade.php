@@ -63,7 +63,7 @@ $canBatchDelete = App\Helpers\AccessControlHelper::isAllowedToPerformAction('bat
 
         if (canBatchDelete) {
             columns.unshift({
-                data: 'voucher_batches_uid',
+                data: 'id',
                 render: function (data, type, row) {
                     return `<input type='checkbox' style='border: 1px solid #8f8f8f;' class='form-check-input voucherBatch-checkbox' value='${data}'>`;
                 },

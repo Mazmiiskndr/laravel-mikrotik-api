@@ -3,10 +3,12 @@
 namespace App\Repositories\Client\Voucher;
 
 use App\Helpers\AccessControlHelper;
+use App\Models\Setting;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Voucher;
 use App\Models\VoucherBatches;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -19,11 +21,13 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
     */
     protected $model;
     protected $voucherBatchesModel;
+    protected $settingModel;
 
-    public function __construct(Voucher $model,VoucherBatches $voucherBatchesModel)
+    public function __construct(Voucher $model,VoucherBatches $voucherBatchesModel, Setting $settingModel)
     {
         $this->model = $model;
         $this->voucherBatchesModel = $voucherBatchesModel;
+        $this->settingModel = $settingModel;
     }
 
     /**
@@ -102,7 +106,7 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
                 // Check if the current client is allowed to delete
                 if (AccessControlHelper::isAllowedToPerformAction('delete_voucher_batch')) {
                     // If client is allowed, show delete button
-                    $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteVoucherBatch(\'' . $data->voucher_batches_uid . '\')"> <i class="fas fa-trash"></i></button>';
+                    $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteVoucherBatch(\'' . $data->id . '\')"> <i class="fas fa-trash"></i></button>';
                 }
 
                 return $detailButton . $deleteButton;
@@ -172,4 +176,132 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
             ->rawColumns(['action'])
             ->make(true);
     }
+
+    /**
+     * Stores a new voucher batch using the provided request data.
+     * @param array $request The data used to create the new voucher batch.
+     * @return Model|mixed The newly created voucher batch.
+     * @throws \Exception if an error occurs while creating the voucher batch.
+     */
+    public function storeNewVoucherBatch($request)
+    {
+        // Start a new database transaction.
+        DB::beginTransaction();
+
+        try {
+            $voucherType = $this->settingModel->whereIn('setting', ['create_vouchers_type'])->first();
+            // Create a new voucher batch
+            $voucherBatch = $this->createVoucherBatch($request, $voucherType);
+
+            // Generate vouchers for the voucher batch
+            $this->createVouchers($request['quantity'], $request['charactersLength'], $voucherBatch->id, $voucherType);
+
+            // Commit the transaction
+            DB::commit();
+
+            return $voucherBatch;
+        } catch (\Exception $e) {
+            // If an exception occurred during the process, rollback the transaction.
+            DB::rollBack();
+
+            // Log the error message.
+            Log::error("Failed to store new voucher batch : " . $e->getMessage());
+
+            // Rethrow the exception to be caught in the Livewire component.
+            throw $e;
+        }
+    }
+
+    /**
+     * Deletes a voucher batch and its associated vouchers.
+     * @param int $voucherBatchId The id of the voucher batch to delete.
+     * @return void
+     * @throws \Exception if an error occurs while deleting the voucher batch or its associated vouchers.
+     */
+    public function deleteVoucherBatch($voucherBatchId)
+    {
+        // Start a new database transaction.
+        DB::beginTransaction();
+
+        try {
+            // Fetch the voucher batch
+            $voucherBatch = $this->voucherBatchesModel->findOrFail($voucherBatchId);
+
+            // Delete all vouchers associated with the voucher batch
+            $voucherBatch->vouchers()->delete();
+
+            // Delete the voucher batch itself
+            $voucherBatch->delete();
+
+            // Commit the transaction
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            // If an exception occurred during the process, rollback the transaction.
+            DB::rollBack();
+
+            // Log the error message.
+            Log::error("Failed to delete voucher batch : " . $e->getMessage());
+
+            // Rethrow the exception to be caught elsewhere.
+            throw $e;
+        }
+    }
+
+
+    /**
+     * Creates a new voucher batch.
+     * @param array $data The data used to create the new voucher batch.
+     * @param object $voucherType The data used to create the new voucher batch.
+     * @return Model|mixed The newly created voucher batch.
+     * @throws \Exception if an error occurs while creating the voucher batch.
+     */
+    private function createVoucherBatch($data, $voucherType)
+    {
+        try {
+            // Create a new voucher batch and return it
+            return $this->voucherBatchesModel->create([
+                'service_id'        => $data['idService'],
+                'quantity'          => $data['quantity'],
+                'created'           => strtotime(date('Y-m-d H:i:s')),
+                'created_by'        => session('username'),
+                'type'              => $voucherType->value,
+            ]);
+        } catch (\Exception $e) {
+            throw new \Exception('Failed to create voucher batch: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Creates vouchers for a voucher batch.
+     * @param int $quantity The number of vouchers to generate.
+     * @param int $characterLength The length of the username and password.
+     * @param int $voucherBatchId The id of the voucher batch.
+     * @param object $voucherType The data used to create the new voucher batch.
+     * @return void
+     * @throws \Exception if an error occurs while creating the vouchers.
+     */
+    private function createVouchers($quantity, $characterLength, $voucherBatchId, $voucherType)
+    {
+        try {
+            for ($i = 0; $i < $quantity; $i++) {
+                $username = str()->random($characterLength);
+                $password = $voucherType->value === 'no_password' ? $username : str()->random($characterLength);
+
+                $this->model->create([
+                    'voucher_batch_id' => $voucherBatchId,
+                    'username'         => $username,
+                    'password'         => $password,
+                    'valid_until'      => 0,
+                    'first_use'        => 0,
+                    'status'           => 'active',
+                    'clean_up'         => 0,
+                ]);
+            }
+        } catch (\Exception $e) {
+            throw new \Exception('Failed to create vouchers: ' . $e->getMessage());
+        }
+    }
+
+
 }

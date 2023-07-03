@@ -4,6 +4,7 @@
         <thead>
             <tr>
                 <th>No</th>
+                <th>S/N</th>
                 <th>Username</th>
                 <th>Service</th>
                 <th>Valid Until</th>
@@ -20,6 +21,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         var columns = [
             { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
+            { data: 'serial_number', name: 'serial_number' },
             { data: 'username', name: 'username' },
             { data: 'service_name', name: 'service_name' },
             { data: 'valid_until', name: 'valid_until' },

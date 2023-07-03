@@ -72,12 +72,12 @@
         // Function to confirm Batch Delete
         function confirmDeleteVoucherBatches() {
             // Get all checked voucherBatch_uid
-            let voucherBatchUids = Array.from(document.querySelectorAll('.voucherBatch-checkbox:checked')).map(el => el.value);
+            let voucherBatchIds = Array.from(document.querySelectorAll('.voucherBatch-checkbox:checked')).map(el => el.value);
 
-            if (voucherBatchUids.length > 0) {
+            if (voucherBatchIds.length > 0) {
                 showSwalDialog('Are you sure?', 'You will not be able to restore this data!', () => {
                     // Emit an event to delete the checked voucher Batches
-                    Livewire.emit('deleteBatch', voucherBatchUids);
+                    Livewire.emit('deleteBatches', voucherBatchIds);
                 });
             } else {
                 Swal.fire({ icon: 'error', title: 'Oops...', text: 'You must select at least one voucher batch to delete!' });
@@ -85,14 +85,14 @@
         }
 
         // Function to show a modal for UPDATE!
-        function showVoucherBatch(uid) {
-            Livewire.emit('getVoucherBatch', uid);
+        function showVoucherBatch(id) {
+            Livewire.emit('getVoucherBatch', id);
         }
 
         // Function to show a modal for DELETE!
-        function confirmDeleteVoucherBatch(uid) {
+        function confirmDeleteVoucherBatch(id) {
             showSwalDialog('Are you sure?', 'You will not be able to restore this data!', () => {
-                Livewire.emit('confirmVoucherBatch', uid);
+                Livewire.emit('confirmVoucherBatch', id);
             });
         }
     </script>
