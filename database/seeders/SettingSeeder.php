@@ -12,12 +12,12 @@ class SettingSeeder extends Seeder
         if ($old_id) {
             # code...
             $array = [
-                ['dummy', 'log_activities', '1', NULL],
-                ['dummy', 'server_ip', NULL, NULL],
-                ['dummy', 'mikrotik_api_password', 'megalos', NULL],
-                ['dummy', 'mikrotik_api_username', 'admin', NULL],
-                ['dummy', 'mikrotik_api_port', '8728', NULL],
-                ['dummy', 'mikrotik_ip', NULL, NULL],
+                ['default', 'log_activities', '1', 'default'],
+                ['default', 'server_ip', NULL, 'default'],
+                ['default', 'mikrotik_api_password', 'megalos', 'default'],
+                ['default', 'mikrotik_api_username', 'admin', 'default'],
+                ['default', 'mikrotik_api_port', '8728', 'default'],
+                ['default', 'mikrotik_ip', NULL, 'default'],
                 [3, 'create_vouchers_type', 'with_password', 'clients'],
                 [3, 'voucher_logo_filename', NULL, NULL],
                 [3, 'how_to_use_voucher', 'Turn on wifi,Open internet browser,Input username password', NULL],

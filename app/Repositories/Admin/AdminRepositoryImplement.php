@@ -155,27 +155,27 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
 
     /**
      * Updates an admin record in the database.
-     * @param string $admin_uid The unique identifier of the admin.
+     * @param string $id The unique identifier of the admin.
      * @param Illuminate\Http\Request $request The request object containing the updated admin data.
      * @return App\Models\Admin|null The updated admin object, or null if the admin was not found or an error occurred.
-     * @throws InvalidArgumentException If no admin_uid is provided.
+     * @throws InvalidArgumentException If no id is provided.
      */
-    public function updateAdmin($admin_uid, $request)
+    public function updateAdmin($id, $request)
     {
         // Check if the admin UID provided is empty.
-        if (empty($admin_uid)) {
+        if (empty($id)) {
             // If it is, throw an exception.
             throw new \InvalidArgumentException("Admin UID is required");
         }
 
         try {
             // Get the admin from the database using the provided UID.
-            $admin = $this->model->where('admin_uid', $admin_uid)->first();
+            $admin = $this->model->where('id', $id)->first();
 
             // Check if the admin was found in the database.
             if (!$admin) {
                 // If not, throw an exception.
-                throw new \RuntimeException("Admin with UID {$admin_uid} not found");
+                throw new \RuntimeException("Admin with UID {$id} not found");
             }
 
             // Prepare the admin data for update. Using the request array to get the new data.
@@ -209,14 +209,14 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
 
     /**
      * Deletes an admin user by their unique identifier.
-     * @param  string $admin_uid The unique identifier of the admin.
+     * @param  string $id The unique identifier of the admin.
      * @return bool Returns true if deletion is successful, false otherwise.
      */
-    public function deleteAdmin($admin_uid)
+    public function deleteAdmin($id)
     {
         try {
             // Find the admin by uid
-            $admin = $this->model->where('admin_uid', $admin_uid)->first();
+            $admin = $this->model->where('id', $id)->first();
 
             if ($admin) {
                 // Delete the admin
@@ -237,13 +237,13 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
     }
 
     /**
-    * This PHP function retrieves an admin user by their unique identifier.
+     * This PHP function retrieves an admin user by their unique identifier.
      * @param  mixed $uid
      * @return void
      */
     public function getAdminByUid($uid)
     {
-        $admin = $this->model->with('group')->where('admin_uid', $uid)->first();
+        $admin = $this->model->with('group')->where('id', $uid)->first();
         return $admin;
     }
 
@@ -267,7 +267,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
             ->setOnclickDelete($onclickDelete)
             ->setOnclickEdit($onclickEdit)
             ->setType($editButton)
-            ->setIdentity($data->admin_uid)
+            ->setIdentity($data->id)
             ->build();
     }
 
@@ -281,7 +281,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
     {
         // Return the session data. This data will be saved to Redis.
         return [
-            'user_uid' => $admin->admin_uid,
+            'user_uid' => $admin->id,
             'group_id' => $admin->group_id,
             'role' => $admin->group->name,
             'login_status' => 'Active',
@@ -399,5 +399,4 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
         // Add a new member with a score of 1 and the JSON-encoded associative array as the member to a sorted set stored at the Redis log key.
         Redis::zAdd($redisLog, 1, json_encode($data));
     }
-
 }
