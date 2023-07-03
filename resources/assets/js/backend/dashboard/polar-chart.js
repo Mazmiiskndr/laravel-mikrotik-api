@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
         height: 410,
         type: 'donut'
       },
-      labels: ['User Active', 'Bypassed', 'Blocked'],
+      labels: ['Active Users', 'Bypasseds', 'Blockeds'],
       series: [data.userActive, data.ipBindingBypassed, data.ipBindingBlocked],
       colors: ['rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(255, 99, 132, 1)'],
       legend: {
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 show: true,
                 fontSize: '1.5rem',
                 color: 'rgba(54, 162, 235, 1)',
-                label: 'User Active',
+                label: 'Active Users',
                 formatter: function (w) {
                   return data.userActive;
                 }
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
 window.addEventListener('chartDataUpdated', e => {
   if (donutChart) {
     donutChart.updateOptions({
-      labels: ['User Active', 'Bypassed', 'Blocked'],
+      labels: ['Active Users', 'Bypasseds', 'Blockeds'],
       series: [e.detail.userActive, e.detail.ipBindingBypassed, e.detail.ipBindingBlocked],
       plotOptions: {
         pie: {

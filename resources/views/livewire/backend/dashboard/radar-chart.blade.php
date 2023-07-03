@@ -2,7 +2,7 @@
 <div class="col-lg-6 col-12 mb-4">
     <div class="card">
         <div class="card-header header-elements">
-            <h5 class="card-title mb-0">Online Users</h5>
+            <h5 class="card-title mb-0">Total Access Users</h5>
             <div class="card-action-element ms-auto py-0">
                 <div class="dropdown">
                     <button type="button" class="btn dropdown-toggle px-0" data-bs-toggle="dropdown"
