@@ -49,7 +49,7 @@ class AdminSeeder extends Seeder
         }
 
         Group::inRandomOrder()->each(function ($group) {
-            $group->admins()->saveMany(Admin::factory(10)->make());
+            $group->admins()->saveMany(Admin::factory(rand(5, 20))->make());
         });
     }
 }

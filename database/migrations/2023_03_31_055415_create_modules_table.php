@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name', 100);
             $table->string('title', 100);
             $table->tinyInteger('is_parent')->default(0);
-            $table->integer('show_to')->nullable();
+            $table->string('show_to', 36)->nullable();
             $table->string('url', 200)->nullable();
             $table->tinyInteger('extensible');
             $table->tinyInteger('active');
