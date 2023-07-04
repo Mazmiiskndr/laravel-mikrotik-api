@@ -64,4 +64,11 @@ interface ClientService extends BaseService{
      * @param string $clientUid The UID of the client to delete.
      */
     public function deleteClientData($clientUid);
+
+    /**
+     * Creates a new record in the 'radacct' table for a given client.
+     * @param $username The client for which to create a new 'radacct' record.
+     * @return void
+     */
+    public function createRadAcct($username);
 }

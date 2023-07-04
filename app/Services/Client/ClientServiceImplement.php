@@ -122,4 +122,14 @@ class ClientServiceImplement extends Service implements ClientService
         return $this->handleRepositoryCall('deleteClientData', [$clientUid]);
     }
 
+    /**
+     * Creates a new record in the 'radacct' table for a given client.
+     * @param $username The client for which to create a new 'radacct' record.
+     * @return void
+     */
+    public function createRadAcct($username)
+    {
+        return $this->handleRepositoryCall('createRadAcct', [$username]);
+    }
+
 }

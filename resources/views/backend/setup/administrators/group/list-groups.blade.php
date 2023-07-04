@@ -19,7 +19,7 @@
                     <h4 class="card-title">Table Groups</h4>
                     @if ($permissions['isAllowedToAddNewGroup'])
                     <a href="{{ route('backend.setup.admin.add-new-group') }}"
-                        class="btn btn-sm btn-facebook text-white">
+                        class="btn btn-sm btn-facebook text-white" data-turbolinks-action="replace">
                         <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Group
                     </a>
                     @endif

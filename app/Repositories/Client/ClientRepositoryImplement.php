@@ -209,7 +209,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
             // Create new client, radcheck, radacct, and radusergroup entries
             $client = $this->createClient($request);
             $this->createRadCheck($client, $request);
-            $this->createRadAcct($client);
+            $this->createRadAcct($client->username);
             $this->createRadUserGroup($client);
 
             // Commit the transaction (apply the changes).
@@ -403,16 +403,16 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
 
     /**
      * Creates a new record in the 'radacct' table for a given client.
-     * @param Client $client The client for which to create a new 'radacct' record.
+     * @param $username The client for which to create a new 'radacct' record.
      * @return void
      */
-    private function createRadAcct(Client $client)
+    public function createRadAcct($username)
     {
         // Create an entry for the client
         $this->radAcctModel->create([
             'acctsessionid' => '',
             'acctuniqueid' => '',
-            'username' => $client->username,
+            'username' => $username,
             'groupname' => '',
             'realm' => '',
             'nasipaddress' => '',
