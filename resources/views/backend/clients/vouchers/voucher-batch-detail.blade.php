@@ -14,7 +14,6 @@
             <h4 class="card-title">Table Vouchers</h4>
             <div>
 
-                {{-- TODO: PRINT THIS VOUCHER BATCH --}}
                 {{-- /Start Button for Print This Voucher Batch --}}
                 <x-link-button color="danger" route="backend.clients.voucher.voucher-batch-detail.print" identity="{{ $voucherBatchId }}" icon="fas fa-lg fa-file-pdf" target="_blank">
                     &nbsp; Print Vouchers
