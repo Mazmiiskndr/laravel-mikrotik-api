@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Module;
 use App\Models\Page;
+use App\Models\Group;
+use App\Models\Module;
 use App\Models\Setting;
 use Illuminate\Database\Seeder;
 use Database\Seeders\SettingSeeder;
@@ -15,6 +16,14 @@ class ModuleSeeder extends Seeder
      *
      * @return void
      */
+
+    private $transformedGroups;
+
+    public function __construct()
+    {
+        $this->transformedGroups = Group::all();
+    }
+
     public function run()
     {
         $modules = [
@@ -301,17 +310,40 @@ class ModuleSeeder extends Seeder
                 # code...
                 foreach ($pagesData as $key => $value) {
                     # code...
+                    $newAllowedGroups = $this->_getNewGroupId(explode(',', $value['allowed_groups']));
+
                     Page::create([
                         'module_id'      => $createdModule->id,
                         'page'           => $value['page'],
                         'title'          => $value['title'],
                         'url'            => $value['url'],
-                        'allowed_groups' => $value['allowed_groups'],
+                        'allowed_groups' => $newAllowedGroups,
                         'show_menu'      => $value['show_menu'],
                         'show_to'        => $value['show_to'],
                     ]);
                 }
             }
         }
+    }
+
+    private function _getNewGroupId(array $oldAllowedGroup): string
+    {
+        $array = [];
+        $transformedGroups = $this->transformedGroups->map(function ($item) {
+            if ($item->name == 'Full Administrator') {
+                $item->old_id = 1;
+            } else {
+                $item->old_id = 2;
+            }
+
+            return $item;
+        });
+
+        foreach ($oldAllowedGroup as $key => $value) {
+            # code...
+            $array[] = $transformedGroups->where('old_id', $value)->first()->id;
+        }
+
+        return implode(',', $array);
     }
 }
