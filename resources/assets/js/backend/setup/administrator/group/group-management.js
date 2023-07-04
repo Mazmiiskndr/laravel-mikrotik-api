@@ -1,4 +1,4 @@
-// Function to show a modal based on a given uid for UPDATE!
+group - management.js; // Function to show a modal based on a given uid for UPDATE!
 let dataTable;
 
 // Function to initialize the DataTable
