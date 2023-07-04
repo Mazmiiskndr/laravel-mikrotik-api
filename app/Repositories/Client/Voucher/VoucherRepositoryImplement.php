@@ -603,8 +603,6 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
         if ($voucher->voucherBatch->service->time_limit_type == "one_time_continuous") {
             return !empty($voucher->first_use) ? time() - $voucher->first_use : 0;
         }
-
-        return 0;
     }
 
     /**
@@ -655,8 +653,7 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
         $totalSessionTime = $this->radAcctModel
             ->where('username', $username)
             ->sum('acctsessiontime');
-
-        return $totalSessionTime ?? 0;
+        return ($totalSessionTime !== 0 || !empty($totalSessionTime)) ? $totalSessionTime : "-";
     }
 
 }
