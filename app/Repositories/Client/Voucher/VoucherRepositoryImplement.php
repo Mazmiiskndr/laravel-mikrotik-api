@@ -559,6 +559,12 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
     {
         $actualUse = $this->calculateVoucherActualUse($voucher);
 
+        // If the actual use is null, return false
+        if (is_null($actualUse)) {
+            return false;
+        }
+
+        // Compare actual use with the quota
         return $actualUse >= $quota;
     }
 
@@ -569,6 +575,10 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
      */
     private function calculateVoucherActualUse($voucher)
     {
+        if ($voucher->voucherBatch->service->time_limit_type == "none") {
+            return null;
+        }
+
         if ($voucher->voucherBatch->service->time_limit_type == "one_time_gradually") {
             return $this->getTotalTimeUsed($voucher->username);
         }
