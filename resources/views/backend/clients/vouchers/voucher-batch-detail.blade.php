@@ -16,9 +16,9 @@
 
                 {{-- TODO: PRINT THIS VOUCHER BATCH --}}
                 {{-- /Start Button for Print This Voucher Batch --}}
-                <x-button id="print_voucher" data-fancybox type="button" color="primary btn-sm">
-                    <i class="tf-icons fas fa-print ti-xs me-1"></i>&nbsp; Print This Voucher Batch
-                </x-button>
+                <x-link-button color="danger" route="backend.clients.voucher.voucher-batch-detail.print" identity="{{ $voucherBatchId }}" icon="fas fa-lg fa-file-pdf" target="_blank">
+                    &nbsp; Print Vouchers
+                </x-link-button>
                 {{-- /End Button for Print This Voucher Batch --}}
 
                 {{-- /Start Button for Export To Excel --}}

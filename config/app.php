@@ -165,6 +165,8 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         // Image
         Intervention\Image\ImageServiceProvider::class,
+        // Laravel - DOMPDF
+        Barryvdh\DomPDF\ServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -196,8 +198,8 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // ...
         'Image' => Intervention\Image\Facades\Image::class,
-        'Helper' => App\Helpers\Helpers::class
-
+        'Helper' => App\Helpers\Helpers::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ])->toArray(),
 
 ];

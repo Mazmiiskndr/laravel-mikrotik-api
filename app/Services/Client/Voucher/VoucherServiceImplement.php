@@ -117,4 +117,15 @@ class VoucherServiceImplement extends Service implements VoucherService
     {
         return $this->handleRepositoryCall('deleteVoucherBatch', [$voucherBatchId]);
     }
+
+    /**
+     * Format time for display based on the limit and unit.
+     * @param int|string $limit The time limit.
+     * @param string $unit The unit of time (e.g., "hours", "minutes").
+     * @return string The formatted time for display.
+     */
+    public function formatTimeDisplay($limit, $unit)
+    {
+        return $this->handleRepositoryCall('formatTimeDisplay', [$limit, $unit]);
+    }
 }

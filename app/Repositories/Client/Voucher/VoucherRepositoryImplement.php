@@ -305,6 +305,20 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
         }
     }
 
+    /**
+     * Format time for display based on the limit and unit.
+     * @param int|string $limit The time limit.
+     * @param string $unit The unit of time (e.g., "hours", "minutes").
+     * @return string The formatted time for display.
+     */
+    public function formatTimeDisplay($limit, $unit)
+    {
+        if ((int)$limit == 1) {
+            $unit = rtrim($unit, "s");
+        }
+        return $limit . ' ' . $unit;
+    }
+
     // ***** 👇 PRIVATE FUNCTIONS 👇 *****
 
     /**
@@ -342,36 +356,39 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
     private function createVouchers($quantity, $characterLength, $idService, $voucherBatchId, $voucherType)
     {
         try {
-            // Loop over the quantity to generate each voucher
-            for ($i = 0; $i < $quantity; $i++) {
-                // Generate a unique username.
-                // Keep generating until a unique username is found.
-                do {
-                    $username = str()->random($characterLength);
-                } while (
-                    $this->model->where('username', $username)->exists() ||
-                    $this->radUserGroupModel->where('username', $username)->exists()
-                );
+            // Start a new database transaction
+            DB::transaction(function () use ($quantity, $characterLength, $idService, $voucherBatchId, $voucherType) {
+                // Loop over the quantity to generate each voucher
+                for ($i = 0; $i < $quantity; $i++) {
+                    // Generate a unique username.
+                    // Keep generating until a unique username is found.
+                    do {
+                        $username = str()->random($characterLength);
+                    } while (
+                        $this->model->where('username', $username)->exists() ||
+                        $this->radUserGroupModel->where('username', $username)->exists()
+                    );
 
-                // Generate a password. If voucher type is 'no_password', use the username as the password.
-                $password = $voucherType->value === 'no_password' ? $username : str()->random($characterLength);
+                    // Generate a password. If voucher type is 'no_password', use the username as the password.
+                    $password = $voucherType->value === 'no_password' ? $username : str()->random($characterLength);
 
-                // Create a new voucher with the generated username, password and other given parameters.
-                $voucher = $this->model->create([
-                    'voucher_batch_id' => $voucherBatchId,
-                    'username'         => $username,
-                    'password'         => $password,
-                    'valid_until'      => 0,
-                    'first_use'        => 0,
-                    'status'           => 'active',
-                    'clean_up'         => 0,
-                ]);
+                    // Create a new voucher with the generated username, password and other given parameters.
+                    $voucher = $this->model->create([
+                        'voucher_batch_id' => $voucherBatchId,
+                        'username'         => $username,
+                        'password'         => $password,
+                        'valid_until'      => 0,
+                        'first_use'        => 0,
+                        'status'           => 'active',
+                        'clean_up'         => 0,
+                    ]);
 
-                // Create a new entry in radCheck, Radacctm RadUserGroup table for this voucher.
-                $this->createRadCheck($username, $password);
-                $this->clientService->createRadAcct($username);
-                $this->createRadUserGroup($idService, $username, $voucher->id);
-            }
+                    // Create a new entry in radCheck, Radacctm RadUserGroup table for this voucher.
+                    $this->createRadCheck($username, $password);
+                    $this->clientService->createRadAcct($username);
+                    $this->createRadUserGroup($idService, $username, $voucher->id);
+                }
+            });
         } catch (\Exception $e) {
             // If any exception occurs during the process, throw a new exception with the error message.
             throw new \Exception('Failed to create vouchers: ' . $e->getMessage());

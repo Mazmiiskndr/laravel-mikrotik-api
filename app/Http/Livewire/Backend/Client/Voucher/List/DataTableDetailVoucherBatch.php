@@ -10,6 +10,11 @@ class DataTableDetailVoucherBatch extends Component
     // Public properties
     public $voucherBatchId, $voucherBatch;
 
+    /**
+     * Mount function called when the component is rendered.
+     * @param VoucherService $voucherService An instance of the VoucherService.
+     * @param int $voucherBatchId The ID of the voucher batch.
+     */
     public function mount(VoucherService $voucherService, $voucherBatchId)
     {
         $this->voucherBatchId = $voucherBatchId;
