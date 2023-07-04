@@ -16,6 +16,13 @@ interface VoucherRepository extends Repository{
     public function getVoucherBatchesWithService($conditions, $columns);
 
     /**
+     * This function finds a voucher batch with its associated service.
+     * @param $voucherBatchId
+     * @return mixed
+     */
+    public function getVoucherBatchIdWithService($voucherBatchId);
+
+    /**
      * Retrieve Voucher records based on voucher_batches_id
      * @param int $voucherBatchesId
      * @return Collection

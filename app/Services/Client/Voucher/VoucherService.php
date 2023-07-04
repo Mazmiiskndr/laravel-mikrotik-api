@@ -23,6 +23,13 @@ interface VoucherService extends BaseService{
     public function getVouchersByBatchId($voucherBatchesId);
 
     /**
+     * This function finds a voucher batch with its associated service.
+     * @param $voucherBatchId
+     * @return mixed
+     */
+    public function getVoucherBatchIdWithService($voucherBatchId);
+
+    /**
      * Retrieves voucher batch records from a database, initializes DataTables, and adds columns to DataTable.
      * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
      */

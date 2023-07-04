@@ -89,6 +89,20 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
     }
 
     /**
+     * This function finds a voucher batch with its associated service.
+     * @param $voucherBatchId
+     * @return mixed
+     */
+    public function getVoucherBatchIdWithService($voucherBatchId)
+    {
+        return $this->voucherBatchesModel
+            ->select('*')
+            ->with('service:id,service_name,time_limit_type,time_limit,unit_time')
+            ->where('id', $voucherBatchId)
+            ->first();
+    }
+
+    /**
      * Retrieve Voucher records based on voucher_batches_id
      * @param int $voucherBatchesId
      * @return Collection
@@ -96,7 +110,9 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
     public function getVouchersByBatchId($voucherBatchesId)
     {
         try {
-            return $this->model->where('voucher_batch_id', $voucherBatchesId)->get();
+            return $this->model->with('voucherBatch.service:id,service_name,time_limit_type')
+            ->where('voucher_batch_id', $voucherBatchesId)
+            ->orderBy('serial_number','desc')->get();
         } catch (Exception $e) {
             // Log the exception message and return an empty collection
             Log::error("Error getting vouchers by batch id : " . $e->getMessage());
@@ -183,19 +199,23 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
      */
     public function getDatatableDetailVoucherBatch($voucherBatchesId)
     {
+        // Update voucher status to expired if the voucher batch is expired
         $this->updateVoucherStatusByVoucherBatchId($voucherBatchesId);
         // Retrieve records from the getClientWithService function
         $data = $this->getVouchersByBatchId($voucherBatchesId);
 
+
         // Initialize DataTables and add columns to the table
         return DataTables::of($data)
             ->addIndexColumn()
-            // TODO: FOR TOTAL TIME USED
+            ->addColumn('password', function ($data) {
+                return ($data->voucherBatch->type == "with_password") ? $data->password : null;
+            })
             ->addColumn('first_use', function ($data) {
-                return ($data->first_use == 0) ? '-' : $data->first_use;
+                return ($data->voucherBatch->service->time_limit_type== "one_time_continuous") ? $this->getFirstUse($data->username) : $this->getTotalTimeUsed($data->username);
             })
             ->addColumn('valid_until', function ($data) {
-                return ($data->valid_until == 0) ? '-' : $data->valid_until;
+                return ($data->valid_until == 0) ? '-' : date('Y-m-d H:i:s', $data->valid_until);
             })
             ->addColumn('status', function ($data) {
                 return ucfirst($data->status);
@@ -440,7 +460,7 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
     public function updateVoucherStatusByVoucherBatchId($voucherBatchId)
     {
         try {
-            $voucherBatch = $this->findVoucherBatchIdWithService($voucherBatchId);
+            $voucherBatch = $this->getVoucherBatchIdWithService($voucherBatchId);
 
             if (!$voucherBatch) {
                 return false;
@@ -462,22 +482,6 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
             Log::error('Error updating voucher statuses: ' . $e->getMessage());
             return false;
         }
-    }
-
-
-    /**
-     * This function finds a voucher batch with its associated service.
-     * @param $voucherBatchId
-     * @return mixed
-     */
-    private function findVoucherBatchIdWithService($voucherBatchId)
-    {
-        $data = $this->voucherBatchesModel
-            ->select('*')
-            ->with('service:id,service_name,time_limit_type,time_limit,unit_time')
-            ->where('id', $voucherBatchId)
-            ->first();
-
     }
 
     /**
@@ -586,6 +590,32 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
         $voucher = $this->model->findOrFail($id);
         $voucher->status = $status;
         $voucher->save();
+    }
+
+    /**
+     * Fetches the first 'acctstarttime' for a given username where 'acctstarttime' is not NULL.
+     * @param string $username The username for which the first usage time is to be fetched.
+     * @return string|bool The first usage time if it exists, otherwise false.
+     */
+    private function getFirstUse($username)
+    {
+        try {
+            // Fetch the first 'acctstarttime' for the given username where 'acctstarttime' is not NULL.
+            $query = $this->radAcctModel->select('acctstarttime as firsttime')
+                ->where('username', $username)
+                ->whereNotNull('acctstarttime')
+                ->orderBy('acctstarttime')
+                ->first();
+
+            // Check if 'firsttime' exists and return it. Otherwise, return false.
+            return !empty($query->firsttime) ? $query->firsttime : false;
+        } catch (\Exception $e) {
+            // Log the error.
+            Log::error("Error fetching the first usage time for username {$username}: " . $e->getMessage());
+
+            // In the event of an error, return false.
+            return false;
+        }
     }
 
     /**

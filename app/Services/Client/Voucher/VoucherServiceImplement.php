@@ -50,6 +50,16 @@ class VoucherServiceImplement extends Service implements VoucherService
     }
 
     /**
+     * This function finds a voucher batch with its associated service.
+     * @param $voucherBatchId
+     * @return mixed
+     */
+    public function getVoucherBatchIdWithService($voucherBatchId)
+    {
+        return $this->handleRepositoryCall('getVoucherBatchIdWithService', [$voucherBatchId]);
+    }
+
+    /**
      * Retrieve Voucher records based on voucher_batches_id
      * @param int $voucherBatchesId
      * @return Collection
