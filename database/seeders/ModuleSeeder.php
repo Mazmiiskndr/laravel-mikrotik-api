@@ -17,16 +17,13 @@ class ModuleSeeder extends Seeder
      * @return void
      */
 
+    private $modules;
     private $transformedGroups;
 
     public function __construct()
     {
         $this->transformedGroups = Group::all();
-    }
-
-    public function run()
-    {
-        $modules = [
+        $this->modules = [
             [
                 'name' => 'login',
                 'title' => 'Login',
@@ -148,7 +145,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'administrators',
                 'title' => 'Administrators',
                 'is_parent' => 0,
-                'show_to' => 9,
+                'show_to' => 'setup',
                 'url' => 'administrators',
                 'extensible' => 0,
                 'active' => 1,
@@ -161,7 +158,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'vouchers',
                 'title' => 'Vouchers',
                 'is_parent' => 0,
-                'show_to' => 3,
+                'show_to' => 'clients',
                 'url' => NULL,
                 'extensible' => 0,
                 'active' => 1,
@@ -174,7 +171,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'hotel_rooms',
                 'title' => 'Hotel Rooms',
                 'is_parent' => 0,
-                'show_to' => 3,
+                'show_to' => 'clients',
                 'url' => NULL,
                 'extensible' => 0,
                 'active' => 0,
@@ -187,7 +184,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'ads',
                 'title' => 'Ads',
                 'is_parent' => 0,
-                'show_to' => 9,
+                'show_to' => 'setup',
                 'url' => 'ads',
                 'extensible' => 0,
                 'active' => 1,
@@ -200,7 +197,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'bypass_mac',
                 'title' => 'Bypass Mac',
                 'is_parent' => 0,
-                'show_to' => 3,
+                'show_to' => 'clients',
                 'url' => NULL,
                 'extensible' => 0,
                 'active' => 1,
@@ -213,7 +210,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'users_data',
                 'title' => 'Users Data',
                 'is_parent' => 0,
-                'show_to' => 3,
+                'show_to' => 'clients',
                 'url' => 'users_data',
                 'extensible' => 0,
                 'active' => 0,
@@ -226,7 +223,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'social_plugins',
                 'title' => 'Social Plugins',
                 'is_parent' => 0,
-                'show_to' => 9,
+                'show_to' => 'setup',
                 'url' => 'social_plugins',
                 'extensible' => 0,
                 'active' => 0,
@@ -240,7 +237,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'premium',
                 'title' => 'Premium',
                 'is_parent' => 0,
-                'show_to' => 3,
+                'show_to' => 'clients',
                 'url' => NULL,
                 'extensible' => 0,
                 'active' => 1,
@@ -253,7 +250,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'configs',
                 'title' => 'Configs',
                 'is_parent' => 0,
-                'show_to' => 9,
+                'show_to' => 'setup',
                 'url' => 'configs',
                 'extensible' => 0,
                 'active' => 1,
@@ -276,13 +273,16 @@ class ModuleSeeder extends Seeder
                 'pages_data' => null,
             ]
         ];
+    }
 
-        foreach ($modules as $module) {
+    public function run()
+    {
+        foreach ($this->modules as $module) {
             $createdModule = Module::create([
                 'name' => $module['name'],
                 'title' => $module['title'],
                 'is_parent' => $module['is_parent'],
-                'show_to' => $module['show_to'],
+                'show_to' => $module['show_to'] ? $this->_getShowToId($module['show_to']) : $module['show_to'],
                 'url' => $module['url'],
                 'extensible' => $module['extensible'],
                 'active' => $module['active'],
@@ -310,7 +310,7 @@ class ModuleSeeder extends Seeder
                 # code...
                 foreach ($pagesData as $key => $value) {
                     # code...
-                    $newAllowedGroups = $this->_getNewGroupId(explode(',', $value['allowed_groups']));
+                    $newAllowedGroups = $this->_getNewAllowedGroupId(explode(',', $value['allowed_groups']));
 
                     Page::create([
                         'module_id'      => $createdModule->id,
@@ -319,14 +319,14 @@ class ModuleSeeder extends Seeder
                         'url'            => $value['url'],
                         'allowed_groups' => $newAllowedGroups,
                         'show_menu'      => $value['show_menu'],
-                        'show_to'        => $value['show_to'],
+                        'show_to'        => $value['show_to'] ? $createdModule->id : $value['show_to'],
                     ]);
                 }
             }
         }
     }
 
-    private function _getNewGroupId(array $oldAllowedGroup): string
+    private function _getNewAllowedGroupId(array $oldAllowedGroup): string
     {
         $array = [];
         $transformedGroups = $this->transformedGroups->map(function ($item) {
@@ -345,5 +345,11 @@ class ModuleSeeder extends Seeder
         }
 
         return implode(',', $array);
+    }
+
+    private function _getShowToId(string $oldShowTo): string
+    {
+        $module = Module::where('name', $oldShowTo)->first();
+        return $module ? $module->id : null;
     }
 }

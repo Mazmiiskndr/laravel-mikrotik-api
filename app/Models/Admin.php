@@ -24,7 +24,7 @@ class Admin extends Model
 
     public function modules()
     {
-        return $this->belongsToMany(Module::class, 'admin_module', 'id', 'module_id');
+        return $this->belongsToMany(Module::class, 'admin_module', 'admin_id', 'module_id');
     }
 
     /**

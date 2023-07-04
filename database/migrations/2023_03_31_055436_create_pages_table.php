@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('url', 100);
             $table->text('allowed_groups');
             $table->tinyInteger('show_menu')->default(0);
-            $table->integer('show_to')->nullable();
+            $table->string('show_to', 36)->nullable();
 
             $table->foreign('module_id')
                 ->references('id')
