@@ -23,6 +23,7 @@
     "yaza/laravel-repository-service": "^3.2"
   },
   "require-dev": {
+    "barryvdh/laravel-debugbar": "^3.8",
     "fakerphp/faker": "^1.9.1",
     "laravel/sail": "^1.0.1",
     "mockery/mockery": "^1.4.4",
