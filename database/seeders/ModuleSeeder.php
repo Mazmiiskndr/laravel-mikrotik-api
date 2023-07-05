@@ -338,12 +338,10 @@ class ModuleSeeder extends Seeder
 
             return $item;
         });
-
         foreach ($oldAllowedGroup as $key => $value) {
             # code...
             $array[] = $transformedGroups->where('old_id', $value)->first()->id;
         }
-
         return implode(',', $array);
     }
 

@@ -31,7 +31,7 @@ class AdminSeeder extends Seeder
                 'fullname' => 'Megalos Admin',
                 'email' => 'admin@megalos.com',
                 'status' => 1,
-                'group_name' => 'Full Administrator'
+                'group_name' => 'Operator'
             ]
         ];
 
