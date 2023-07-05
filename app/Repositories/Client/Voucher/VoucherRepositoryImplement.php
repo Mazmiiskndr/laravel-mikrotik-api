@@ -281,7 +281,7 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
                 $username = $voucher->username;
 
                 // Delete related data from radacct, radcheck and radusergroup
-                $this->deleteRelatedData($username);
+                $this->clientService->deleteRelatedData($username);
 
                 // Delete the voucher
                 $voucher->delete();
@@ -384,89 +384,16 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
                     ]);
 
                     // Create a new entry in radCheck, Radacctm RadUserGroup table for this voucher.
-                    $this->createRadCheck($username, $password);
-                    $this->clientService->createRadAcct($username);
-                    $this->createRadUserGroup($idService, $username, $voucher->id);
+                    $this->clientService->createOrUpdateRelatedEntries($username,
+                    ['Cleartext-Password' => $password,'Simultaneous-Use' => 1],
+                    $idService, $voucher->id,
+                    'voucher');
                 }
             });
         } catch (\Exception $e) {
             // If any exception occurs during the process, throw a new exception with the error message.
             throw new \Exception('Failed to create vouchers: ' . $e->getMessage());
         }
-    }
-
-    /**
-     * This method creates or updates entries in the radCheck table.
-     * @param string $username The username of the voucher.
-     * @param string $password The password of the voucher.
-     */
-    private function createRadCheck($username, $password)
-    {
-        // For each attribute, we will first check if an entry exists, and if it does, update it, otherwise create a new entry.
-        $attributes = [
-            'Cleartext-Password' => $password,
-            'Simultaneous-Use' => 1,
-        ];
-
-        foreach ($attributes as $attribute => $value) {
-            if ($value !== null) {
-                $entry = $this->radCheckModel->where([
-                    'username' => $username,
-                    'attribute' => $attribute,
-                ])->first();
-
-                $data = [
-                    'username' => $username,
-                    'attribute' => $attribute,
-                    'op' => $attribute == 'ValidFrom' ? '>=' : ':=',
-                    'value' => $value,
-                ];
-
-                if ($entry) {
-                    $entry->update($data);
-                } else {
-                    $this->radCheckModel->create($data);
-                }
-            }
-        }
-    }
-
-    /**
-     * This method creates entries in the radUserGroup table.
-     * @param int $idService The id of the service the vouchers belong to.
-     * @param string $username The username of the voucher.
-     * @param int $voucherId The id of the voucher.
-     */
-    private function createRadUserGroup($idService, $username, $voucherId)
-    {
-        // Fetch the service_name for this client
-        $service = $this->serviceModel->find($idService);
-
-        // Create an entry in the 'radusergroup' table
-        $this->radUserGroupModel->create([
-            'username' => $username,
-            'groupname' => $service->service_name ?? '',
-            'priority' => 1,
-            'user_type' => 'voucher',
-            'voucher_id' => $voucherId,
-        ]);
-    }
-
-    /**
-     * Deletes the related data from the radacct, radcheck, and radusergroup models.
-     * @param string $username The username of the voucher.
-     * @return void
-     */
-    private function deleteRelatedData($username)
-    {
-        // Delete related data from radacct
-        $this->radAcctModel->where('username', $username)->delete();
-
-        // Delete related data from radcheck
-        $this->radCheckModel->where('username', $username)->delete();
-
-        // Delete related data from radusergroup
-        $this->radUserGroupModel->where('username', $username)->delete();
     }
 
     /**
@@ -603,8 +530,6 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
         if ($voucher->voucherBatch->service->time_limit_type == "one_time_continuous") {
             return !empty($voucher->first_use) ? time() - $voucher->first_use : 0;
         }
-
-        return 0;
     }
 
     /**
@@ -655,8 +580,8 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
         $totalSessionTime = $this->radAcctModel
             ->where('username', $username)
             ->sum('acctsessiontime');
-
-        return $totalSessionTime ?? 0;
+        return ($totalSessionTime !== 0 || !empty($totalSessionTime)) ? $totalSessionTime : "-";
     }
+
 
 }

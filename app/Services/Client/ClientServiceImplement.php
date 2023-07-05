@@ -123,13 +123,57 @@ class ClientServiceImplement extends Service implements ClientService
     }
 
     /**
-     * Creates a new record in the 'radacct' table for a given client.
-     * @param $username The client for which to create a new 'radacct' record.
+     * Create or update related RadCheck, RadAcct, and RadUserGroup entries.
+     * @param string $username The username for related entries.
+     * @param array $attributes The password for related entries.
+     * @param string|null $idService The id service for related entries.
+     * @param int|null $id The id of the client or voucher.
+     * @param string|null $userType The type of user, 'client' or 'voucher'.
+     * @throws \Exception if an error occurs while creating or updating related entries.
+     */
+    public function createOrUpdateRelatedEntries($username, $attributes, $idService, $id = null, $userType = 'client')
+    {
+        return $this->handleRepositoryCall('createOrUpdateRelatedEntries', [$username, $attributes, $idService, $id, $userType]);
+    }
+
+    /**
+     * This method creates or updates entries in the radCheck table.
+     * @param string $username The username of the client or voucher.
+     * @param array $attributes The attributes for the radCheck entry.
+     */
+    public function createOrUpdateRadCheck($username, $attributes)
+    {
+        return $this->handleRepositoryCall('createOrUpdateRadCheck', [$username, $attributes]);
+    }
+
+    /**
+     * This method creates or updates entries in the radacct table.
+     * @param string $username The username of the client or voucher.
+     */
+    public function createOrUpdateRadAcct($username)
+    {
+        return $this->handleRepositoryCall('createOrUpdateRadAcct', [$username]);
+    }
+
+    /**
+     * This method creates or updates entries in the radUserGroup table.
+     * @param object $attributes The username of the client or voucher.
+     * @param int $voucherId The id of the client or voucher.
+     * @param string $userType The type of user, 'client' or 'voucher'.
+     */
+    public function createOrUpdateRadUserGroup($attributes, $voucherId = null , $userType = 'client')
+    {
+        return $this->handleRepositoryCall('createOrUpdateRadUserGroup', [$attributes, $voucherId, $userType]);
+    }
+
+    /**
+     * Deletes the related data from the radacct, radcheck, and radusergroup models.
+     * @param string $username The username of the voucher.
      * @return void
      */
-    public function createRadAcct($username)
+    public function deleteRelatedData($username)
     {
-        return $this->handleRepositoryCall('createRadAcct', [$username]);
+        return $this->handleRepositoryCall('deleteRelatedData', [$username]);
     }
 
 }
