@@ -29,7 +29,7 @@ class LogActivity
     public function handle(ActivityPerformed $event)
     {
         $settingService = app(SettingService::class);
-        $activities = $settingService->getSetting('log_activities', '0');
+        $activities = $settingService->getSetting('log_activities', 'default');
         if($activities == '0') {
             return;
         }

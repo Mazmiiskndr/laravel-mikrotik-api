@@ -13,7 +13,6 @@ class UserData extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
-        'user_data_uid',
         'name',
         'email',
         'phone_number',
@@ -29,8 +28,15 @@ class UserData extends Model
     ];
 
     /**
-     * boot
-     *
+     * The attributes that should be cast.
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'id' => 'string',
+    ];
+
+    /**
+     * Model "booting" method. Sets 'id' to a new UUID before record creation.
      * @return void
      */
     protected static function boot()
@@ -38,7 +44,7 @@ class UserData extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->user_data_uid = str()->uuid();
+            $model->id = strtoupper(str()->uuid());
         });
     }
 }

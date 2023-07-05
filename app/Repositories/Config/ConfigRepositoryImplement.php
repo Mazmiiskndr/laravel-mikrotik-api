@@ -155,7 +155,7 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
      */
     private function generateFormSwitchButton($data)
     {
-        $logData = $this->settingService->getSetting('log_activities', '0');
+        $logData = $this->settingService->getSetting('log_activities', 'default');
         $checked = $logData ? 'checked' : '';
         $label = $logData ? 'On' : 'Off';
 

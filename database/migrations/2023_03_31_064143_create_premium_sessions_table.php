@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('premium_sessions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('premium_session_uid')->unique();
             $table->string('username', 100)->unique();
             $table->dateTime('expiration');
             $table->timestamps();

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('module_id');
+            $table->uuid('module_id');
             $table->string('setting', 255);
             $table->string('value', 255)->nullable();
             $table->string('flag_module', 100)->nullable();

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('logs', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('voucher_batch_id');
+            $table->uuid('voucher_batch_id');
             $table->integer('date');
             $table->string('operator', 150);
             $table->enum('action', ['Create', 'Delete', 'Import']);

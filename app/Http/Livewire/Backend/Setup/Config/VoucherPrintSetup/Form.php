@@ -41,7 +41,7 @@ class Form extends Component
      */
     public function mount(SettingService $settingService)
     {
-        $howToUse = $settingService->getSetting('how_to_use_voucher', 3);
+        $howToUse = $settingService->getSetting('how_to_use_voucher', null);
 
         // Explode the string into an array based on comma
         $howToUseArray = explode(',', $howToUse);

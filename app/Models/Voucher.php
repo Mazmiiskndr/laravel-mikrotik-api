@@ -14,7 +14,6 @@ class Voucher extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
-        'voucher_uid',
         'voucher_batch_id',
         'username',
         'password',
@@ -26,12 +25,15 @@ class Voucher extends Model
     ];
 
     /**
-     * This method is called upon the model booting up.
-     *
-     * The creating Eloquent event is used here to
-     * set the voucher_uid attribute and the serial_number attribute
-     * every time a new model is created.
-     *
+     * The attributes that should be cast.
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'id' => 'string',
+    ];
+
+    /**
+     * Model "booting" method. Sets 'id' to a new UUID before record creation.
      * @return void
      */
     protected static function boot()
@@ -39,7 +41,7 @@ class Voucher extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->voucher_uid = str()->uuid();
+            $model->id = strtoupper(str()->uuid());
             $model->serial_number = $model->generateSerialNumber();
         });
     }
@@ -63,7 +65,7 @@ class Voucher extends Model
     {
         return DB::transaction(function () {
             // Fetch the last created order
-            $lastOrder = $this->orderBy('id', 'desc')->first();
+            $lastOrder = $this->latest()->first();
 
             // Get the order number of the last order
             $lastOrderNumber = $lastOrder ? $lastOrder->serial_number : 'MGL00000000';

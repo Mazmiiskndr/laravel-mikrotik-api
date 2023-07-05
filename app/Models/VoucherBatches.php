@@ -13,7 +13,6 @@ class VoucherBatches extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
-        'voucher_batches_uid',
         'service_id',
         'quantity',
         'created',
@@ -23,8 +22,15 @@ class VoucherBatches extends Model
     ];
 
     /**
-     * boot
-     *
+     * The attributes that should be cast.
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'id' => 'string',
+    ];
+
+    /**
+     * Model "booting" method. Sets 'id' to a new UUID before record creation.
      * @return void
      */
     protected static function boot()
@@ -32,7 +38,7 @@ class VoucherBatches extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->voucher_batches_uid = str()->uuid();
+            $model->id = strtoupper(str()->uuid());
         });
     }
 

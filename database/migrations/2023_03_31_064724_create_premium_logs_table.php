@@ -15,8 +15,7 @@ return new class extends Migration
     {
         Schema::create('premium_logs', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('premium_log_uid')->unique();
-            $table->string('voucher_batch_id');
+            $table->uuid('voucher_batch_id');
             $table->integer('date');
             $table->string('operator', 50);
             $table->integer('quantity');

@@ -59,7 +59,7 @@ class LogActivity extends Component
         $this->validate();
         try {
             // Update the LOG ACTIVITY settings
-            $settingService->updateSetting('log_activities', 0, $this->logActivity);
+            $settingService->updateSetting('log_activities', 'default', $this->logActivity);
             // Show Message Success
             $this->dispatchSuccessEvent('Log activities settings updated successfully.');
             // Emit the 'logActivityUpdated' event with a true status
@@ -92,7 +92,7 @@ class LogActivity extends Component
     public function loadForm(SettingService $settingService)
     {
         // Get the Log Activities Parameters using the SettingService
-        $this->logActivity = $settingService->getSetting('log_activities', '0');
+        $this->logActivity = $settingService->getSetting('log_activities', 'default');
     }
 
     /**

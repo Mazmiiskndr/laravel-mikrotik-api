@@ -55,7 +55,7 @@ class DataTable extends Component
         $status = $element ? 1 : 0;
 
         // Call the SettingService to update the 'log_activities' setting with the determined status.
-        $settingService->updateSetting('log_activities', 0, $status);
+        $settingService->updateSetting('log_activities', 'default', $status);
     }
 
 

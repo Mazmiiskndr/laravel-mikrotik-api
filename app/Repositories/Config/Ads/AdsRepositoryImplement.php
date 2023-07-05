@@ -216,7 +216,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     public function adsMaxWidth()
     {
-        return $this->settingService->getSetting('ads_max_width', $this->moduleId());
+        return $this->settingService->getSetting('ads_max_width', 'ads');
     }
 
     /**
@@ -225,7 +225,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     public function adsMaxHeight()
     {
-        return $this->settingService->getSetting('ads_max_height', $this->moduleId());
+        return $this->settingService->getSetting('ads_max_height', 'ads');
     }
 
     /**
@@ -234,7 +234,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     public function adsMaxSize()
     {
-        return $this->settingService->getSetting('ads_max_size', $this->moduleId());
+        return $this->settingService->getSetting('ads_max_size', 'ads');
     }
 
     /**
@@ -243,7 +243,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     public function mobileAdsMaxWidth()
     {
-        return $this->settingService->getSetting('mobile_ads_max_width', $this->moduleId());
+        return $this->settingService->getSetting('mobile_ads_max_width', 'ads');
     }
 
     /**
@@ -252,7 +252,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     public function mobileAdsMaxHeight()
     {
-        return $this->settingService->getSetting('mobile_ads_max_height', $this->moduleId());
+        return $this->settingService->getSetting('mobile_ads_max_height', 'ads');
     }
 
     /**
@@ -261,7 +261,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     public function mobileAdsMaxSize()
     {
-        return $this->settingService->getSetting('mobile_ads_max_size', $this->moduleId());
+        return $this->settingService->getSetting('mobile_ads_max_size', 'ads');
     }
 
     /**
@@ -270,7 +270,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     public function adsUploadFolder()
     {
-        return $this->settingService->getSetting('ads_upload_folder', $this->moduleId());
+        return $this->settingService->getSetting('ads_upload_folder', 'ads');
     }
 
     // 👇 🌟🌟🌟 PRIVATE FUNCTIONS 🌟🌟🌟 👇
@@ -414,19 +414,5 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
         $ad->save();
 
         return $ad;
-    }
-
-    /**
-     * Get the module ID for the "ads" module.
-     * @return int|null The module ID or null if not found.
-     */
-    private function moduleId()
-    {
-        if (is_null($this->moduleId)) {
-            $module = $this->moduleModel->where('name', 'ads')->first();
-            $this->moduleId = $module ? $module->id : null;
-        }
-
-        return $this->moduleId;
     }
 }

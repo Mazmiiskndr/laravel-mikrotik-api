@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('hotel_rooms', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('hotel_room_uid')->unique();
             $table->string('room_number', 50);
             $table->string('name', 100)->default("Guest");
             $table->string('folio_number', 100);

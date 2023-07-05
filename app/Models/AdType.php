@@ -24,4 +24,25 @@ class AdType extends Model
         'mobile_max_size',
         'single_image',
     ];
+
+    /**
+     * The attributes that should be cast.
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'id' => 'string',
+    ];
+
+    /**
+     * Model "booting" method. Sets 'id' to a new UUID before record creation.
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->id = strtoupper(str()->uuid());
+        });
+    }
 }

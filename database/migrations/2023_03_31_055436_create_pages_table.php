@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('pages', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('module_id');
+            $table->uuid('module_id');
             $table->string('page', 100);
             $table->string('title', 100);
             $table->string('url', 100);

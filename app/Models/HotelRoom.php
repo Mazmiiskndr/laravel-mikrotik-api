@@ -13,7 +13,6 @@ class HotelRoom extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
-        'hotel_room_uid',
         'room_number',
         'name',
         'folio_number',
@@ -27,10 +26,16 @@ class HotelRoom extends Model
         'no_posting',
     ];
 
+    /**
+     * The attributes that should be cast.
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'id' => 'string',
+    ];
 
     /**
-     * boot
-     *
+     * Model "booting" method. Sets 'id' to a new UUID before record creation.
      * @return void
      */
     protected static function boot()
@@ -38,7 +43,7 @@ class HotelRoom extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->hotem_room_uid = str()->uuid();
+            $model->id = strtoupper(str()->uuid());
         });
     }
 }

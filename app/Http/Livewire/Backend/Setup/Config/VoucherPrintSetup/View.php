@@ -67,7 +67,7 @@ class View extends Component
     protected function setupInvoice(SettingService $settingService)
     {
         // Retrieve the setting 'how_to_use_voucher'
-        $howToUse = $settingService->getSetting('how_to_use_voucher', 3);
+        $howToUse = $settingService->getSetting('how_to_use_voucher', null);
 
         // Explode the string into an array based on comma
         $howToUseArray = explode(',', $howToUse);
@@ -85,7 +85,7 @@ class View extends Component
      */
     protected function setupLogo(SettingService $settingService)
     {
-        $this->logo = $settingService->getSetting('voucher_logo_filename', 3);
+        $this->logo = $settingService->getSetting('voucher_logo_filename', null);
     }
 
     /**
@@ -95,7 +95,7 @@ class View extends Component
      */
     protected function setupType(SettingService $settingService)
     {
-        $this->vouchers_type = $settingService->getSetting('create_vouchers_type', 3);
+        $this->vouchers_type = $settingService->getSetting('create_vouchers_type', null);
     }
 
     /**

@@ -13,7 +13,6 @@ class Job extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
-        'job_uid',
         'command',
         'username',
         'nasipaddress',
@@ -22,12 +21,24 @@ class Job extends Model
         'attempts',
     ];
 
+    /**
+     * The attributes that should be cast.
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'id' => 'string',
+    ];
+
+    /**
+     * Model "booting" method. Sets 'id' to a new UUID before record creation.
+     * @return void
+     */
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($model) {
-            $model->job_uid = str()->uuid();
+            $model->id = strtoupper(str()->uuid());
         });
     }
 }

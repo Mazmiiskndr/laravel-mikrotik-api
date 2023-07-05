@@ -15,7 +15,7 @@ return new class extends Migration
     {
         if (!Schema::hasTable('radreply')) {
             Schema::create('radreply', function (Blueprint $table) {
-                $table->uuid('id')->primary();
+                $table->id();
                 $table->string('username', 64)->unique();
                 $table->string('attribute', 64);
                 $table->string('op', 2)->default("=");

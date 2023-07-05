@@ -13,7 +13,6 @@ class Client extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
-        'client_uid',
         'service_id',
         'customer_id',
         'username',
@@ -43,8 +42,15 @@ class Client extends Model
     ];
 
     /**
-     * boot
-     *
+     * The attributes that should be cast.
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'id' => 'string',
+    ];
+
+    /**
+     * Model "booting" method. Sets 'id' to a new UUID before record creation.
      * @return void
      */
     protected static function boot()
@@ -52,7 +58,7 @@ class Client extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->client_uid = str()->uuid();
+            $model->id = strtoupper(str()->uuid());
         });
     }
 

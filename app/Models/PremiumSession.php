@@ -7,28 +7,34 @@ use Illuminate\Database\Eloquent\Model;
 
 class PremiumSession extends Model
 {
-  use HasFactory;
+    use HasFactory;
 
-  protected $table = 'premium_sessions';
-  protected $primaryKey = 'id';
-  protected $guarded = [];
-  protected $fillable = [
-    'premium_session_uid',
-    'username',
-    'expiration',
-  ];
+    protected $table = 'premium_sessions';
+    protected $primaryKey = 'id';
+    protected $guarded = [];
+    protected $fillable = [
+        'username',
+        'expiration',
+    ];
 
-  /**
-   * boot
-   *
-   * @return void
-   */
-  protected static function boot()
-  {
-    parent::boot();
+    /**
+     * The attributes that should be cast.
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'id' => 'string',
+    ];
 
-    static::creating(function ($model) {
-      $model->premium_session_uid = str()->uuid();
-    });
-  }
+    /**
+     * Model "booting" method. Sets 'id' to a new UUID before record creation.
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->id = strtoupper(str()->uuid());
+        });
+    }
 }

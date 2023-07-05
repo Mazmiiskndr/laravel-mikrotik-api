@@ -25,27 +25,38 @@ class SettingRepositoryImplement extends Eloquent implements SettingRepository{
     /**
      * Retrieves a setting based on the setting name and module ID.
      * @param string $settingName The setting name.
-     * @param string $moduleId The module id.
+     * @param string|null $flagModule The flag module.
      * @return string Returns the setting value.
      */
-    public function getSetting($settingName, $moduleId)
+    public function getSetting($settingName, $flagModule = null)
     {
         // Retrieves the setting value based on setting name and module id.
-        $query = $this->model->where('module_id', $moduleId)->where('setting', $settingName)->first();
-        return $query->value ?? "";
+        $query = $this->model->where('setting', $settingName);
+        if ($flagModule) {
+            $query->where('flag_module', $flagModule);
+        }
+        $setting = $query->first();
+        return $setting->value ?? "";
     }
+
 
     /**
      * Updates a setting based on the setting name, module ID, and new value.
      * @param string $settingName The setting name.
-     * @param string $moduleId The module id.
+     * @param string|null $flagModule The flag module.
      * @param string $value The new value.
      * @return int The number of affected rows.
      */
-    public function updateSetting($settingName, $moduleId, $value)
+    public function updateSetting($settingName, $flagModule = null, $value)
     {
         // Updates the setting value in the database and returns the number of affected rows.
-        return $this->model->where('module_id', $moduleId)->where('setting', $settingName)->update(['value' => $value]);
+        $update = $this->model->where('setting', $settingName);
+        if($flagModule){
+            $update->where('flag_module', $flagModule);
+        }
+        $update->update(['value' => $value]);
+
+        return $update;
     }
 
     /**

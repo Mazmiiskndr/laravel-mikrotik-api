@@ -25,6 +25,10 @@ return new class extends Migration
             $table->string('icon_class', 50)->nullable();
             $table->string('root', 100)->default(0);
         });
+
+        Schema::table('modules', function (Blueprint $table) {
+            $table->foreign('show_to')->references('id')->on('modules')->onDelete('set null');
+        });
     }
 
     /**

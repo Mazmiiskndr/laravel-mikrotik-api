@@ -24,7 +24,7 @@ class CreateSocialsTable extends Migration
 
         Schema::create('socials', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->char('client_id', 36);
+            $table->uuid('client_id');
             $table->string('oauth_id')->nullable();
             $table->string('oauth_provider')->nullable();
             $table->timestamps();
