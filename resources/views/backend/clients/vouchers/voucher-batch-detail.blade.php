@@ -15,7 +15,7 @@
             <div>
 
                 {{-- /Start Button for Print This Voucher Batch --}}
-                <x-link-button color="danger" route="backend.clients.voucher.voucher-batch-detail.print" identity="{{ $voucherBatchId }}" icon="fas fa-lg fa-file-pdf" target="_blank">
+                <x-link-button color="facebook" route="backend.clients.voucher.voucher-batch-detail.print" identity="{{ $voucherBatchId }}" icon="fas fa-lg fa-print" target="_blank">
                     &nbsp; Print Vouchers
                 </x-link-button>
                 {{-- /End Button for Print This Voucher Batch --}}
