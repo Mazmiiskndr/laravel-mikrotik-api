@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\RadAcct;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,6 +17,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(GroupSeeder::class);
         // $this->call(SettingSeeder::class);
         // $this->call(PageSeeder::class);
+        RadAcct::factory(50)->create();
         $this->call([
             AdminSeeder::class,
             RadGroupReplySeeder::class,

@@ -16,6 +16,7 @@ class ServicesSeeder extends Seeder
     public function run()
     {
         Services::create([
+            'id' => strtoupper(str()->uuid()),
             'service_name' => 'DefaultService',
             'type' => 'Regular',
             'burst_mode' => '0',

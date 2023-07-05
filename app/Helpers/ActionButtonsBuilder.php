@@ -2,6 +2,9 @@
 
 namespace App\Helpers;
 
+use App\Models\Services;
+use LaravelEasyRepository\Service;
+
 class ActionButtonsBuilder
 {
     private $editRoute;
@@ -118,11 +121,13 @@ class ActionButtonsBuilder
     private function buildDeleteButton()
     {
         $deleteButton = '';
+        // Get the default service
+        $service = Services::where('service_name', 'DefaultService')->first();
 
         // Check if the delete permission is given, the current user is allowed to perform the delete action, and the service is not the default service (ID != 1)
         if ($this->deletePermission && AccessControlHelper::isAllowedToPerformAction($this->deletePermission)) {
             // Check if it's not the case of delete_service permission with identity 1
-            if (!($this->deletePermission == "delete_service" && $this->identity == 1)) {
+            if (!($this->deletePermission == "delete_service" && $this->identity == $service->id)) {
                 // Generate the delete button with the onclick event handler
                 $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="' . $this->onclickDelete . '(\'' . $this->identity . '\')"> <i class="fas fa-trash"></i></button>';
             }

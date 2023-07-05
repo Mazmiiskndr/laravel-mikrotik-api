@@ -52,13 +52,13 @@
 </div>
 <script>
     // Display a success toast notification
-    var $toast = $('#successToastService');
+    var toast = $('#successToastService');
     $('#toastBody').text("{{ session('success') }}");
 
-    $toast.addClass('show showing');
+    toast.addClass('show showing');
 
     setTimeout(function() {
-        $toast.removeClass('show showing');
+        toast.removeClass('show showing');
     }, 3000);
 </script>
 @endif

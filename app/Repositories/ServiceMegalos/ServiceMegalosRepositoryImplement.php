@@ -283,7 +283,7 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
             // Check if the service exists
             $service = $this->getServiceById($serviceId);
             // Prepare the service data
-            $serviceData = $this->prepareDataServices($request);
+            $serviceData = $this->prepareDataServices($request, $serviceId);
             // Update service entry
             $service->update($serviceData);
             // Set rate limit according to 'for_purchase' value
@@ -394,7 +394,7 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
         ->setEditRoute($editRoute)
         ->setEditPermission($editPermission)
         ->setType($editButton)
-            ->setIdentity($data->id);
+        ->setIdentity($data->id);
     }
 
     /**
@@ -560,9 +560,8 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
      * @return array The prepared service data.
      * @throws Exception If the data is invalid.
      */
-    private function prepareDataServices($request)
+    private function prepareDataServices($request, $serviceId = null)
     {
-
         // If 'id' is set, get the existing service
         $service = null;
         if (isset($request['id']) && $request['id'] > 0) {
@@ -577,7 +576,6 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
         $defaultValidFrom = 0;
 
         $data = [
-            'id'                    => $request['id'] ?? 0,
             'service_name'          => $service ? $service->service_name : $request['serviceName'] ?? '',
             'description'           => $request['description'] ?? '',
             'dl_rate'               => (int) ($request['downloadRate'] ?? 0),
@@ -605,6 +603,9 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
             'purchase_duration'     => (int) ($request['timeDuration'] ?? 0),
             'unit_time_purchase'    => $request['unitTimeDuration'] ?? $defaultUnitTimeDuration,
         ];
+        if ($serviceId) {
+            $data['id'] = $serviceId;
+        }
 
         return $data;
     }
