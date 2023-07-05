@@ -15,7 +15,7 @@ class EditMyProfile extends Component
     use CloseModalTrait;
 
     // Properties Public Variables
-    public $admin_uid, $group_id, $group_name, $username, $password, $fullname, $email, $status, $status_name;
+    public $adminId, $group_id, $group_name, $username, $password, $fullname, $email, $status, $status_name;
 
     // Groups
     public $groups;
@@ -34,10 +34,10 @@ class EditMyProfile extends Component
     {
         $rules = [
             'group_id'      => 'required',
-            'username'      => 'required|min:4|max:60|regex:/^\S*$/u|unique:admins,username,' . $this->admin_uid . ',admin_uid',
+            'username'      => 'required|min:4|max:60|regex:/^\S*$/u|unique:admins,username,' . $this->adminId . ',id',
             'status'        => 'required',
             'fullname'      => 'required|min:4|max:100',
-            'email'         => 'required|email|unique:admins,email,' . $this->admin_uid . ',admin_uid',
+            'email'         => 'required|email|unique:admins,email,' . $this->adminId . ',id',
         ];
         // If password is not empty
         if (!empty($this->password)) {
@@ -105,15 +105,15 @@ class EditMyProfile extends Component
     /**
      * Load admin details into the component.
      * @param  AdminService $adminService
-     * @param  string $admin_uid
+     * @param  string $adminId
      * @return void
      */
-    public function showMyProfile(AdminService $adminService, $admin_uid)
+    public function showMyProfile(AdminService $adminService, $adminId)
     {
-        $admin = $adminService->getAdminByUid($admin_uid);
+        $admin = $adminService->getAdminByUid($adminId);
         $this->dispatchBrowserEvent('show-my-profile-modal');
 
-        $this->admin_uid = $admin['admin_uid'];
+        $this->adminId = $admin['id'];
         $this->group_id = $admin['group_id'];
         $this->group_name = $admin->group->name;
         $this->username = $admin['username'];
@@ -138,7 +138,7 @@ class EditMyProfile extends Component
         // Validate the data first
         $this->validate($this->getRules(), $this->getMessages());
         // Declare the public variable names
-        $variables = ['admin_uid', 'group_id', 'username', 'fullname', 'email', 'status'];
+        $variables = ['adminId', 'group_id', 'username', 'fullname', 'email', 'status'];
 
         // Collect property values into an associative array
         $newAdmin = array_reduce($variables, function ($carry, $property) {
@@ -148,7 +148,7 @@ class EditMyProfile extends Component
 
         try {
             // Update the admin dataAdmin
-            $adminService->updateAdmin($this->admin_uid, $newAdmin);
+            $adminService->updateAdmin($this->adminId, $newAdmin);
             // Show Message Success
             $this->dispatchSuccessEvent('My Profile successfully updated.');
             // Emit the 'myProfileUpdated' event with a true status
@@ -167,7 +167,7 @@ class EditMyProfile extends Component
      */
     public function resetFields()
     {
-        $this->admin_uid = '';
+        $this->adminId = '';
         $this->group_id = '';
         $this->username = '';
         $this->fullname = '';

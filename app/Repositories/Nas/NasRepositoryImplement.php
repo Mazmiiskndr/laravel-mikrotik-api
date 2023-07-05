@@ -94,7 +94,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         foreach ($settings as $setting) {
             // Retrieve the setting from the database using a separate function (getSetting)
             // And set it as a property of our $record object
-            $record->$setting = $this->settingService->getSetting($setting, '0');
+            $record->$setting = $this->settingService->getSetting($setting, 'default');
         }
 
         // Return the $record object, now with its properties set according to the retrieved settings
@@ -523,7 +523,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         // For each setting in our array
         foreach ($settings as $dbSetting => $providedSetting) {
             // Update the setting in the database using the data provided
-            $this->settingService->updateSetting($dbSetting, '0', $data[$providedSetting]);
+            $this->settingService->updateSetting($dbSetting, 'default', $data[$providedSetting]);
         }
     }
 

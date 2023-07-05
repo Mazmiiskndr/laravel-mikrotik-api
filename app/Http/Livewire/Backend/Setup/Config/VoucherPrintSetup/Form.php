@@ -120,7 +120,7 @@ class Form extends Component
             }, $this->invoice));
 
             // Use the SettingService to update the 'how_to_use_voucher' setting in the database
-            $settingService->updateSetting('how_to_use_voucher',3,$howToUseString);
+            $settingService->updateSetting('how_to_use_voucher','default',$howToUseString);
 
             // Emit a 'voucherUpdated' event with the new 'invoice' data
             $this->emit('voucherUpdated', $this->invoice);
