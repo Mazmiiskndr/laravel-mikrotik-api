@@ -167,6 +167,7 @@ class ModuleSeeder extends Seeder
                 'settings_data' => null,
                 'pages_data' => 12,
             ],
+            // *** ⚠️👇 HOTEL ROOMS IS NOT MEGALOS STANDAR IF ACTIVE = 1 👇⚠️***
             [
                 'name' => 'hotel_rooms',
                 'title' => 'Hotel Rooms',
@@ -174,12 +175,13 @@ class ModuleSeeder extends Seeder
                 'show_to' => 'clients',
                 'url' => NULL,
                 'extensible' => 0,
-                'active' => 0,
+                'active' => 1,
                 'icon_class' => NULL,
                 'root' => 0,
                 'settings_data' => 13,
                 'pages_data' => 13,
             ],
+            // *** ⚠️👆 HOTEL ROOMS IS NOT MEGALOS STANDAR IF ACTIVE = 1 👆⚠️***
             [
                 'name' => 'ads',
                 'title' => 'Ads',

@@ -4,10 +4,12 @@ namespace App\Services\Setting;
 
 use LaravelEasyRepository\Service;
 use App\Repositories\Setting\SettingRepository;
+use App\Traits\HandleRepositoryCall;
 use Exception;
 
 class SettingServiceImplement extends Service implements SettingService
 {
+    use HandleRepositoryCall;
 
     protected $mainRepository;
     /**
@@ -17,23 +19,6 @@ class SettingServiceImplement extends Service implements SettingService
     public function __construct(SettingRepository $mainRepository)
     {
         $this->mainRepository = $mainRepository;
-    }
-
-    /**
-     * Handles the method call to the repository and manages exceptions.
-     * @param string $method The method to call.
-     * @param array $parameters The parameters to pass to the method.
-     * @throws Exception If there is an error when calling the method.
-     * @return mixed The result of the method call.
-     */
-    private function handleRepositoryCall(string $method, array $parameters = [])
-    {
-        try {
-            return $this->mainRepository->{$method}(...$parameters);
-        } catch (Exception $exception) {
-            $errorMessage = "Error when calling $method: " . $exception->getMessage();
-            throw new Exception($errorMessage);
-        }
     }
 
     /**
