@@ -48,7 +48,7 @@ class PageSeeder
                 [13, 'hotel_rooms', 'Hotel Rooms', 'clients/pg/hotel_rooms', '1,2', 1, NULL],
                 [13, 'edit_all_static_hotel_rooms', 'Edit All Static Rooms', 'clients/pg/edit_all_static_hotel_rooms', '1,2', 0, NULL],
                 [13, 'hotel_rooms_csv', 'Hotel Rooms CSV', 'client/pg/hotel_rooms_csv', '1,2', 0, NULL],
-                [13, 'add_hotel_room', 'Add Hotel Room', 'clients/pg/add_hotel_room', '1,2', 1, NULL],
+                [13, 'add_hotel_room', 'Add Hotel Room', 'clients/pg/add_hotel_room', '1,2', 0, NULL],
                 [14, 'list_ads', 'Ads - List', 'setup/ads/list-ads', '1,2', 1, NULL],
                 [14, 'add_ad', 'Ads - Add', 'ads/pg/add_ad', '1,2', 0, NULL],
                 [14, 'edit_ad', 'Ads - Edit', 'ads/pg/edit_ad', '1,2', 0, NULL],

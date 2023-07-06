@@ -72,7 +72,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
     }
 
     /**
-     * Retrieve client by uid.
+     * Retrieve client by id.
      * Conditionally applies a WHERE clause if provided.
      * @param array|null $id
      * @return array
@@ -86,7 +86,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
             return $clientQuery;
         } catch (Exception $e) {
             // Log the exception message and return an empty array
-            Log::error("Error getting data client by uid : " . $e->getMessage());
+            Log::error("Error getting data client by id : " . $e->getMessage());
             throw $e;
         }
     }
@@ -97,7 +97,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
      */
     public function getDatatables()
     {
-        // Retrieve records from the database using the model, including the related 'admin' records, and sort by the latest records
+        // Retrieve records from the database using the model, including the related 'clients' records, and sort by the latest records
         $clientData = $this->getClientWithService(null, ['id', 'service_id', 'username']);
         $data = $clientData['data'];
 
@@ -123,7 +123,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
 
     /**
      * Define validation rules for client creation.
-     * @param string|null $id Client UID for uniqueness checks. If not provided, a create operation is assumed.
+     * @param string|null $id Client ID for uniqueness checks. If not provided, a create operation is assumed.
      * @return array Array of validation rules
      */
     public function getRules($id = null)
@@ -235,7 +235,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
 
     /**
      * Updates an existing client using the provided data.
-     * @param string $id The UID of the client to update.
+     * @param string $id The ID of the client to update.
      * @param array $data The data used to update the client.
      * @return Model|mixed The updated client.
      * @throws \Exception if an error occurs while updating the client.
@@ -263,7 +263,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
 
                 return $client;
             } else {
-                throw new \Exception("Client with UID $id not found.");
+                throw new \Exception("Client with ID $id not found.");
             }
         } catch (\Exception $e) {
             // Rollback the Transaction.
@@ -276,8 +276,8 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
     }
 
     /**
-     * Delete client data from the `clients`, `radcheck`, `radacct`, and `radusergroup` tables based on the client UID.
-     * @param string $id The UID of the client to delete.
+     * Delete client data from the `clients`, `radcheck`, `radacct`, and `radusergroup` tables based on the client ID.
+     * @param string $id The ID of the client to delete.
      * @throws \Exception if an error occurs while deleting the client.
      */
     public function deleteClientData($id)
@@ -296,7 +296,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
                 // Delete related data from radcheck, radacct and radusergroup
                 $this->deleteRelatedData($username);
             } else {
-                throw new \Exception("Client with UID $id not found.");
+                throw new \Exception("Client with ID $id not found.");
             }
         } catch (\Exception $e) {
             // If an exception occurred during the deletion process, log the error message.
