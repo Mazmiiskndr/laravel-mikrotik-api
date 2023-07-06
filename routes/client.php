@@ -6,6 +6,7 @@ use App\Http\Controllers\{
     Backend\Client\Voucher\VoucherBatchController,
     Backend\Client\Voucher\VoucherActiveController,
 };
+use App\Http\Controllers\Backend\Client\UsersData\UsersDataController;
 
 // Grouping routes that require check.session.cookie middleware
 Route::middleware(['check.session.cookie'])->group(function () {
@@ -26,6 +27,9 @@ Route::middleware(['check.session.cookie'])->group(function () {
 
             Route::get('list-active-vouchers', [VoucherActiveController::class, 'index'])->name('list-active-vouchers');
         });
+
+        // Route for configs list users data page
+        Route::get('users-data', [UsersDataController::class, 'index'])->name('users-data');
 
     });
 

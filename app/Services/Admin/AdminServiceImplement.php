@@ -4,10 +4,13 @@ namespace App\Services\Admin;
 
 use LaravelEasyRepository\Service;
 use App\Repositories\Admin\AdminRepository;
+use App\Traits\HandleRepositoryCall;
 use Exception;
 
 class AdminServiceImplement extends Service implements AdminService
 {
+    use HandleRepositoryCall;
+
     protected $mainRepository;
     /**
      * Constructor.
@@ -16,23 +19,6 @@ class AdminServiceImplement extends Service implements AdminService
     public function __construct(AdminRepository $mainRepository)
     {
         $this->mainRepository = $mainRepository;
-    }
-
-    /**
-     * Handles the method call to the repository and manages exceptions.
-     * @param string $method The method to call.
-     * @param array $parameters The parameters to pass to the method.
-     * @throws Exception If there is an error when calling the method.
-     * @return mixed The result of the method call.
-     */
-    private function handleRepositoryCall(string $method, array $parameters = [])
-    {
-        try {
-            return $this->mainRepository->{$method}(...$parameters);
-        } catch (Exception $exception) {
-            $errorMessage = "Error when calling $method: " . $exception->getMessage();
-            throw new Exception($errorMessage);
-        }
     }
 
     /**

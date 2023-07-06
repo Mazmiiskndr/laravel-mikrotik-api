@@ -47,4 +47,5 @@ class CreateSocialsTable extends Migration
     {
         Schema::dropIfExists('socials');
     }
+
 }

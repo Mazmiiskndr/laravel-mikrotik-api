@@ -14,6 +14,7 @@ class VoucherBatchDetailExport implements FromCollection, WithHeadings, WithStyl
 {
     protected $voucherService;
     protected $voucherBatchId;
+    protected $totalRowNumber;
 
     /**
      * VoucherBatchDetailExport constructor.
@@ -47,7 +48,7 @@ class VoucherBatchDetailExport implements FromCollection, WithHeadings, WithStyl
             ];
         });
 
-        $totalUsers = $mappedData->count();
+        $totalVouchers = $mappedData->count();
 
         $mappedData->push([
             'No' => '',
@@ -56,9 +57,11 @@ class VoucherBatchDetailExport implements FromCollection, WithHeadings, WithStyl
             'Password' => '',
             'Total Time Used' => '',
             'Valid Until' => 'TOTAL',
-            'Status' => $totalUsers,
+            'Status' => $totalVouchers,
         ]);
 
+        // Save the row number of the total
+        $this->totalRowNumber = $mappedData->count();
 
         return $mappedData;
     }
@@ -120,10 +123,12 @@ class VoucherBatchDetailExport implements FromCollection, WithHeadings, WithStyl
         }
 
         // Set the alignment to right for the total
-        $sheet->getStyle('F' . $endRow)->getAlignment()
+        if (isset($this->totalRowNumber)) {
+            $sheet->getStyle('F' . $this->totalRowNumber + 1 . ':G' . $this->totalRowNumber + 1)->getAlignment()
             ->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
-        // Make the text bold for the total
-        $sheet->getStyle('F' . $endRow . ':G' . $endRow)->getFont()->setBold(true);
+            // Make the text bold for the total
+            $sheet->getStyle('F' . $this->totalRowNumber + 1 . ':G' . $this->totalRowNumber + 1)->getFont()->setBold(true);
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Services\Report\ReportService;
+use App\Services\Client\UsersData\UsersDataService;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -10,18 +10,18 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ListOnlineUsersExport implements FromCollection, WithHeadings, WithStyles
+class UsersDataExport implements FromCollection, WithHeadings, WithStyles
 {
-    protected $reportService;
+    protected $usersDataService;
     protected $totalRowNumber;
 
     /**
      * ListOnlineUsersExport constructor.
-     * @param ReportService $reportService
+     * @param UsersDataService $usersDataService
      */
-    public function __construct(ReportService $reportService)
+    public function __construct(UsersDataService $usersDataService)
     {
-        $this->reportService = $reportService;
+        $this->usersDataService = $usersDataService;
     }
 
     /**
@@ -31,18 +31,16 @@ class ListOnlineUsersExport implements FromCollection, WithHeadings, WithStyles
     public function collection()
     {
         // Retrieve the data from the report service
-        $data = $this->reportService->getAllRadAcct()['activeSessions'];
+        $data = $this->usersDataService->getUsersData(null, ['id', 'date', 'name', 'email', 'room_number'])['data'];
 
         // Transform the data to match the headings
         $mappedData = $data->map(function ($row, $key) {
             return [
                 'No' => $key + 1,
-                'Username' => $row['username'] ?? '',
-                'First Use' => $row['firsttime'] ?? '',
-                'Session Start' => $row['starttime'] ?? '',
-                'Online Time' => gmdate('j\d H:i:s', $row['oltime']) ?? '',
-                'IP Address' => $row['ipaddress'] ?? '',
-                'MAC Address' => $row['macaddress'] ?? '',
+                'Guest Name' => $row['name'] ?? '',
+                'Email' => $row['email'] ?? '',
+                'Room Number' => $row['room_number'] ?? '',
+                'Input Date' => date('Y-F-d', strtotime($row['date'])) ?? '',
             ];
         });
 
@@ -50,12 +48,10 @@ class ListOnlineUsersExport implements FromCollection, WithHeadings, WithStyles
 
         $mappedData->push([
             'No' => '',
-            'Username' => '',
-            'First Use' => '',
-            'Session Start' => '',
-            'Online Time' => '',
-            'IP Address' => 'TOTAL',
-            'MAC Address' => $totalUsers,
+            'Guest Name' => '',
+            'Email' => '',
+            'Room Number' => 'TOTAL',
+            'Input Date' => $totalUsers,
         ]);
 
         // Save the row number of the total
@@ -73,12 +69,10 @@ class ListOnlineUsersExport implements FromCollection, WithHeadings, WithStyles
     {
         return [
             'No',
-            'Username',
-            'First Use',
-            'Session Start',
-            'Online Time',
-            'IP Address',
-            'MAC Address',
+            'Guest Name',
+            'Email',
+            'Room Number',
+            'Input Date'
         ];
     }
 
@@ -89,16 +83,16 @@ class ListOnlineUsersExport implements FromCollection, WithHeadings, WithStyles
     public function styles(Worksheet $sheet)
     {
         // Set the fill color to yellow for the header
-        $sheet->getStyle('A1:G1')->getFill()
+        $sheet->getStyle('A1:E1')->getFill()
             ->setFillType(Fill::FILL_SOLID)
             ->getStartColor()->setARGB('FFFFFF00');
 
         // Center the text for the header
-        $sheet->getStyle('A1:G1')->getAlignment()
+        $sheet->getStyle('A1:E1')->getAlignment()
             ->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         // Make the text bold for the header
-        $sheet->getStyle('A1:G1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:E1')->getFont()->setBold(true);
 
         // Add border to the cells
         $styleArray = [
@@ -113,20 +107,24 @@ class ListOnlineUsersExport implements FromCollection, WithHeadings, WithStyles
         $endRow = $sheet->getHighestRow();
 
         // Apply the border style to all cells
-        $sheet->getStyle('A1:G' . $endRow)->applyFromArray($styleArray);
+        $sheet->getStyle('A1:E' . $endRow)->applyFromArray($styleArray);
+
+        // Set all cells alignment to left
+        $sheet->getStyle('A1:E' . $endRow)->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
         // Set column widths
-        foreach (range('A', 'G') as $columnID) {
+        foreach (range('A', 'E') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
 
         // Set the alignment to right for the total
         if (isset($this->totalRowNumber)) {
-            $sheet->getStyle('F' . $this->totalRowNumber + 1 . ':G' . $this->totalRowNumber + 1)->getAlignment()
-            ->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            $sheet->getStyle('D' . $this->totalRowNumber + 1 . ':E' . $this->totalRowNumber + 1)->getAlignment()
+                ->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
             // Make the text bold for the total
-            $sheet->getStyle('F' . $this->totalRowNumber + 1 . ':G' . $this->totalRowNumber + 1)->getFont()->setBold(true);
+            $sheet->getStyle('D' . $this->totalRowNumber + 1 . ':E' . $this->totalRowNumber + 1)->getFont()->setBold(true);
         }
     }
 }

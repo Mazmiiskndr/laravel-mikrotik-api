@@ -59,6 +59,12 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::disableForeignKeyConstraints();
+        if (Schema::hasTable('socials')) {
+            Schema::dropIfExists('socials');
+        }
         Schema::dropIfExists('clients');
+        Schema::enableForeignKeyConstraints();
     }
+
 };
