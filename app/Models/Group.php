@@ -4,11 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\UseUuid as Model;
-use App\Traits\UsesOrderedUuid;
 
 class Group extends Model
 {
-    use HasFactory, UsesOrderedUuid;
+    use HasFactory;
 
     protected $table = 'groups';
     protected $primaryKey = 'id';

@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\UsesOrderedUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UseUuid as Model;
 
 class HotelRoom extends Model
 {
-    use HasFactory, UsesOrderedUuid;
+    use HasFactory;
 
     protected $table = 'hotel_rooms';
     protected $primaryKey = 'id';

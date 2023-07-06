@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use App\Traits\UsesOrderedUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UseUuid as Model;
 use Illuminate\Support\Facades\DB;
 
 class Voucher extends Model
 {
-    use HasFactory, UsesOrderedUuid;
+    use HasFactory;
 
     protected $table = 'vouchers';
     protected $primaryKey = 'id';
