@@ -39,7 +39,7 @@ class ListOnlineUsersExport implements FromCollection, WithHeadings, WithStyles
                 'Username' => $row['username'] ?? '',
                 'First Use' => $row['firsttime'] ?? '',
                 'Session Start' => $row['starttime'] ?? '',
-                'Online Time' => $row['oltime'] ?? '',
+                'Online Time' => gmdate('j\d H:i:s', $row['oltime']) ?? '',
                 'IP Address' => $row['ipaddress'] ?? '',
                 'MAC Address' => $row['macaddress'] ?? '',
             ];
