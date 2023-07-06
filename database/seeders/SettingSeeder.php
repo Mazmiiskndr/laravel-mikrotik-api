@@ -12,7 +12,7 @@ class SettingSeeder extends Seeder
         if ($old_id) {
             # code...
             $array = [
-                ['default', 'log_activities', '1', 'default'],
+                ['default', 'log_activities', '0', 'default'],
                 ['default', 'server_ip', NULL, 'default'],
                 ['default', 'mikrotik_api_password', 'megalos', 'default'],
                 ['default', 'mikrotik_api_username', 'admin', 'default'],

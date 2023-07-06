@@ -38,6 +38,7 @@ class ReportRepositoryImplement extends Eloquent implements ReportRepository
 
             // Fetch the data where 'acctstoptime' is NULL and 'starttime' is not NULL.
             $responseData['activeSessions'] = $this->radAcctModel->select([
+                'radacctid',
                 'username',
                 'acctstarttime as starttime',
                 'nasipaddress',
