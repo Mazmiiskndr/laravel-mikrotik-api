@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         // $this->call(GroupSeeder::class);
         // $this->call(SettingSeeder::class);
-        // $this->call(PageSeeder::class);dass
+        // $this->call(PageSeeder::class);
         RadAcct::factory(50)->create();
         $this->call([
             AdminSeeder::class,
