@@ -34,10 +34,17 @@ class MenuHelper
         // Initialize an array to hold the menu data
         $menuData = [];
 
-        // Find and add the Home menu item
-        $dashboardModule = Module::where('name', 'dashboard')->first();
+        // Find and add the Dashboard menu item
+        $dashboardModule = Module::where('name',
+            'dashboard'
+        )->first();
         if ($dashboardModule) {
-            $menuData[] = self::buildMenuItemFromModule($dashboardModule, $user);
+            $menuData[] = [
+                'name' => $dashboardModule->title,
+                'slug' => $dashboardModule->url,
+                'icon' => $dashboardModule->icon_class,
+                'url' => '/' . $dashboardModule->url
+            ];
         }
 
         $order = ['Client', 'Services', 'Reports', 'Setup'];

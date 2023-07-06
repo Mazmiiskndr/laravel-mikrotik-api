@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\UsesOrderedUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PremiumLog extends Model
 {
-    use HasFactory;
+    use HasFactory, UsesOrderedUuid;
 
     protected $table = 'premium_logs';
     protected $primaryKey = 'id';
@@ -19,25 +20,4 @@ class PremiumLog extends Model
         'quantity',
         'service',
     ];
-
-    /**
-     * The attributes that should be cast.
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'id' => 'string',
-    ];
-
-    /**
-     * Model "booting" method. Sets 'id' to a new UUID before record creation.
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->id = strtoupper(str()->uuid());
-        });
-    }
 }

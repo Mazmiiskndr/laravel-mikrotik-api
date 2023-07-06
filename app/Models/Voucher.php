@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\UsesOrderedUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class Voucher extends Model
 {
-    use HasFactory;
+    use HasFactory, UsesOrderedUuid;
 
     protected $table = 'vouchers';
     protected $primaryKey = 'id';
@@ -25,15 +26,9 @@ class Voucher extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'id' => 'string',
-    ];
-
-    /**
-     * Model "booting" method. Sets 'id' to a new UUID before record creation.
+     * Model "booting" method. Sets 'serial_number' to a new generated serial number before record creation.
+     * Note: This model uses the 'UsesUuid' trait which sets 'id' to a new UUID before record creation.
+     *
      * @return void
      */
     protected static function boot()
@@ -41,10 +36,10 @@ class Voucher extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->id = strtoupper(str()->uuid());
             $model->serial_number = $model->generateSerialNumber();
         });
     }
+
 
     /**
      * Define an inverse one-to-one or many relationship with the VoucherBatch model.

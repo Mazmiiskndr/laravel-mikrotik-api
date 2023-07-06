@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\UseUuid as Model;
+use App\Traits\UsesOrderedUuid;
 
 class Module extends Model
 {
-    use HasFactory;
+    use HasFactory, UsesOrderedUuid;
 
     protected $table = 'modules';
     protected $primaryKey = 'id';
@@ -26,27 +27,6 @@ class Module extends Model
     ];
 
     public $timestamps = false;
-
-    /**
-     * The attributes that should be cast.
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'id' => 'string',
-    ];
-
-    /**
-     * Model "booting" method. Sets 'id' to a new UUID before record creation.
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->id = strtoupper(str()->uuid());
-        });
-    }
 
     public function pages()
     {

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\UsesOrderedUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class HotelRoom extends Model
 {
-    use HasFactory;
+    use HasFactory, UsesOrderedUuid;
 
     protected $table = 'hotel_rooms';
     protected $primaryKey = 'id';
@@ -25,25 +26,4 @@ class HotelRoom extends Model
         'departure',
         'no_posting',
     ];
-
-    /**
-     * The attributes that should be cast.
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'id' => 'string',
-    ];
-
-    /**
-     * Model "booting" method. Sets 'id' to a new UUID before record creation.
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->id = strtoupper(str()->uuid());
-        });
-    }
 }
