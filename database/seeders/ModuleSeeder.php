@@ -213,7 +213,7 @@ class ModuleSeeder extends Seeder
                 'show_to' => 'clients',
                 'url' => 'users_data',
                 'extensible' => 0,
-                'active' => 0,
+                'active' => 1,
                 'icon_class' => NULL,
                 'root' => 0,
                 'settings_data' => 16,
@@ -232,7 +232,7 @@ class ModuleSeeder extends Seeder
                 'settings_data' => 17,
                 'pages_data' => 17,
             ],
-            // NOT MEGALOS STANDAR IF PREMIUM ACTIVE 👇
+            // *** ⚠️👇 PREMIUM IS NOT MEGALOS STANDAR IF ACTIVE = 1 👇⚠️***
             [
                 'name' => 'premium',
                 'title' => 'Premium',
@@ -246,6 +246,7 @@ class ModuleSeeder extends Seeder
                 'settings_data' => 18,
                 'pages_data' => 18,
             ],
+            // *** ⚠️👆 PREMIUM IS NOT MEGALOS STANDAR IF ACTIVE = 1 👆⚠️***
             [
                 'name' => 'configs',
                 'title' => 'Configs',
