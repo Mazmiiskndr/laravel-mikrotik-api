@@ -49,15 +49,15 @@ class DataTable extends Component
     /**
      * Deletes multiple clients using their UIDs.
      * @param ClientService $clientService
-     * @param array $clientUids
+     * @param array $clientIds
      * @return void
      */
-    public function deleteBatchClient(ClientService $clientService, $clientUids)
+    public function deleteBatchClient(ClientService $clientService, $clientIds)
     {
         try {
             // Loop through all client UIDs and delete each client's data.
-            foreach ($clientUids as $clientUid) {
-                $clientService->deleteClientData($clientUid);
+            foreach ($clientIds as $clientId) {
+                $clientService->deleteClientData($clientId);
             }
 
             // Notify the frontend of success
@@ -74,14 +74,14 @@ class DataTable extends Component
     /**
      * Deletes a single client using its UID.
      * @param ClientService $clientService
-     * @param string $clientUid
+     * @param string $clientId
      * @return void
      */
-    public function deleteClient(ClientService $clientService, $clientUid)
+    public function deleteClient(ClientService $clientService, $clientId)
     {
         try {
             // Loop through all client UID and delete each client's data.
-            $clientService->deleteClientData($clientUid);
+            $clientService->deleteClientData($clientId);
 
             // Notify the frontend of success
             $this->dispatchSuccessEvent('Client successfully deleted.');

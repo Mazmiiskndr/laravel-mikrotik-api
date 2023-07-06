@@ -72,14 +72,14 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
     /**
      * Retrieve client by uid.
      * Conditionally applies a WHERE clause if provided.
-     * @param array|null $clientUid
+     * @param array|null $id
      * @return array
      */
-    public function getClientByUid($clientUid)
+    public function getClientById($id)
     {
         try {
             // Prepare the query to select clients and join with services
-            $clientQuery = $this->model->where('client_uid', $clientUid)->first();
+            $clientQuery = $this->model->where('id', $id)->first();
 
             return $clientQuery;
         } catch (Exception $e) {
@@ -96,7 +96,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
     public function getDatatables()
     {
         // Retrieve records from the database using the model, including the related 'admin' records, and sort by the latest records
-        $clientData = $this->getClientWithService(null, ['client_uid', 'service_id', 'username']);
+        $clientData = $this->getClientWithService(null, ['id', 'service_id', 'username']);
         $data = $clientData['data'];
 
         $editPermission = 'edit_client';
@@ -121,17 +121,17 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
 
     /**
      * Define validation rules for client creation.
-     * @param string|null $clientUid Client UID for uniqueness checks. If not provided, a create operation is assumed.
+     * @param string|null $id Client UID for uniqueness checks. If not provided, a create operation is assumed.
      * @return array Array of validation rules
      */
-    public function getRules($clientUid = null)
+    public function getRules($id = null)
     {
-        // If clientUid is not provided, we're creating a new client, else we're updating an existing client.
+        // If id is not provided, we're creating a new client, else we're updating an existing client.
         $usernameRule = 'required|min:5|max:32|regex:/^\S*$/u|unique:clients,username';
         $emailRule = 'nullable|email|max:80|unique:clients,email';
-        if ($clientUid !== null) {
-            $usernameRule .= ",$clientUid,client_uid";
-            $emailRule .= ",$clientUid,client_uid";
+        if ($id !== null) {
+            $usernameRule .= ",$id,id";
+            $emailRule .= ",$id,id";
         }
 
         return [
@@ -230,19 +230,19 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
 
     /**
      * Updates an existing client using the provided data.
-     * @param string $clientUid The UID of the client to update.
+     * @param string $id The UID of the client to update.
      * @param array $data The data used to update the client.
      * @return Model|mixed The updated client.
      * @throws \Exception if an error occurs while updating the client.
      */
-    public function updateClient($clientUid, $data)
+    public function updateClient($id, $data)
     {
         // Start a new database transaction.
         DB::beginTransaction();
 
         try {
             // Get the client from the database.
-            $client = $this->getClientByUid($clientUid);
+            $client = $this->getClientById($id);
             // If the client exists, update its data.
             if ($client !== null) {
                 // Update client data
@@ -258,7 +258,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
 
                 return $client;
             } else {
-                throw new \Exception("Client with UID $clientUid not found.");
+                throw new \Exception("Client with UID $id not found.");
             }
         } catch (\Exception $e) {
             // Rollback the Transaction.
@@ -272,14 +272,14 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
 
     /**
      * Delete client data from the `clients`, `radcheck`, `radacct`, and `radusergroup` tables based on the client UID.
-     * @param string $clientUid The UID of the client to delete.
+     * @param string $id The UID of the client to delete.
      * @throws \Exception if an error occurs while deleting the client.
      */
-    public function deleteClientData($clientUid)
+    public function deleteClientData($id)
     {
         try {
             // Retrieve the client from the database.
-            $client = $this->model->where('client_uid', $clientUid)->first();
+            $client = $this->model->where('id', $id)->first();
 
             // If the client exists, delete its associated data from all related tables.
             if ($client !== null) {
@@ -292,7 +292,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
                 $this->radAcctModel->where('username', $username)->delete();
                 $this->radUserGroupModel->where('username', $username)->delete();
             } else {
-                throw new \Exception("Client with UID $clientUid not found.");
+                throw new \Exception("Client with UID $id not found.");
             }
         } catch (\Exception $e) {
             // If an exception occurred during the deletion process, log the error message.
@@ -322,7 +322,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
             ->setOnclickDelete($onclickDelete)
             ->setOnclickEdit($onclickEdit)
             ->setType($editButton)
-            ->setIdentity($data->client_uid)
+            ->setIdentity($data->id)
             ->build();
     }
 

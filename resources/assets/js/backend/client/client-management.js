@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (canBatchDelete) {
     columns.unshift({
-      data: 'client_uid',
+      data: 'id',
       render: function (data, type, row) {
         return `<input type='checkbox' style='border: 1px solid #8f8f8f;' class='form-check-input client-checkbox' value='${data}'>`;
       },
@@ -97,13 +97,13 @@ window.addEventListener('refreshDatatable', () => {
 
 // Function to confirm Batch Delete
 function confirmDeleteBatch() {
-  // Get all checked client_uid
-  let clientUids = Array.from(document.querySelectorAll('.client-checkbox:checked')).map(el => el.value);
+  // Get all checked clientId
+  let clientIds = Array.from(document.querySelectorAll('.client-checkbox:checked')).map(el => el.value);
 
-  if (clientUids.length > 0) {
+  if (clientIds.length > 0) {
     showSwalDialog('Are you sure?', 'You will not be able to restore this data!', () => {
       // Emit an event to delete the checked clients
-      Livewire.emit('deleteBatch', clientUids);
+      Livewire.emit('deleteBatch', clientIds);
     });
   } else {
     Swal.fire({ icon: 'error', title: 'Oops...', text: 'You must select at least one client to delete!' });
@@ -111,13 +111,13 @@ function confirmDeleteBatch() {
 }
 
 // Function to show a modal for UPDATE!
-function showClient(uid) {
-  Livewire.emit('getClient', uid);
+function showClient(clientId) {
+  Livewire.emit('getClient', clientId);
 }
 
 // Function to show a modal for DELETE!
-function confirmDeleteClient(uid) {
+function confirmDeleteClient(clientId) {
   showSwalDialog('Are you sure?', 'You will not be able to restore this data!', () => {
-    Livewire.emit('confirmClient', uid);
+    Livewire.emit('confirmClient', clientId);
   });
 }

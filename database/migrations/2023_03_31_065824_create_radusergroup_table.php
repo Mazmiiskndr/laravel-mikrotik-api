@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('radreply')) {
+        if (!Schema::hasTable('radusergroup')) {
             Schema::create('radusergroup', function (Blueprint $table) {
                 $table->id();
                 $table->string('username', 64)->unique();

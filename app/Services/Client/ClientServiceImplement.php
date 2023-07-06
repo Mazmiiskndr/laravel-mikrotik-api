@@ -49,13 +49,13 @@ class ClientServiceImplement extends Service implements ClientService
 
     /**
      * Retrieve client by uid.
-     * @param array|null $clientUid
+     * @param array|null $clientId
      * @return array
      * @throws Exception if an error occurs during the repository method call.
      */
-    public function getClientByUid($clientUid)
+    public function getClientById($clientId)
     {
-        return $this->handleRepositoryCall('getClientByUid', [$clientUid]);
+        return $this->handleRepositoryCall('getClientById', [$clientId]);
     }
 
     /**
@@ -70,13 +70,13 @@ class ClientServiceImplement extends Service implements ClientService
 
     /**
      * Define validation rules for client creation.
-     * @param string|null $clientUid Client UID for uniqueness checks. If not provided, a create operation is assumed.
+     * @param string|null $clientId Client UID for uniqueness checks. If not provided, a create operation is assumed.
      * @return array Array of validation rules
      * @throws Exception if an error occurs during the repository method call.
      */
-    public function getRules($clientUid = null)
+    public function getRules($clientId = null)
     {
-        return $this->handleRepositoryCall('getRules', [$clientUid]);
+        return $this->handleRepositoryCall('getRules', [$clientId]);
     }
 
     /**
@@ -102,24 +102,24 @@ class ClientServiceImplement extends Service implements ClientService
 
     /**
      * Updates an existing client using the provided data.
-     * @param string $clientUid The UID of the client to update.
+     * @param string $clientId The UID of the client to update.
      * @param array $data The data used to update the client.
      * @return mixed The updated client.
      * @throws Exception if an error occurs while updating the client.
      */
-    public function updateClient($clientUid, $data)
+    public function updateClient($clientId, $data)
     {
-        return $this->handleRepositoryCall('updateClient', [$clientUid, $data]);
+        return $this->handleRepositoryCall('updateClient', [$clientId, $data]);
     }
 
     /**
      * Delete client data from the `clients`, `radcheck`, `radacct`, and `radusergroup` tables based on the client UID.
-     * @param string $clientUid The UID of the client to delete.
+     * @param string $clientId The UID of the client to delete.
      * @throws Exception if an error occurs during the repository method call.
      */
-    public function deleteClientData($clientUid)
+    public function deleteClientData($clientId)
     {
-        return $this->handleRepositoryCall('deleteClientData', [$clientUid]);
+        return $this->handleRepositoryCall('deleteClientData', [$clientId]);
     }
 
 }
