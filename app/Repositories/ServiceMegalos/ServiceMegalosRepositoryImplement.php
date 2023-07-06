@@ -490,7 +490,7 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
      * @return int The time in seconds.
      * @throws Exception If an invalid unit is provided.
      */
-    private function timeToInt($unit)
+    public function timeToInt($unit)
     {
         $array = [
             "minutes"     => 60,

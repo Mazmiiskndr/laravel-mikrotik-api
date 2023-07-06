@@ -16,6 +16,13 @@ interface VoucherRepository extends Repository{
     public function getVoucherBatchesWithService($conditions, $columns);
 
     /**
+     * This function finds a voucher batch with its associated service.
+     * @param $voucherBatchId
+     * @return mixed
+     */
+    public function getVoucherBatchIdWithService($voucherBatchId);
+
+    /**
      * Retrieve Voucher records based on voucher_batches_id
      * @param int $voucherBatchesId
      * @return Collection
@@ -55,5 +62,13 @@ interface VoucherRepository extends Repository{
      * @throws \Exception if an error occurs while deleting the voucher batch or its associated vouchers.
      */
     public function deleteVoucherBatch($voucherBatchId);
+
+    /**
+     * Format time for display based on the limit and unit.
+     * @param int|string $limit The time limit.
+     * @param string $unit The unit of time (e.g., "hours", "minutes").
+     * @return string The formatted time for display.
+     */
+    public function formatTimeDisplay($limit, $unit);
 
 }

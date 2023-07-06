@@ -19,10 +19,12 @@ Route::middleware(['check.session.cookie'])->group(function () {
         Route::prefix('voucher')->name('voucher.')->group(function () {
             // Route for configs list page
             Route::get('list-voucher-batches', [VoucherBatchController::class, 'index'])->name('list-voucher-batches');
+
             Route::get('voucher-batch-detail/{voucher_batch_id}', [VoucherBatchController::class, 'show'])->name('voucher-batch-detail');
+            // Print voucher batch detail 👇
+            Route::get('voucher-batch-detail/{voucher_batch_id}/print', [VoucherBatchController::class, 'print'])->name('voucher-batch-detail.print');
+
             Route::get('list-active-vouchers', [VoucherActiveController::class, 'index'])->name('list-active-vouchers');
-            // TODO: PRINT PDF VOUCHER
-            // Route::get('vouchers/{voucherBatchId}/print', [VoucherActiveController::class, 'print'])->name('print');
         });
 
     });

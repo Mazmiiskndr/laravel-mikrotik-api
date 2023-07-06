@@ -50,6 +50,16 @@ class VoucherServiceImplement extends Service implements VoucherService
     }
 
     /**
+     * This function finds a voucher batch with its associated service.
+     * @param $voucherBatchId
+     * @return mixed
+     */
+    public function getVoucherBatchIdWithService($voucherBatchId)
+    {
+        return $this->handleRepositoryCall('getVoucherBatchIdWithService', [$voucherBatchId]);
+    }
+
+    /**
      * Retrieve Voucher records based on voucher_batches_id
      * @param int $voucherBatchesId
      * @return Collection
@@ -106,5 +116,16 @@ class VoucherServiceImplement extends Service implements VoucherService
     public function deleteVoucherBatch($voucherBatchId)
     {
         return $this->handleRepositoryCall('deleteVoucherBatch', [$voucherBatchId]);
+    }
+
+    /**
+     * Format time for display based on the limit and unit.
+     * @param int|string $limit The time limit.
+     * @param string $unit The unit of time (e.g., "hours", "minutes").
+     * @return string The formatted time for display.
+     */
+    public function formatTimeDisplay($limit, $unit)
+    {
+        return $this->handleRepositoryCall('formatTimeDisplay', [$limit, $unit]);
     }
 }
