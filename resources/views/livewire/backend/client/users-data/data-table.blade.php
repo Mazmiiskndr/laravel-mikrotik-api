@@ -1,5 +1,6 @@
 @php
 $canDelete = App\Helpers\AccessControlHelper::isAllowedToPerformAction('delete_users_data');
+$printCsv = App\Helpers\AccessControlHelper::isAllowedToPerformAction('users_data_csv');
 
 @endphp
 <div wire:ignore class="table">
@@ -28,7 +29,8 @@ $canDelete = App\Helpers\AccessControlHelper::isAllowedToPerformAction('delete_u
 </div>
 @push('scripts')
 <script>
-    var canDelete = @json($canDelete)
+    var canDelete = @json($canDelete);
+    var printCsv = @json($printCsv);
 
     // Helper function to show a Swal dialog
     function showSwalDialog(title, text, callback) {
@@ -137,6 +139,12 @@ $canDelete = App\Helpers\AccessControlHelper::isAllowedToPerformAction('delete_u
             showSwalDialog('Are you sure?', 'You will not be able to restore this data!', () => {
                 Livewire.emit('confirmUserData', userDataId);
             });
+        }
+    }
+    if (printCsv) {
+        // Function to show a modal for DELETE!
+        function saveToExcel() {
+            Livewire.emit('saveToExcel');
         }
     }
 </script>

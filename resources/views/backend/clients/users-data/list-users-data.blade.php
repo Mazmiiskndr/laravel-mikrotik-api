@@ -17,7 +17,7 @@
             <div>
                 {{-- /Start Button for Print --}}
                 @if ($permissions['isAllowedToPrintUsersData'])
-                <x-link-button color="facebook" icon="fas fa-lg fa-print" target="_blank">
+                <x-link-button color="facebook" icon="fas fa-lg fa-file-pdf" target="_blank">
                     &nbsp; Print Users Data
                 </x-link-button>
                 @endif
@@ -25,7 +25,7 @@
 
                 {{-- /Start Button for Save To Excel --}}
                 @if ($permissions['isAllowedToUsersDataCsv'])
-                <x-button type="button" color="success">
+                <x-button type="button" color="success" onclick="saveToExcel()">
                     <i class="tf-icons fas fa-file-excel ti-xs me-1"></i>&nbsp; Save to Excel
                 </x-button>
                 @endif
