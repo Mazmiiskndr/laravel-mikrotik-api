@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UseUuid as Model;
 
 class UserData extends Model
 {
@@ -13,7 +13,6 @@ class UserData extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
-        'user_data_uid',
         'name',
         'email',
         'phone_number',
@@ -27,18 +26,4 @@ class UserData extends Model
         'login_with',
         'mac',
     ];
-
-    /**
-     * boot
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->user_data_uid = str()->uuid();
-        });
-    }
 }

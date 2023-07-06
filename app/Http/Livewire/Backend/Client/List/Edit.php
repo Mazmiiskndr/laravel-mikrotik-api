@@ -15,7 +15,7 @@ class Edit extends Component
     use CloseModalTrait;
 
     // Properties Public For Create Clients
-    public $clientUid, $idService, $username, $password, $simultaneousUse, $validFrom, $validTo,
+    public $clientId, $idService, $username, $password, $simultaneousUse, $validFrom, $validTo,
         $identificationNo, $emailAddress, $firstName, $lastName, $placeOfBirth,
         $dateOfBirth, $phone, $address, $notes;
 
@@ -47,7 +47,7 @@ class Edit extends Component
     {
         // Every time a property changes, this function will be called
         $clientService = app(ClientService::class);
-        $this->validateOnly($property, $clientService->getRules($this->clientUid), $clientService->getMessages());
+        $this->validateOnly($property, $clientService->getRules($this->clientId), $clientService->getMessages());
     }
 
     /**
@@ -69,14 +69,14 @@ class Edit extends Component
     public function updateClient(ClientService $clientService)
     {
         // Validate the form data before submit
-        $this->validate($clientService->getRules($this->clientUid), $clientService->getMessages());
+        $this->validate($clientService->getRules($this->clientId), $clientService->getMessages());
 
         // List of properties to include in the client
         $clientData = $this->prepareClientData();
 
         try {
             // Attempt to update the client
-            $client = $clientService->updateClient($this->clientUid, $clientData);
+            $client = $clientService->updateClient($this->clientId, $clientData);
 
             // Check if the client was updated successfully
             if ($client === null) {
@@ -102,7 +102,7 @@ class Edit extends Component
      */
     public function resetFields()
     {
-        $this->clientUid = null;
+        $this->clientId = null;
         $this->idService = null;
         $this->username = null;
         $this->password = null;
@@ -124,13 +124,13 @@ class Edit extends Component
      * Load client data into the component.
      * This function is called when the 'showClient' event is mounted.
      * @param  \App\Services\ClientService  $clientService The service to use to fetch the client.
-     * @param  int  $clientUid The ID of the client to load.
+     * @param  int  $clientId The ID of the client to load.
      * @return void
      */
-    public function showClient(ClientService $clientService, $clientUid)
+    public function showClient(ClientService $clientService, $clientId)
     {
         // Fetch the client using the provided service
-        $client = $clientService->getClientByUid($clientUid);
+        $client = $clientService->getClientById($clientId);
         // If a client was found, load the client's data into the component's properties
         if ($client) {
             $this->populateClientData($client);
@@ -162,9 +162,9 @@ class Edit extends Component
      * Populate the component's properties with the client's data.
      * @param  object  $client
      */
-    protected function populateClientData(object $client): void
+    protected function populateClientData($client)
     {
-        $this->clientUid = $client->client_uid;
+        $this->clientId = $client->id;
         $this->idService = $client->service_id;
         $this->username = $client->username;
         $this->password = $client->password;

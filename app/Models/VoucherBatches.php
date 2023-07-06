@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UseUuid as Model;
 
 class VoucherBatches extends Model
 {
@@ -13,7 +13,6 @@ class VoucherBatches extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
-        'voucher_batches_uid',
         'service_id',
         'quantity',
         'created',
@@ -21,20 +20,6 @@ class VoucherBatches extends Model
         'note',
         'type',
     ];
-
-    /**
-     * boot
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->voucher_batches_uid = str()->uuid();
-        });
-    }
 
     /**
      * Get the data service.

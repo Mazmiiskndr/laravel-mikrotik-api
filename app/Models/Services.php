@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UseUuid as Model;
 
 class Services extends Model
 {
@@ -14,6 +14,7 @@ class Services extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
+        'id',
         'service_name',
         'type',
         'burst_mode',

@@ -10,13 +10,12 @@ class MenuHelper
 {
     /**
      * Generates the menu HTML based on the admin's group and modules.
-     *
      * @return string
      */
     public static function generateMenuHtml()
     {
         // Fetch the admin data along with the group and modules relationship
-        $admin = Admin::with(['group.modules.pages'])->where('admin_uid', session('user_uid'))->first();
+        $admin = Admin::with(['group.modules.pages'])->where('id', session('user_uid'))->first();
 
         // Build the menu data based on the fetched admin data
         $menuData = self::buildMenuData($admin);
@@ -26,17 +25,19 @@ class MenuHelper
     }
 
     /**
-     * Builds the menu data based on the admin's group and modules.
-     *
-     * @param Admin $user
-     * @return array
+     * Build the menu data based on a given user's group and modules
+     * @param Admin $user The user to build the menu data for
+     * @return array The built menu data
      */
     private static function buildMenuData($user)
     {
+        // Initialize an array to hold the menu data
         $menuData = [];
 
-        // Find and add the Home menu item
-        $dashboardModule = Module::where('name', 'dashboard')->first();
+        // Find and add the Dashboard menu item
+        $dashboardModule = Module::where('name',
+            'dashboard'
+        )->first();
         if ($dashboardModule) {
             $menuData[] = [
                 'name' => $dashboardModule->title,
@@ -46,78 +47,29 @@ class MenuHelper
             ];
         }
 
-        // Fetch all active parent modules
-        $parentModules = Module::where('is_parent', true)->where('active', true)->get();
+        $order = ['Client', 'Services', 'Reports', 'Setup'];
+
+        $parentModules = Module::where('is_parent', true)
+            ->where('active', true)
+            ->orderByRaw("FIELD(name, '" . implode("','", $order) . "')")
+            ->get();
+
 
         // Loop through parent modules and create menu items
         foreach ($parentModules as $parentModule) {
-            $menuItem = [
-                'name' => $parentModule->title,
-                'slug' => $parentModule->url,
-                'icon' => $parentModule->icon_class,
-                'submenu' => []
-            ];
-
-            // Fetch all pages that belong to the parent module and are visible to the user's group
-            $pages = Page::where('module_id', $parentModule->id)
-                ->where(function ($query) use ($user) {
-                    $query->where('allowed_groups', 'like', '%' . $user->group_id . '%')
-                        ->orWhere('allowed_groups', null);
-                })
-                ->where('show_menu', true)
-                ->get();
-
-
-            // Loop through the pages and add them to the parent menu
-            foreach ($pages as $page) {
-                $allowedGroups = explode(',', $page->allowed_groups);
-                if (in_array($user->group_id, $allowedGroups) || empty($page->allowed_groups)) {
-                    $menuItem['submenu'][] = [
-                        'url' => $page->url,
-                        'name' => $page->title,
-                        'slug' => $page->url
-                    ];
-                }
-            }
+            $menuItem = self::buildMenuItemFromModule($parentModule, $user);
 
             // Fetch all active child modules that belong to the parent module
             $childModules = Module::where('show_to', $parentModule->id)->where('active', true)->get();
 
             // Loop through child modules and create submenu items
             foreach ($childModules as $childModule) {
-                $subMenuItem = [
-                    'name' => $childModule->title,
-                    'slug' => $childModule->url,
-                    'icon' => $childModule->icon_class,
-                    'submenu' => []
-                ];
-
-                // Fetch all pages that belong to the child module and are visible to the user's group
-                $pages = Page::where('module_id', $childModule->id)
-                    ->where(function ($query) use ($user) {
-                        $query->where('allowed_groups', 'like', '%' . $user->group_id . '%')
-                            ->orWhere('allowed_groups', null);
-                    })
-                    ->where('show_menu', true)
-                    ->get();
-
-                // Loop through the pages and add them to the submenu
-                foreach ($pages as $page) {
-                    $allowedGroups = explode(',', $page->allowed_groups);
-                    if (in_array($user->group_id, $allowedGroups) || empty($page->allowed_groups)) {
-                        $subMenuItem['submenu'][] = [
-                            'url' => $page->url,
-                            'name' => $page->title,
-                            'slug' => $page->url
-                        ];
-                    }
-                }
+                $subMenuItem = self::buildMenuItemFromModule($childModule, $user);
 
                 if (!empty($subMenuItem['submenu'])) {
                     $menuItem['submenu'][] = $subMenuItem;
                 }
             }
-
 
             if (!empty($menuItem['submenu'])) {
                 $menuData[] = $menuItem;
@@ -127,9 +79,10 @@ class MenuHelper
         return $menuData;
     }
 
+
+
     /**
      * Builds the menu HTML based on the generated menu data.
-     *
      * @param array $menu
      * @param bool $isSubmenu
      * @param bool $parentActive
@@ -211,5 +164,56 @@ class MenuHelper
         $html .= '</ul>';
 
         return $html;
+    }
+
+    /**
+     * @param $module The module to build the menu item from
+     * @param $user The user to check page permissions for
+     * @return array The built menu item
+     */
+    private static function buildMenuItemFromModule($module, $user)
+    {
+        // Create a menu item with the module's information and its visible pages
+        return [
+            'name' => $module->title,
+            'slug' => $module->url,
+            'icon' => $module->icon_class,
+            'submenu' => self::fetchPages($module, $user)
+        ];
+    }
+
+    /**
+     * Fetch the pages that are visible to a given user for a given module
+     * @param $module The module to fetch pages from
+     * @param $user The user to check page permissions for
+     * @return array The fetched pages
+     */
+    private static function fetchPages($module, $user)
+    {
+        // Initialize an array to hold the page data
+        $pagesData = [];
+
+        // Fetch all pages belonging to the module that are visible to the user
+        $pages = Page::where('module_id', $module->id)
+            ->where(function ($query) use ($user) {
+                $query->where('allowed_groups', 'like', '%' . $user->group_id . '%')
+                    ->orWhere('allowed_groups', null);
+            })
+            ->where('show_menu', true)
+            ->get();
+
+        // Loop through the pages and add the visible ones to the page data array
+        foreach ($pages as $page) {
+            $allowedGroups = explode(',', $page->allowed_groups);
+            if (in_array($user->group_id, $allowedGroups) || empty($page->allowed_groups)) {
+                $pagesData[] = [
+                    'url' => $page->url,
+                    'name' => $page->title,
+                    'slug' => $page->url
+                ];
+            }
+        }
+
+        return $pagesData;
     }
 }

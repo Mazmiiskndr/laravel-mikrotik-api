@@ -72,7 +72,7 @@ class LogoForm extends Component
             $filePath = $this->saveLogoToServer();
 
             // Update the logo setting in the database with the new file path
-            $settingService->updateSetting('voucher_logo_filename', 3, $filePath);
+            $settingService->updateSetting('voucher_logo_filename', 'default', $filePath);
 
             // Reset the logo form field and notify the user about the successful upload
             $this->resetLogoAndNotifyUser();
@@ -91,7 +91,7 @@ class LogoForm extends Component
     {
         try {
             // Get the current logo filename from settings
-            $logoSetting = $settingService->getSetting('voucher_logo_filename', 3);
+            $logoSetting = $settingService->getSetting('voucher_logo_filename', null);
             $currentLogoPath = $logoSetting;
 
             // Delete the file from the server
@@ -100,7 +100,7 @@ class LogoForm extends Component
             }
 
             // Update the setting in the database to null
-            $settingService->updateSetting('voucher_logo_filename', 3, null);
+            $settingService->updateSetting('voucher_logo_filename', 'default', null);
 
             // Show Success Message
             $this->dispatchSuccessEvent('Logo removed successfully.');
@@ -176,7 +176,7 @@ class LogoForm extends Component
     private function deleteExistingLogo($settingService)
     {
         // Get the file path of the existing logo from the settings
-        $currentLogoPath = $settingService->getSetting('voucher_logo_filename', 3);
+        $currentLogoPath = $settingService->getSetting('voucher_logo_filename', null);
 
         // If the logo file exists on the server, delete it
         if (Storage::disk('server')->exists($currentLogoPath)) {

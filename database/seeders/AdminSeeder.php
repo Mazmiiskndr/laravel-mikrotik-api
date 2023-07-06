@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Admin;
+use App\Models\Group;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -21,32 +22,34 @@ class AdminSeeder extends Seeder
                 'password' => 'radvar#123',
                 'fullname' => 'Varnion Root',
                 'email' => 'root@megalos.com',
-                'group_id' => 1,
-                'status' => 1
+                'status' => 1,
+                'group_name' => 'Full Administrator'
             ],
             [
                 'username' => 'admin',
                 'password' => 'admin',
                 'fullname' => 'Megalos Admin',
                 'email' => 'admin@megalos.com',
-                'group_id' => 1,
-                'status' => 1
+                'status' => 1,
+                'group_name' => 'Operator'
             ]
         ];
 
-        foreach ($admins as $adminData) {
-            $admin = new Admin();
-            $hashedPassword = Hash::make($adminData['password']);
-
-            $admin->admin_uid = (string) str()->uuid();
-            $admin->group_id = $adminData['group_id'];
-            $admin->username = $adminData['username'];
-            $admin->password = $hashedPassword;
-            $admin->fullname = $adminData['fullname'];
-            $admin->email = $adminData['email'];
-            $admin->status = $adminData['status'];
-
-            $admin->save();
+        foreach ($admins as $key => $value) {
+            # code...
+            Group::factory()->create([
+                'name' => $value['group_name']
+            ])->admins()->create([
+                'username' => $value['username'],
+                'password' => Hash::make($value['password']),
+                'fullname' => $value['fullname'],
+                'email' => $value['email'],
+                'status' => $value['status']
+            ]);
         }
+
+        Group::inRandomOrder()->each(function ($group) {
+            $group->admins()->saveMany(Admin::factory(rand(5, 20))->make());
+        });
     }
 }

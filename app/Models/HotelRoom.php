@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UseUuid as Model;
 
 class HotelRoom extends Model
 {
@@ -13,7 +13,6 @@ class HotelRoom extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
-        'hotel_room_uid',
         'room_number',
         'name',
         'folio_number',
@@ -26,19 +25,4 @@ class HotelRoom extends Model
         'departure',
         'no_posting',
     ];
-
-
-    /**
-     * boot
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->hotem_room_uid = str()->uuid();
-        });
-    }
 }

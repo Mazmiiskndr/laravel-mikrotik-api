@@ -38,8 +38,9 @@ class AccessControlHelper
 
         // Check if this group_id is allowed to perform the action
         $group = Group::where('id', $groupId)->first();
+
         if ($group) {
-            if ($group->name == "Full Administrator" || $group->id == 1) {
+            if ($group->name == "Full Administrator") {
                 return true;
             }
         }
@@ -51,7 +52,7 @@ class AccessControlHelper
      * Get the group ID of the current user.
      * @return int|null The group ID or null if the group ID is not found.
      */
-    private static function getCurrentUserGroupId(): ?int
+    private static function getCurrentUserGroupId(): ?string
     {
         // Get session key from cookie
         $sessionKey = Cookie::get('session_key');
@@ -60,7 +61,6 @@ class AccessControlHelper
         // Get session data from Redis
         $sessionData = Redis::hGetAll($redisKey);
 
-        return isset($sessionData['group_id']) ? (int)$sessionData['group_id'] : null;
+        return isset($sessionData['group_id']) ? (string)$sessionData['group_id'] : null;
     }
-
 }

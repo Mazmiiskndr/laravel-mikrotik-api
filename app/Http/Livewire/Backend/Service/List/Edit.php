@@ -56,15 +56,12 @@ class Edit extends Component
         // Validate Form Request
         $newService = $this->validate($serviceMegalosService->getRules($this, $this->serviceId), $serviceMegalosService->getMessages());
 
-        // Format serviceName: remove spaces and capitalize each word
-        $newService['serviceName'] = ucwords(strtolower($newService['serviceName']));
-
         try {
             // Call the storeNewService function in the repository
             $serviceMegalosService->updateService($newService, $this->serviceId);
             // Reset the form fields
             $this->resetFields();
-            // Emit the 'serviceUpdated' event with a true status
+        // Emit the 'serviceUpdated' event with a true status
             $this->emit('serviceUpdated', true);
             return redirect()->route('backend.services.list-services')->with('success', 'Service was updated successfully.');
             // // Redirect to the service.index page with a success message

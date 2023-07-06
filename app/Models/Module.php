@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UseUuid as Model;
 
 class Module extends Model
 {
@@ -13,6 +13,7 @@ class Module extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
+        'id',
         'name',
         'title',
         'is_parent',
@@ -31,6 +32,10 @@ class Module extends Model
         return $this->hasMany(Page::class, 'module_id', 'id');
     }
 
+    public function settings()
+    {
+        return $this->hasMany(Setting::class, 'module_id', 'id');
+    }
 
     public function parent()
     {

@@ -7,15 +7,14 @@ use Livewire\Component;
 
 class DataTable extends Component
 {
-    // Define public variable
-
     // Listeners
     protected $listeners = [
         'groupCreated' => 'handleGroupCreated',
     ];
-
     /**
-     * render
+     * Render the component.
+     *
+     * @return \Illuminate\View\View
      */
     public function render()
     {
@@ -23,8 +22,9 @@ class DataTable extends Component
     }
 
     /**
-     * getDataTable
-     * @param  mixed $groupService
+     * Get data for the DataTable.
+     * @param GroupService $groupService Group service instance
+     * @return mixed
      */
     public function getDataTable(GroupService $groupService)
     {
@@ -32,7 +32,6 @@ class DataTable extends Component
     }
 
     /**
-     * handleGroupCreated
      * Called when the 'refreshCreateDataTable' event is received
      * Dispatches the 'refreshDatatable' browser event to reload the DataTable
      * @return void

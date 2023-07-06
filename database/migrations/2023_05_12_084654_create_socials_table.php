@@ -23,9 +23,8 @@ class CreateSocialsTable extends Migration
         Schema::dropIfExists('socials');
 
         Schema::create('socials', function (Blueprint $table) {
-            $table->engine = 'MyISAM';
             $table->uuid('id')->primary();
-            $table->char('client_id', 36);
+            $table->uuid('client_id');
             $table->string('oauth_id')->nullable();
             $table->string('oauth_provider')->nullable();
             $table->timestamps();

@@ -14,15 +14,15 @@ return new class extends Migration
     public function up()
     {
         Schema::create('voucher_batches', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('voucher_batches_uid')->unique();
-            $table->unsignedBigInteger('service_id');
+            $table->uuid('id')->primary();
+            $table->uuid('service_id');
             $table->integer('quantity');
             $table->integer('created');
             $table->string('created_by', 200);
             $table->text('note')->nullable();
             $table->string('type', 50);
             $table->timestamps();
+
             $table->foreign('service_id')
                 ->references('id')
                 ->on('services')

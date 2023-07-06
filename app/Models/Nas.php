@@ -13,6 +13,7 @@ class Nas extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
+        'id',
         'nasname',
         'shortname',
         'type',

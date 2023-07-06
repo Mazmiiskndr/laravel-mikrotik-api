@@ -15,11 +15,11 @@ class RadGroupReplySeeder extends Seeder
      */
     public function run()
     {
-      RadGroupReply::create([
-        'groupname' => 'DefaultService',
-        'attribute' => 'Mikrotik-Rate-Limit',
-        'op' => ':=',
-        'value' => '2048k/2048k',
-      ]);
+        RadGroupReply::create([
+            'groupname' => 'DefaultService',
+            'attribute' => 'Mikrotik-Rate-Limit',
+            'op' => ':=',
+            'value' => '2048k/2048k',
+        ]);
     }
 }

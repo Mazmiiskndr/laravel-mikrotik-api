@@ -12,7 +12,7 @@ class DataTable extends Component
     use LivewireMessageEvents;
 
     // Admin unique identifier
-    public $admin_uid;
+    public $adminId;
 
     // Event listeners
     protected $listeners = [
@@ -52,13 +52,13 @@ class DataTable extends Component
     /**
      * Delete an admin.
      * @param AdminService $adminService Admin service instance
-     * @param string $admin_uid Admin unique identifier
+     * @param string $adminId Admin unique identifier
      */
-    public function deleteAdmin(AdminService $adminService, $admin_uid)
+    public function deleteAdmin(AdminService $adminService, $adminId)
     {
         try {
             // Attempt to delete the admin
-            $adminService->deleteAdmin($admin_uid);
+            $adminService->deleteAdmin($adminId);
 
             // Notify the frontend of success
             $this->dispatchSuccessEvent('Admin successfully deleted.');

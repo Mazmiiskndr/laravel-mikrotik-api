@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UseUuid as Model;
 
 class RootActivity extends Model
 {
@@ -14,6 +14,7 @@ class RootActivity extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
+        'id',
         'username',
         'module',
         'page',

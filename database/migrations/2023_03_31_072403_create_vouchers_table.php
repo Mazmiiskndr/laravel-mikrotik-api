@@ -14,9 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('vouchers', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('voucher_uid')->unique();
-            $table->unsignedBigInteger('voucher_batch_id');
+            $table->uuid('id')->primary();
+            $table->uuid('voucher_batch_id');
             $table->string('username', 100);
             $table->string('password', 100);
             $table->integer('valid_until')->default(0);
@@ -25,6 +24,7 @@ return new class extends Migration
             $table->tinyInteger('clean_up')->default(0);
             $table->string('serial_number', 100)->nullable();
             $table->timestamps();
+
             $table->foreign('voucher_batch_id')
                 ->references('id')
                 ->on('voucher_batches')

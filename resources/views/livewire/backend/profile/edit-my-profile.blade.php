@@ -14,7 +14,7 @@
                         {{-- FORM INPUT ADMIN UID, CHOOSE GROUP AND USERNAME --}}
                         <div class="row">
                             <div class="col-lg-6 col-12">
-                                <x-input-field type="hidden" id="adminUidProfile" model="admin_uid" required />
+                                <x-input-field type="hidden" id="adminId" model="id" required />
                                 <x-input-field id="groupNameProfile" label="Group Name" model="group_name" required readonly />
                             </div>
                             <div class="col-lg-6 col-12">

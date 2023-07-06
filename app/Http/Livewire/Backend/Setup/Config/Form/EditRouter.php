@@ -20,7 +20,6 @@ class EditRouter extends Component
         'resetForm' => 'resetForm',
     ];
 
-
     // Validation rules
     protected $rules = [
         // Nullable fields

@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Admin;
 use App\Models\RadAcct;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,17 +14,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(GroupSeeder::class);
-        $this->call(AdminSeeder::class);
-        $this->call(RadGroupReplySeeder::class);
-        $this->call(ServicesSeeder::class);
-        $this->call(ModuleSeeder::class);
-        $this->call(PageSeeder::class);
-        $this->call(SettingSeeder::class);
-        $this->call(NasSeeder::class);
-        $this->call(AdTypeSeeder::class);
-
-        Admin::factory(50)->create();
+        // $this->call(GroupSeeder::class);
+        // $this->call(SettingSeeder::class);
+        // $this->call(PageSeeder::class);
         RadAcct::factory(50)->create();
+        $this->call([
+            AdminSeeder::class,
+            RadGroupReplySeeder::class,
+            ServicesSeeder::class,
+            ModuleSeeder::class,
+            NasSeeder::class,
+            AdTypeSeeder::class,
+        ]);
     }
 }

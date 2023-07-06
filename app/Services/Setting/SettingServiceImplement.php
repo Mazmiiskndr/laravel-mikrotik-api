@@ -39,26 +39,24 @@ class SettingServiceImplement extends Service implements SettingService
     /**
      * Retrieves a setting based on the setting name and module ID.
      * @param string $settingName The setting name.
-     * @param string $moduleId The module id.
+     * @param string|null $flagModule The flag module.
      * @return string Returns the setting value.
-     * @throws Exception If an error occurs while retrieving the setting.
      */
-    public function getSetting($settingName, $moduleId)
+    public function getSetting($settingName, $flagModule = null)
     {
-        return $this->handleRepositoryCall('getSetting', [$settingName, $moduleId]);
+        return $this->handleRepositoryCall('getSetting', [$settingName, $flagModule]);
     }
 
     /**
      * Updates a setting based on the setting name, module ID, and new value.
      * @param string $settingName The setting name.
-     * @param string $moduleId The module id.
+     * @param string|null $flagModule The flag module.
      * @param string $value The new value.
      * @return int The number of affected rows.
-     * @throws Exception If an error occurs while updating the setting.
      */
-    public function updateSetting($settingName, $moduleId, $value)
+    public function updateSetting($settingName, $flagModule = null, $value)
     {
-        return $this->handleRepositoryCall('updateSetting', [$settingName, $moduleId, $value]);
+        return $this->handleRepositoryCall('updateSetting', [$settingName, $flagModule, $value]);
     }
 
     /**

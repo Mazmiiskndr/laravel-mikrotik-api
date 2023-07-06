@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('guest_device_log', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('os_name', 200)->nullable();
             $table->string('os_version', 200)->nullable();
             $table->string('browser_name', 200)->nullable();

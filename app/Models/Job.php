@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UseUuid as Model;
 
 class Job extends Model
 {
@@ -13,7 +13,6 @@ class Job extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
-        'job_uid',
         'command',
         'username',
         'nasipaddress',
@@ -21,13 +20,4 @@ class Job extends Model
         'payload',
         'attempts',
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->job_uid = str()->uuid();
-        });
-    }
 }

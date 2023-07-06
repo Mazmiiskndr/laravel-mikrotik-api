@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('logs', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('voucher_batch_id');
+            $table->uuid('id')->primary();
+            $table->uuid('voucher_batch_id');
             $table->integer('date');
             $table->string('operator', 150);
             $table->enum('action', ['Create', 'Delete', 'Import']);

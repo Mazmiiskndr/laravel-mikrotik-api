@@ -41,7 +41,7 @@ class Form extends Component
      */
     public function mount(SettingService $settingService)
     {
-        $howToUse = $settingService->getSetting('how_to_use_voucher', 3);
+        $howToUse = $settingService->getSetting('how_to_use_voucher', null);
 
         // Explode the string into an array based on comma
         $howToUseArray = explode(',', $howToUse);
@@ -120,7 +120,7 @@ class Form extends Component
             }, $this->invoice));
 
             // Use the SettingService to update the 'how_to_use_voucher' setting in the database
-            $settingService->updateSetting('how_to_use_voucher',3,$howToUseString);
+            $settingService->updateSetting('how_to_use_voucher','default',$howToUseString);
 
             // Emit a 'voucherUpdated' event with the new 'invoice' data
             $this->emit('voucherUpdated', $this->invoice);

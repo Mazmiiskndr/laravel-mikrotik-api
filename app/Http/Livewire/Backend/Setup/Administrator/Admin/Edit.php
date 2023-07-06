@@ -15,7 +15,7 @@ class Edit extends Component
     use CloseModalTrait;
 
     // Properties Public Variables
-    public $admin_uid, $group_id, $username, $password, $fullname, $email, $status;
+    public $adminId, $group_id, $username, $password, $fullname, $email, $status;
 
     // Groups
     public $groups;
@@ -34,10 +34,10 @@ class Edit extends Component
     {
         $rules = [
             'group_id'      => 'required',
-            'username'      => 'required|min:4|max:60|regex:/^\S*$/u|unique:admins,username,' . $this->admin_uid . ',admin_uid',
+            'username'      => 'required|min:4|max:60|regex:/^\S*$/u|unique:admins,username,' . $this->adminId . ',id',
             'status'        => 'required',
             'fullname'      => 'required|min:4|max:100',
-            'email'         => 'required|email|unique:admins,email,' . $this->admin_uid . ',admin_uid',
+            'email'         => 'required|email|unique:admins,email,' . $this->adminId . ',id',
         ];
         // If password is not empty
         if (!empty($this->password)) {
@@ -105,16 +105,16 @@ class Edit extends Component
     /**
      * Load admin details into the component.
      * @param  AdminService $adminService
-     * @param  string $admin_uid
+     * @param  string $adminId
      * @return void
      */
-    public function showAdmin(AdminService $adminService, $admin_uid)
+    public function showAdmin(AdminService $adminService, $adminId)
     {
-        $admin = $adminService->getAdminByUid($admin_uid);
+        $admin = $adminService->getAdminByUid($adminId);
 
         $this->dispatchBrowserEvent('show-modal');
 
-        $this->admin_uid = $admin['admin_uid'];
+        $this->adminId = $admin['id'];
         $this->group_id = $admin['group_id'];
         $this->username = $admin['username'];
         $this->fullname = $admin['fullname'];
@@ -129,11 +129,10 @@ class Edit extends Component
      */
     public function updateAdmin(AdminService $adminService)
     {
-
         // Validate the data first
         $this->validate($this->getRules(), $this->getMessages());
         // Declare the public variable names
-        $variables = ['admin_uid', 'group_id', 'username', 'fullname', 'email', 'status'];
+        $variables = ['adminId', 'group_id', 'username', 'fullname', 'email', 'status'];
 
         // Collect property values into an associative array
         $newAdmin = array_reduce($variables, function ($carry, $property) {
@@ -143,7 +142,7 @@ class Edit extends Component
 
         try {
             // Update the admin dataAdmin
-            $adminService->updateAdmin($this->admin_uid, $newAdmin);
+            $adminService->updateAdmin($this->adminId, $newAdmin);
 
             // Show Message Success
             $this->dispatchSuccessEvent('Admin successfully updated.');
@@ -163,7 +162,7 @@ class Edit extends Component
      */
     public function resetFields()
     {
-        $this->admin_uid = '';
+        $this->adminId = '';
         $this->group_id = '';
         $this->username = '';
         $this->fullname = '';

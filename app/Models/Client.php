@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UseUuid as Model;
 
 class Client extends Model
 {
@@ -13,7 +13,6 @@ class Client extends Model
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
-        'client_uid',
         'service_id',
         'customer_id',
         'username',
@@ -41,20 +40,6 @@ class Client extends Model
         'status',
         'validfrom',
     ];
-
-    /**
-     * boot
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->client_uid = str()->uuid();
-        });
-    }
 
     public function service()
     {

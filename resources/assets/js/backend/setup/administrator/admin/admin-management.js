@@ -6,14 +6,14 @@ window.addEventListener('hide-modal', () => {
 window.addEventListener('show-modal', () => {
   $('#updateAdminModal').modal('show');
 });
-// Function to show a modal based on a given uid for UPDATE!
-function showAdmin(uid) {
-  // Emit an event to show the modal with the given Livewire component uid for UPDATE!
-  Livewire.emit('getAdmin', uid);
+// Function to show a modal based on a given id for UPDATE!
+function showAdmin(id) {
+  // Emit an event to show the modal with the given Livewire component id for UPDATE!
+  Livewire.emit('getAdmin', id);
 }
 
-// Function to show a modal based on a given uid for DELETE!
-function confirmDeleteAdmin(uid) {
+// Function to show a modal based on a given id for DELETE!
+function confirmDeleteAdmin(id) {
   Swal.fire({
     title: 'Are you sure?',
     text: 'You will not be able to restore this data!',
@@ -24,8 +24,8 @@ function confirmDeleteAdmin(uid) {
     confirmButtonText: 'Yes, delete it!'
   }).then(result => {
     if (result.isConfirmed) {
-      // Emit an event to show the modal with the given Livewire component uid for DELETE!
-      Livewire.emit('confirmAdmin', uid);
+      // Emit an event to show the modal with the given Livewire component id for DELETE!
+      Livewire.emit('confirmAdmin', id);
     }
   });
 }

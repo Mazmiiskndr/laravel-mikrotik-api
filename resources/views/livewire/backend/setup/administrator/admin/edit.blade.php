@@ -14,13 +14,13 @@
                         {{-- FORM INPUT ADMIN UID, CHOOSE GROUP AND USERNAME --}}
                         <div class="row">
                             <div class="col-lg-6 col-12">
-                                <x-input-field type="hidden" id="adminUid" model="admin_uid" required />
+                                <x-input-field type="hidden" id="adminId" model="adminId" required />
                                 <x-select-field id="groupIdUpdate" label="Group" model="group_id" required
                                     :options="$groups->pluck('name', 'id')->toArray()" />
                             </div>
                             <div class="col-lg-6 col-12">
                                 <x-input-field id="usernameUpdate" label="Username" model="username"
-                                    placeholder="Enter a Username.." required />
+                                    placeholder="Enter a Username.." required readonly />
                             </div>
                         </div>
 
