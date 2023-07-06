@@ -16,9 +16,11 @@ class PageSeeder
                 [3, 'edit_client', 'Edit Client', '#', '1,2', 0, NULL],
                 [3, 'add_new_client', 'Add New Client', '#', '1,2', 0, NULL],
                 [4, 'list_services', 'List Services', 'services/list-services', '1,2', 1, NULL],
-                [4, 'edit_premium_service', 'Edit Premium Service', 'services/edit-premium-services', '1,2', 0, 4],
                 [4, 'add_new_service', 'Add New Service', 'services/add-new-service', '1,2', 1, NULL],
+                // *** ⚠️👇 PREMIUM SERVICES IS NOT MEGALOS STANDAR 👇⚠️***
                 [4, 'premium_services', 'Premium Services', 'services/premium-services', '1,2', 1, 4],
+                [4, 'edit_premium_service', 'Edit Premium Service', 'services/edit-premium-services', '1,2', 0, 4],
+                // *** ⚠️👆 PREMIUM SERVICES IS NOT MEGALOS STANDAR 👆⚠️***
                 [4, 'edit_service', 'Edit Service', 'services/edit-service', '1,2', 0, NULL],
                 [4, 'delete_service', 'Delete Service', 'services/pg/delete_service', '1', 0, NULL],
                 [7, 'traffic_reports', 'Traffic Reports', 'reports/pg/traffic_reports', '1', 0, NULL],
@@ -58,8 +60,8 @@ class PageSeeder
                 [15, 'list_blocked_macs', 'List Blocked Mac', 'clients/pg/list_blocked_macs', '1', 1, NULL],
                 [15, 'edit_mac', 'Edit Mac', 'clients/pg/edit_mac', '1', 0, NULL],
                 [15, 'delete_mac', 'Delete Mac', 'clients/pg/delete_mac', '1', 0, NULL],
-                [16, 'find_users_data', 'Find Users Data', 'users_data/pg/find_users_data', '1', 1, NULL],
                 [16, 'users_data', 'Users Data', 'users_data/pg/view_users_data', '1', 1, NULL],
+                [16, 'find_users_data', 'Find Users Data', 'users_data/pg/find_users_data', '1', 1, NULL],
                 [16, 'delete', 'Delete Users Data', 'users_data/pg/delete', '1', 0, NULL],
                 [16, 'users_data_csv', 'Users Data CSV', 'users_data/pg/users_data_csv', '1', 0, NULL],
                 [16, 'print_users_data', 'Print Users Data', 'users_data/pg/print_users_data', '1', 0, NULL],
