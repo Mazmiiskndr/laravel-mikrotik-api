@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Backend\Client\Voucher;
 
 use App\Http\Controllers\Controller;
-use App\Models\Voucher;
 use Illuminate\Http\Request;
 
 class VoucherActiveController extends Controller
