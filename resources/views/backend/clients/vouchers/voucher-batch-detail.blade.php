@@ -14,11 +14,10 @@
             <h4 class="card-title">Table Vouchers</h4>
             <div>
 
-                {{-- TODO: PRINT THIS VOUCHER BATCH --}}
                 {{-- /Start Button for Print This Voucher Batch --}}
-                <x-button id="print_voucher" data-fancybox type="button" color="primary btn-sm">
-                    <i class="tf-icons fas fa-print ti-xs me-1"></i>&nbsp; Print This Voucher Batch
-                </x-button>
+                <x-link-button color="facebook" route="backend.clients.voucher.voucher-batch-detail.print" identity="{{ $voucherBatchId }}" icon="fas fa-lg fa-print" target="_blank">
+                    &nbsp; Print Vouchers
+                </x-link-button>
                 {{-- /End Button for Print This Voucher Batch --}}
 
                 {{-- /Start Button for Export To Excel --}}

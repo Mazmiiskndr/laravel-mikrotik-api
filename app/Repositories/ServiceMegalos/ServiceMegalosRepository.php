@@ -84,4 +84,12 @@ interface ServiceMegalosRepository extends Repository{
      * @param int $id The unique identifier of the service to be deleted.
      */
     public function deleteService($id);
+
+    /**
+     * Convert time to integer seconds based on the provided unit.
+     * @param string $unit The unit of the time value, can be 'minutes', 'hours', or 'days'.
+     * @return int The time in seconds.
+     * @throws Exception If an invalid unit is provided.
+     */
+    public function timeToInt($unit);
 }

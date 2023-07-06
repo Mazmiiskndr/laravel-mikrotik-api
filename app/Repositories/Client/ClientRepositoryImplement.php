@@ -28,13 +28,15 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
     protected $radCheckModel;
     protected $radAcctModel;
     protected $radUserGroupModel;
+    protected $serviceModel;
 
-    public function __construct(Client $model, RadCheck $radCheckModel, RadAcct $radAcctModel, RadUserGroup $radUserGroupModel)
+    public function __construct(Client $model, RadCheck $radCheckModel, RadAcct $radAcctModel, RadUserGroup $radUserGroupModel, Services $serviceModel)
     {
         $this->model = $model;
         $this->radCheckModel = $radCheckModel;
         $this->radAcctModel = $radAcctModel;
         $this->radUserGroupModel = $radUserGroupModel;
+        $this->serviceModel = $serviceModel;
     }
 
     /**
@@ -207,10 +209,13 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
 
         try {
             // Create new client, radcheck, radacct, and radusergroup entries
-            $client = $this->createClient($request);
-            $this->createRadCheck($client, $request);
-            $this->createRadAcct($client);
-            $this->createRadUserGroup($client);
+            $client = $this->createOrUpdateClient($request);
+
+            // For each attribute, we will first check if an entry exists, and if it does, update it, otherwise create a new entry.
+            $attributes = $this->prepareAttributesRadCheck($client->password, $request);
+            // Create a new entry in radCheck, Radacctm RadUserGroup table for this create client.
+            $this->createOrUpdateRelatedEntries($client->username, $attributes, $client->service_id);
+
 
             // Commit the transaction (apply the changes).
             DB::commit();
@@ -246,12 +251,12 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
             // If the client exists, update its data.
             if ($client !== null) {
                 // Update client data
-                $client = $this->updateClientData($client, $data);
+                $client = $this->createOrUpdateClient($data);
 
-                // Update related radcheck, radacct, and radusergroup entries
-                $this->updateRadCheck($client, $data);
-                $this->updateRadAcct($client);
-                $this->updateRadUserGroup($client);
+                // For each attribute, we will first check if an entry exists, and if it does, update it, otherwise create a new entry.
+                $attributes = $this->prepareAttributesRadCheck($client->password, $data);
+                // Create a new entry in radCheck, Radacctm RadUserGroup table for this update client.
+                $this->createOrUpdateRelatedEntries($client->username, $attributes, $client->service_id);
 
                 // Commit the transaction (apply the changes).
                 DB::commit();
@@ -288,9 +293,8 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
 
                 // Delete data from the 'radcheck', 'radacct', and 'radusergroup' tables based on the client's username.
                 $username = $client->username;
-                $this->radCheckModel->where('username', $username)->delete();
-                $this->radAcctModel->where('username', $username)->delete();
-                $this->radUserGroupModel->where('username', $username)->delete();
+                // Delete related data from radcheck, radacct and radusergroup
+                $this->deleteRelatedData($username);
             } else {
                 throw new \Exception("Client with UID $id not found.");
             }
@@ -302,7 +306,160 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
         }
     }
 
+    /**
+     * Create or update related RadCheck, RadAcct, and RadUserGroup entries.
+     * @param string $username The username for related entries.
+     * @param array $attributes The password for related entries.
+     * @param string|null $idService The id service for related entries.
+     * @param int|null $id The id of the client or voucher.
+     * @param string|null $userType The type of user, 'client' or 'voucher'.
+     * @throws \Exception if an error occurs while creating or updating related entries.
+     */
+    public function createOrUpdateRelatedEntries($username, $attributes, $idService, $id = null, $userType = 'client')
+    {
+        // Start a new database transaction.
+        DB::beginTransaction();
+
+        try {
+            $this->createOrUpdateRadCheck($username, $attributes);
+            $this->createOrUpdateRadAcct($username);
+            $this->createOrUpdateRadUserGroup($username, $idService, $id, $userType);
+
+            // Commit the transaction (apply the changes).
+            DB::commit();
+        } catch (\Exception $e) {
+            // If an exception occurred, rollback the transaction.
+            DB::rollBack();
+
+            // Log the error message.
+            Log::error("Failed to create or update related entries : " . $e->getMessage());
+
+            // Rethrow the exception.
+            throw $e;
+        }
+    }
+
+    /**
+     * This method creates or updates entries in the radCheck table.
+     * @param string $username The username of the client or voucher.
+     * @param array $attributes The attributes for the radCheck entry.
+     */
+    public function createOrUpdateRadCheck($username, $attributes)
+    {
+        foreach ($attributes as $attribute => $value) {
+            if ($value !== null) {
+                $data = [
+                    'username' => $username,
+                    'attribute' => $attribute,
+                    'op' => $attribute == 'ValidFrom' ? '>=' : ':=',
+                    'value' => $value,
+                ];
+
+                $this->radCheckModel->updateOrCreate(
+                    [
+                        'username' => $username,
+                        'attribute' => $attribute,
+                    ],
+                    $data
+                );
+            }
+        }
+    }
+
+    /**
+     * This method creates or updates entries in the radUserGroup table.
+     * @param string $username The username of the client or voucher.
+     * @param string $idService The username of the client or voucher.
+     * @param int $voucherId The id of the client or voucher.
+     * @param string $userType The type of user, 'client' or 'voucher'.
+     */
+    public function createOrUpdateRadUserGroup($username, $idService, $voucherId = null, $userType = 'client')
+    {
+        // Fetch the service_name for this user
+        $service = $this->serviceModel->find($idService);
+
+        $data = [
+            'username' => $username,
+            'groupname' => $service->service_name ?? '',
+            'priority' => 1,
+            'user_type' => $userType,
+            'voucher_id' => $voucherId,
+        ];
+
+        $this->radUserGroupModel->updateOrCreate(
+            [
+                'username' => $username,
+            ],
+            $data
+        );
+    }
+
+    /**
+     * This method creates or updates entries in the radacct table.
+     * @param string $username The username of the client or voucher.
+     */
+    public function createOrUpdateRadAcct($username)
+    {
+        // Default data for 'radacct' entry
+        $data = [
+            'acctsessionid' => '',
+            'acctuniqueid' => '',
+            'username' => $username,
+            'groupname' => '',
+            'realm' => '',
+            'nasipaddress' => '',
+            'calledstationid' => '',
+            'callingstationid' => '',
+            'acctterminatecause' => '',
+            'framedipaddress' => '',
+            'framedipv6address' => '',
+            'framedipv6prefix' => '',
+            'framedinterfaceid' => '',
+            'delegatedipv6prefix' => '',
+        ];
+
+        $this->radAcctModel->updateOrCreate(
+            [
+                'username' => $username,
+            ],
+            $data
+        );
+    }
+
+    /**
+     * Deletes the related data from the radacct, radcheck, and radusergroup models.
+     * @param string $username The username of the voucher.
+     * @return void
+     */
+    public function deleteRelatedData($username)
+    {
+        // Delete related data from radacct
+        $this->radAcctModel->where('username', $username)->delete();
+
+        // Delete related data from radcheck
+        $this->radCheckModel->where('username', $username)->delete();
+
+        // Delete related data from radusergroup
+        $this->radUserGroupModel->where('username', $username)->delete();
+    }
+
     // 👇 **** PRIVATE FUNCTIONS **** 👇
+
+    /**
+     * Prepare the attributes for the radcheck table.
+     * @param string $password The password for the attribute 'Cleartext-Password'.
+     * @param array $request The request data used to populate other attributes.
+     * @return array The prepared attributes for the radcheck table.
+     */
+    private function prepareAttributesRadCheck($password, $request)
+    {
+        return [
+            'Cleartext-Password' => $password,
+            'Simultaneous-Use' => $request['simultaneousUse'] ?? null,
+            'Expiration' => !empty($request['validTo']) ? date('F d Y H:i:s', strtotime($request['validTo'])) : null,
+            'ValidFrom' => $request['validFrom'] ?? null,
+        ];
+    }
 
     /**
      * Generate action buttons for the DataTables row.
@@ -327,238 +484,39 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
     }
 
     /**
-     * Creates a new client using the provided data.
-     * @param array $data The data used to create the new client.
-     * @param string $fileName The name of the client's banner image file.
-     * @param string $thumbFileName The name of the client's thumbnail file.
-     * @return Model|mixed The newly created client.
+     * Creates or updates a client using the provided data.
+     * @param array $data The data used to create or update the client.
+     * @return Model|mixed The newly created or updated client.
      */
-    private function createClient($data)
+    private function createOrUpdateClient($data)
     {
         // If the client's first name and last name are provided, create a full name.
         if ($data['firstName'] && $data['lastName']) {
-            $fullName = $data['firstName'] . ' ' . $data['lastName'];
+            $data['fullname'] = $data['firstName'] . ' ' . $data['lastName'];
         }
+
         // If the simultaneous use is not provided, set it to 0.
-        $simultaneousUse = ($data['simultaneousUse'] == "" || empty($data['simultaneousUse'])) ? 0 : $data['simultaneousUse'];
-        return $this->model->create([
-            'service_id'        => $data['idService'],
-            'username'          => strtolower($data['username']),
-            'password'          => $data['password'],
-            'simultaneous_use'  => $simultaneousUse,
-            'validfrom'         => strtotime($data['validFrom']),
-            'valid_until'       => strtotime($data['validTo']),
-            'identification'    => $data['identificationNo'],
-            'email'             => $data['emailAddress'],
-            'first_name'        => $data['firstName'],
-            'last_name'         => $data['lastName'],
-            'fullname'          => $fullName ?? null,
-            'birth_place'       => $data['placeOfBirth'],
-            'birth_date'        => $data['dateOfBirth'],
-            'phone'             => $data['phone'],
-            'address'           => $data['address'],
-            'note'              => $data['notes'],
-        ]);
-    }
+        $data['simultaneous_use'] = $data['simultaneousUse'] ?? 0;
 
-    /**
-     * Creates new entries in the radcheck table for the newly created client.
-     * The entries can include: Cleartext-Password, Simultaneous-Use, Expiration, and ValidFrom.
-     * @param Client $client The client object, containing client's data including username and password.
-     * @param array $data The original data used to create the new client. It may contain 'simultaneousUse', 'validFrom', and 'validTo'.
-     * @return void
-     */
-    private function createRadCheck(Client $client, $data)
-    {
-        // For each attribute, we will first check if an entry exists, and if it does, update it, otherwise create a new entry.
-        $attributes = [
-            'Cleartext-Password' => $client->password,
-            'Simultaneous-Use' => $data['simultaneousUse'] ?? null,
-            'Expiration' => !empty($data['validTo']) ? date('F d Y H:i:s', strtotime($data['validTo'])) : null,
-            'ValidFrom' => $data['validFrom'] ?? null,
-        ];
+        $data['service_id'] = $data['idService'];
+        $data['username'] = strtolower($data['username']);
+        $data['validfrom'] = strtotime($data['validFrom']);
+        $data['valid_until'] = strtotime($data['validTo']);
+        $data['identification'] = $data['identificationNo'];
+        $data['email'] = $data['emailAddress'];
+        $data['first_name'] = $data['firstName'];
+        $data['last_name'] = $data['lastName'];
+        $data['birth_place'] = $data['placeOfBirth'];
+        $data['birth_date'] = $data['dateOfBirth'];
+        $data['phone'] = $data['phone'];
+        $data['address'] = $data['address'];
+        $data['note'] = $data['notes'];
 
-        foreach ($attributes as $attribute => $value) {
-            if ($value !== null) {
-                $entry = $this->radCheckModel->where([
-                    'username' => $client->username,
-                    'attribute' => $attribute,
-                ])->first();
-
-                $data = [
-                    'username' => $client->username,
-                    'attribute' => $attribute,
-                    'op' => $attribute == 'ValidFrom' ? '>=' : ':=',
-                    'value' => $value,
-                ];
-
-                if ($entry) {
-                    $entry->update($data);
-                } else {
-                    $this->radCheckModel->create($data);
-                }
-            }
-        }
-    }
-
-    /**
-     * Creates a new record in the 'radacct' table for a given client.
-     * @param Client $client The client for which to create a new 'radacct' record.
-     * @return void
-     */
-    private function createRadAcct(Client $client)
-    {
-        // Create an entry for the client
-        $this->radAcctModel->create([
-            'acctsessionid' => '',
-            'acctuniqueid' => '',
-            'username' => $client->username,
-            'groupname' => '',
-            'realm' => '',
-            'nasipaddress' => '',
-            'calledstationid' => '',
-            'callingstationid' => '',
-            'acctterminatecause' => '',
-            'framedipaddress' => '',
-            'framedipv6address' => '',
-            'framedipv6prefix' => '',
-            'framedinterfaceid' => '',
-            'delegatedipv6prefix' => '',
-        ]);
-    }
-
-    /**
-     * Creates a new record in the 'radusergroup' table for a given client.
-     * @param Client $client The client for which to create a new 'radusergroup' record.
-     * @return void
-     */
-    private function createRadUserGroup(Client $client)
-    {
-        // Fetch the service_name for this client
-        $service = Services::find($client->id_service);
-
-        // Create an entry in the 'radusergroup' table
-        $this->radUserGroupModel->create([
-            'username' => $client->username,
-            'groupname' => $service->service_name ?? '',
-            'priority' => 1,
-            'user_type' => 'client',
-            'voucher_id' => $client->id, // or another appropriate field
-        ]);
-    }
-
-    /**
-     * Updates an existing client's data.
-     * @param Model|mixed $client The client to update.
-     * @param array $data The data used to update the client.
-     * @return Model|mixed The updated client.
-     */
-    private function updateClientData($client, $data)
-    {
-        // If the client's first name and last name are provided, create a full name.
-        if ($data['firstName'] && $data['lastName']) {
-            $fullName = $data['firstName'] . ' ' . $data['lastName'];
-        }
-        // If the simultaneous use is not provided, set it to 0.
-        $simultaneousUse = ($data['simultaneousUse'] == "" || empty($data['simultaneousUse'])) ? 0 : $data['simultaneousUse'];
-        // Update the client's data and save the client.
-        $client->service_id = $data['idService'];
-        $client->username = strtolower($data['username']);
-        $client->password = $data['password'];
-        $client->simultaneous_use = $simultaneousUse;
-        $client->validfrom = strtotime($data['validFrom']);
-        $client->valid_until = strtotime($data['validTo']);
-        $client->identification = $data['identificationNo'];
-        $client->email = $data['emailAddress'];
-        $client->first_name = $data['firstName'];
-        $client->last_name = $data['lastName'];
-        $client->fullname = $fullName ?? null;
-        $client->birth_place = $data['placeOfBirth'];
-        $client->birth_date = $data['dateOfBirth'];
-        $client->phone = $data['phone'];
-        $client->address = $data['address'];
-        $client->note = $data['notes'];
-        $client->save();
-
-        return $client;
-    }
-
-    /**
-     * Updates the existing entries in the radcheck table for the specified client.
-     * @param Client $client The client object, containing client's data including username and password.
-     * @param array $data The original data used to update the client. It may contain 'simultaneousUse', 'validFrom', and 'validTo'.
-     * @return void
-     */
-    private function updateRadCheck(Client $client, $data)
-    {
-        $attributes = [
-            'Cleartext-Password' => $client->password,
-            'Simultaneous-Use' => $data['simultaneousUse'] ?? null,
-            'Expiration' => !empty($data['validTo']) ? date('F d Y H:i:s', strtotime($data['validTo'])) : null,
-            'ValidFrom' => $data['validFrom'] ?? null,
-        ];
-
-        foreach ($attributes as $attribute => $value) {
-            if ($value !== null) {
-                $entry = $this->radCheckModel->where([
-                    'username' => $client->username,
-                    'attribute' => $attribute,
-                ])->first();
-
-                $updateData = [
-                    'username' => $client->username,
-                    'attribute' => $attribute,
-                    'op' => $attribute == 'ValidFrom' ? '>=' : ':=',
-                    'value' => $value,
-                ];
-
-                if ($entry) {
-                    $entry->update($updateData);
-                } else {
-                    $this->radCheckModel->create($updateData);
-                }
-            }
-        }
-    }
-
-    /**
-     * Updates an existing record in the 'radacct' table for a given client.
-     * @param Client $client The client for which to update a 'radacct' record.
-     * @return void
-     */
-    private function updateRadAcct(Client $client)
-    {
-        // Fetch the existing record
-        $record = $this->radAcctModel->where('username', $client->username)->first();
-
-        // If the record exists, update it.
-        if ($record) {
-            $record->username = $client->username;  // You can replace with other fields you want to update
-            // Add other fields to update here
-            $record->save();
-        }
-    }
-
-    /**
-     * Updates an existing record in the 'radusergroup' table for a given client.
-     * @param Client $client The client for which to update a 'radusergroup' record.
-     * @return void
-     */
-    private function updateRadUserGroup(Client $client)
-    {
-        // Fetch the service_name for this client
-        $service = Services::find($client->service_id);
-
-        // Fetch the existing record
-        $record = $this->radUserGroupModel->where('username', $client->username)->first();
-
-        // If the record exists, update it.
-        if ($record) {
-            $record->groupname = $service->service_name ?? '';
-            $record->user_type = 'client';  // You can replace with other fields you want to update
-            // Add other fields to update here
-            $record->save();
-        }
+        // Update or create client, based on username
+        return $this->model->updateOrCreate(
+            ['username' => $data['username']],
+            $data
+        );
     }
 
 

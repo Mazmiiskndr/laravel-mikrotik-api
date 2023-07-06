@@ -8,11 +8,17 @@ use Livewire\Component;
 class DataTableDetailVoucherBatch extends Component
 {
     // Public properties
-    public $voucherBatchId;
+    public $voucherBatchId, $voucherBatch;
 
-    public function mount($voucherBatchId)
+    /**
+     * Mount function called when the component is rendered.
+     * @param VoucherService $voucherService An instance of the VoucherService.
+     * @param int $voucherBatchId The ID of the voucher batch.
+     */
+    public function mount(VoucherService $voucherService, $voucherBatchId)
     {
         $this->voucherBatchId = $voucherBatchId;
+        $this->voucherBatch = $voucherService->getVoucherBatchIdWithService($this->voucherBatchId);
     }
 
     /**
