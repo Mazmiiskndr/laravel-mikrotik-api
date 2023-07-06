@@ -111,7 +111,7 @@ class VoucherBatchController extends Controller
      */
     private function getInvoiceData()
     {
-        $howToUse = $this->settingService->getSetting('how_to_use_voucher', 3);
+        $howToUse = $this->settingService->getSetting('how_to_use_voucher', null);
         $howToUseArray = explode(',', $howToUse);
         return array_map(function ($item) {
             return ['name' => $item];
@@ -135,7 +135,7 @@ class VoucherBatchController extends Controller
      */
     private function getLogo()
     {
-        return $this->settingService->getSetting('voucher_logo_filename', 3);
+        return $this->settingService->getSetting('voucher_logo_filename', null);
     }
 
 }
