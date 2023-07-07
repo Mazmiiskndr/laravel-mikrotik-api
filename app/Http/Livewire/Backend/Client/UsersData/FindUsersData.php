@@ -24,30 +24,53 @@ class FindUsersData extends Component
      */
     public function updated($field)
     {
-        // Here we validate the input for fromDate and toDate fields.
-        $this->validateOnly($field, [
-            'fromDate' => 'required|date_format:Y-m-d',
-            'toDate' => 'required_with:fromDate|date_format:Y-m-d|after_or_equal:fromDate',
-        ], [
-            'fromDate.required' => 'The From Date must be filled first.',
-            'toDate.required_with' => 'The To Date must be filled when From Date is present.',
-            'toDate.after_or_equal' => 'The To Date must be after or equal to From Date.',
-        ]);
+        $this->validateDate($field);
+        $this->checkDateOrder();
+    }
 
-        // Check if the fromDate is later than the toDate. If so, add an error message to the 'toDate' field.
-        if ($this->fromDate > $this->toDate) {
-            $this->addError('toDate', 'The To Date must be after or equal to From Date.');
-        } else {
-            if (empty($this->fromDate)) {
-                $this->addError('fromDate', 'The From Date must be filled first.');
+    /**
+     * Validate the date fields.
+     * @param string $field The name of the updated property.
+     * @return void
+     */
+    private function validateDate($field)
+    {
+        if ($field === 'fromDate') {
+            // Validate the fromDate field only
+            $this->validateOnly($field, [
+                'fromDate' => 'required|date_format:Y-m-d',
+            ], [
+                'fromDate.required' => 'The From Date must be filled first.',
+            ]);
+        } else if ($field === 'toDate') {
+            // Validate the toDate field only if fromDate is not null
+            if (!empty($this->fromDate)) {
+                $this->validateOnly($field, [
+                    'toDate' => 'date_format:Y-m-d|after_or_equal:fromDate',
+                ], [
+                    'toDate.after_or_equal' => 'The To Date must be after or equal to From Date.',
+                ]);
             } else {
-                $data = [
-                    'fromDate' => $this->fromDate,
-                    'toDate' => $this->toDate,
-                ];
-                // If the dates are valid, we emit an event called 'dateUpdated'.
-                $this->emit('dateUpdated', $data);
+                $this->addError('fromDate', 'The From Date must be filled first.');
             }
+        }
+    }
+
+    /**
+     * Check if the fromDate is later than the toDate.
+     * @return void
+     */
+    private function checkDateOrder()
+    {
+        if (!empty($this->fromDate) && !empty($this->toDate) && $this->fromDate > $this->toDate) {
+            $this->addError('toDate', 'The To Date must be after or equal to From Date.');
+        } else if (!empty($this->fromDate) && !empty($this->toDate)) {
+            $data = [
+                'fromDate' => $this->fromDate,
+                'toDate' => $this->toDate,
+            ];
+            // If the dates are valid, we emit an event called 'dateUpdated'.
+            $this->emit('dateUpdated', $data);
         }
     }
 }
