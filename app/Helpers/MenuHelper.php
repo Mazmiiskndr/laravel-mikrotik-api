@@ -138,7 +138,7 @@ class MenuHelper
             }
 
             // Build the menu item's HTML structure
-            $html .= '<li class="menu-item ' . $activeClass . '" style="">';
+            $html .= '<li class="menu-item ' . $activeClass . '">';
             $html .= '<a href="' . ((isset($menuItem['url'])&& $menuItem['url'] !== '#') ? $baseUrl . '/' . ltrim($menuItem['url'], '/') : 'javascript:void(0);') . '"';
             $html .= isset($menuItem['submenu']) ? ' class="menu-link menu-toggle"' : ' class="menu-link"';
             $html .= '>';
