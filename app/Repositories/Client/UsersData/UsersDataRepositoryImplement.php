@@ -93,7 +93,7 @@ class UsersDataRepositoryImplement extends Eloquent implements UsersDataReposito
             $data,
             [
                 'date' => function ($data) {
-                    return date('Y-F-d', strtotime($data->date));
+                    return date('Y-F-d H:i:s', strtotime($data->date));
                 },
                 'action' => function ($data) use ($deletePermission, $editButton, $onclickEdit, $onclickDelete) {
                     return $this->getActionButtons($data, $deletePermission, $editButton, $onclickEdit, $onclickDelete);

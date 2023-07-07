@@ -17,7 +17,7 @@
             <div>
                 {{-- /Start Button for Print --}}
                 @if ($permissions['isAllowedToPrintUsersData'])
-                <x-link-button color="facebook" icon="fas fa-lg fa-file-pdf" target="_blank">
+                <x-link-button color="facebook" icon="fas fa-lg fa-file-pdf" route="backend.clients.users-data.print" target="_blank">
                     &nbsp; Print Users Data
                 </x-link-button>
                 @endif

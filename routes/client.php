@@ -30,6 +30,8 @@ Route::middleware(['check.session.cookie'])->group(function () {
 
         // Route for configs list users data page
         Route::get('users-data', [UsersDataController::class, 'index'])->name('users-data');
+        // Print users data to PDF 👇
+        Route::get('users-data/print', [UsersDataController::class, 'print'])->name('users-data.print');
 
     });
 

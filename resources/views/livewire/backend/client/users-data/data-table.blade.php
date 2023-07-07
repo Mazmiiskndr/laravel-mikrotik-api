@@ -75,38 +75,38 @@ $printCsv = App\Helpers\AccessControlHelper::isAllowedToPerformAction('users_dat
 
     // Initialize DataTable when the DOM is fully loaded
     document.addEventListener('DOMContentLoaded', function () {
-    var columns = [
-        { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
-        { data: 'name', name: 'name' },
-        { data: 'email', name: 'email' },
-        { data: 'room_number', name: 'room_number' },
-        { data: 'date', name: 'date' },
-    ];
+        var columns = [
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },
+            { data: 'name', name: 'name' },
+            { data: 'email', name: 'email' },
+            { data: 'room_number', name: 'room_number' },
+            { data: 'date', name: 'date' },
+        ];
 
-    if (canDelete) {
-        columns.unshift({
-            data: 'id',
-            render: function (data, type, row) {
-                return `<input type='checkbox' style='border: 1px solid #8f8f8f;' class='form-check-input users-data-checkbox' value='${data}'>`;
-            },
-            orderable: false,
-            searchable: false,
-            width: '15px'
-        });
-    }
-    if (canDelete) {
-        columns.push({ data: 'action', name: 'action', orderable: false, searchable: false });
-    }
+        if (canDelete) {
+            columns.unshift({
+                data: 'id',
+                render: function (data, type, row) {
+                    return `<input type='checkbox' style='border: 1px solid #8f8f8f;' class='form-check-input users-data-checkbox' value='${data}'>`;
+                },
+                orderable: false,
+                searchable: false,
+                width: '15px'
+            });
+        }
+        if (canDelete) {
+            columns.push({ data: 'action', name: 'action', orderable: false, searchable: false });
+        }
 
-    dataTable = $('#myTable').DataTable({
-        processing: true,
-        serverSide: true,
-        responsive: true,
-        autoWidth: false,
-        order: [[0]], // order by the second column
-        ajax: document.getElementById('myTable').dataset.route,
-        columns: columns
-    });
+        dataTable = $('#myTable').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                autoWidth: false,
+                order: [[0]], // order by the second column
+                ajax: document.getElementById('myTable').dataset.route,
+                columns: columns
+            });
     });
 
     // Refresh DataTable when 'refreshDatatable' event is fired
@@ -141,10 +141,10 @@ $printCsv = App\Helpers\AccessControlHelper::isAllowedToPerformAction('users_dat
             });
         }
     }
-    if (printCsv) {
-        // Function to show a modal for DELETE!
+    if (printPdf) {
+        // Function to print PDF
         function saveToExcel() {
-            Livewire.emit('saveToExcel');
+            Livewire.emit('saveToPdf');
         }
     }
 </script>

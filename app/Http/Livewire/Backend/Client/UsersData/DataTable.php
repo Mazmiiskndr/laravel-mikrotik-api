@@ -12,6 +12,7 @@ class DataTable extends Component
     // Listeners
     protected $listeners = [
         'saveToExcel' => 'downloadExcel',
+        'saveToPdf' => 'downloadPdf',
     ];
 
     /**
@@ -42,7 +43,7 @@ class DataTable extends Component
     }
 
     /**
-     * Exports a report of online users to a XlSX file.
+     * Exports a report of users data to a XlSX file.
      * @param UsersDataService $usersDataService Service to generate report data.
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse XlSX file download response.
      */
