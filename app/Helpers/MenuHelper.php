@@ -79,8 +79,6 @@ class MenuHelper
         return $menuData;
     }
 
-
-
     /**
      * Builds the menu HTML based on the generated menu data.
      * @param array $menu
@@ -141,10 +139,9 @@ class MenuHelper
 
             // Build the menu item's HTML structure
             $html .= '<li class="menu-item ' . $activeClass . '" style="">';
-            $html .= '<a href="' . (isset($menuItem['url']) ? $baseUrl . '/' . ltrim($menuItem['url'], '/') : 'javascript:void(0);') . '"';
+            $html .= '<a href="' . ((isset($menuItem['url'])&& $menuItem['url'] !== '#') ? $baseUrl . '/' . ltrim($menuItem['url'], '/') : 'javascript:void(0);') . '"';
             $html .= isset($menuItem['submenu']) ? ' class="menu-link menu-toggle"' : ' class="menu-link"';
             $html .= '>';
-
             if (isset($menuItem['icon'])) {
                 $html .= '<i class="menu-icon tf-icons ' . $menuItem['icon'] . '"></i>';
             }
