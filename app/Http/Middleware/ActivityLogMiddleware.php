@@ -18,10 +18,9 @@ class ActivityLogMiddleware
      * - It retrieves session data related to the user.
      * - It gets additional information about the user's device, OS, and browser.
      * - It triggers an event that logs this activity.
-     *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @param  \Closure  $next
+     * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
@@ -49,9 +48,11 @@ class ActivityLogMiddleware
             // Trigger the ActivityPerformed event
             event(new ActivityPerformed($username, $module, $path, $params, $ip));
         }
-        // Return proceed with the request and get the response
+
+        // Proceed with the request and get the response
         return $next($request);
     }
+
 
     /**
      * Retrieve the session key from the cookies.

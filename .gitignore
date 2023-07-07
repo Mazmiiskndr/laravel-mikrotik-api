@@ -21,5 +21,6 @@ yarn-error.log
 # But not these files...
 !/public/assets/*
 /public/assets/js
+/public/assets/bootstrap
 /public/assets/css
 /public/assets/vendor

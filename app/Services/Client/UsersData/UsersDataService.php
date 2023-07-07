@@ -11,9 +11,10 @@ interface UsersDataService extends BaseService{
      * Conditionally applies a WHERE clause if provided.
      * @param array|null $conditions
      * @param array|null $columns
+     * @param array|null $dateRange
      * @return array
      */
-    public function getUsersData($conditions, $columns);
+    public function getUsersData($conditions, $columns, $dateRange);
 
     /**
      * Retrieve userData by id.
@@ -27,5 +28,12 @@ interface UsersDataService extends BaseService{
      * Retrieves records from a database, initializes DataTables, adds columns to DataTable.
      * @return DataTables Yajra JSON response.
      */
-    public function getDatatables();
+    public function getDatatables($fromDate, $toDate);
+
+    /**
+     * Delete users data data from tables based on the users data ID.
+     * @param string $id The ID of the users data to delete.
+     * @throws \Exception if an error occurs while deleting the users data.
+     */
+    public function deleteUsersData($id);
 }

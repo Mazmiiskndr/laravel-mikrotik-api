@@ -29,26 +29,38 @@ class UsersDataRepositoryImplement extends Eloquent implements UsersDataReposito
      * Conditionally applies a WHERE clause if provided.
      * @param array|null $conditions
      * @param array|null $columns
+     * @param array|null $dateRange
      * @return array
      */
-    public function getUsersData($conditions = null, $columns = ['*'])
+    public function getUsersData($conditions = null, $columns = ['*'], $dateRange = [])
     {
         try {
             // Prepare the query to select users data and include their associated service
-            $uersQuery = $this->model->select($columns);
+            $usersQuery = $this->model->select($columns);
+
             // Add the 'where' conditions if they exist
-            if ($conditions != '') {
-                $uersQuery = $uersQuery->where($conditions);
+            if ($conditions) {
+                $usersQuery = $usersQuery->where($conditions);
+            }
+
+            // Add date range filter if exists
+            if ($dateRange != null) {
+                $fromDate = $dateRange['from_date'] ?? null;
+                $toDate = $dateRange['to_date'] ?? null;
+
+                if ($fromDate && $toDate) {
+                    $usersQuery = $usersQuery->whereBetween('date', [$fromDate, $toDate]);
+                }
             }
 
             // Get the results and the count of rows
-            $uersData['data'] = $uersQuery->latest()->get();
-            $uersData['total'] = $uersQuery->count();
+            $usersData['data'] = $usersQuery->latest()->get();
+            $usersData['total'] = $usersQuery->count();
 
-            return $uersData;
+            return $usersData;
         } catch (Exception $e) {
             // Log the exception message and return an empty array
-            Log::error("Error getting data users data : " . $e->getMessage());
+            Log::error("Error getting users data : " . $e->getMessage());
             throw $e;
         }
     }
@@ -77,10 +89,12 @@ class UsersDataRepositoryImplement extends Eloquent implements UsersDataReposito
      * Retrieves records from a database, initializes DataTables, adds columns to DataTable.
      * @return DataTables Yajra JSON response.
      */
-    public function getDatatables()
+    public function getDatatables($fromDate = null, $toDate = null)
     {
+        // Prepare the dateRange array for the getUsersData method
+        $dateRange = ($fromDate !== null && $toDate !== null) ? ['from_date' => $fromDate, 'to_date' => $toDate] : null;
         // Retrieve records from the database using the model, including the related 'users-data' records, and sort by the latest records
-        $uersData = $this->getUsersData(null,['id','date','name','email','room_number']);
+        $uersData = $this->getUsersData(null, ['id', 'date', 'name', 'email', 'room_number'], $dateRange);
         $data = $uersData['data'];
 
         $deletePermission = 'delete_users_data';
@@ -100,6 +114,33 @@ class UsersDataRepositoryImplement extends Eloquent implements UsersDataReposito
                 }
             ]
         );
+    }
+
+
+    /**
+     * Delete users data data from tables based on the users data ID.
+     * @param string $id The ID of the users data to delete.
+     * @throws \Exception if an error occurs while deleting the users data.
+     */
+    public function deleteUsersData($id)
+    {
+        try {
+            // Retrieve the users data from the database.
+            $usersData = $this->model->where('id', $id)->first();
+
+            // If the users data exists, delete its associated data from all related tables.
+            if ($usersData !== null) {
+                // Delete data from the 'users-data' table.
+                $usersData->delete();
+            } else {
+                throw new \Exception("Users Data with ID $id not found.");
+            }
+        } catch (\Exception $e) {
+            // If an exception occurred during the deletion process, log the error message.
+            Log::error("Failed to delete users data data : " . $e->getMessage());
+            // Rethrow the exception to be caught in the Livewire component.
+            throw $e;
+        }
     }
 
     // 👇 **** PRIVATE FUNCTIONS **** 👇
