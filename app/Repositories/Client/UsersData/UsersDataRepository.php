@@ -28,4 +28,11 @@ interface UsersDataRepository extends Repository{
      * @return DataTables Yajra JSON response.
      */
     public function getDatatables();
+
+    /**
+     * Delete users data data from tables based on the users data ID.
+     * @param string $id The ID of the users data to delete.
+     * @throws \Exception if an error occurs while deleting the users data.
+     */
+    public function deleteUsersData($id);
 }

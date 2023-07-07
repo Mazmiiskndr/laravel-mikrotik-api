@@ -55,5 +55,13 @@ class UsersDataServiceImplement extends Service implements UsersDataService
         return $this->handleRepositoryCall('getDatatables');
     }
 
-    // Define your custom methods :)
+    /**
+     * Delete users data data from tables based on the users data ID.
+     * @param string $id The ID of the users data to delete.
+     * @throws \Exception if an error occurs while deleting the users data.
+     */
+    public function deleteUsersData($id)
+    {
+        return $this->handleRepositoryCall('deleteUsersData',[ $id ]);
+    }
 }

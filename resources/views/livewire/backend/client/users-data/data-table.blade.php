@@ -122,7 +122,7 @@ $printCsv = App\Helpers\AccessControlHelper::isAllowedToPerformAction('users_dat
     if (userDataIds.length > 0) {
             showSwalDialog('Are you sure?', 'You will not be able to restore this data!', () => {
                 // Emit an event to delete the checked users-data
-                Livewire.emit('deleteBatch', userDataIds);
+                Livewire.emit('confirmUserDataBatch', userDataIds);
             });
         } else {
             Swal.fire({ icon: 'error', title: 'Oops...', text: 'You must select at least one user to delete!' });

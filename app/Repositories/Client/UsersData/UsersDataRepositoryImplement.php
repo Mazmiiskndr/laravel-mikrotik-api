@@ -102,6 +102,32 @@ class UsersDataRepositoryImplement extends Eloquent implements UsersDataReposito
         );
     }
 
+    /**
+     * Delete users data data from tables based on the users data ID.
+     * @param string $id The ID of the users data to delete.
+     * @throws \Exception if an error occurs while deleting the users data.
+     */
+    public function deleteUsersData($id)
+    {
+        try {
+            // Retrieve the users data from the database.
+            $usersData = $this->model->where('id', $id)->first();
+
+            // If the users data exists, delete its associated data from all related tables.
+            if ($usersData !== null) {
+                // Delete data from the 'users-data' table.
+                $usersData->delete();
+            } else {
+                throw new \Exception("Users Data with ID $id not found.");
+            }
+        } catch (\Exception $e) {
+            // If an exception occurred during the deletion process, log the error message.
+            Log::error("Failed to delete users data data : " . $e->getMessage());
+            // Rethrow the exception to be caught in the Livewire component.
+            throw $e;
+        }
+    }
+
     // 👇 **** PRIVATE FUNCTIONS **** 👇
 
     /**
