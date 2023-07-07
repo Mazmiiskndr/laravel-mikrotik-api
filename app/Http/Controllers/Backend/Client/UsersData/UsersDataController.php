@@ -50,7 +50,7 @@ class UsersDataController extends Controller
     {
         // Load a view file named 'print-users-data' which is located under the 'backend.clients.users-data' directory.
         $pdf = PDF::loadView('backend.clients.users-data.print-users-data', [
-            'users' => $this->usersDataService->getUsersData(null, ['id', 'date', 'name', 'email', 'room_number'])['data']
+            'users' => $this->usersDataService->getUsersData(null, ['id', 'date', 'name', 'email', 'room_number'],null)['data']
         ]);
 
         // Set the paper size for the PDF to 'A4' and the orientation to 'landscape' to achieve a wider format.

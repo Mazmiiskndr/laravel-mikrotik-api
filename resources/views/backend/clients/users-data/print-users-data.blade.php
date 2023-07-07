@@ -58,7 +58,7 @@
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->room_number }}</td>
-                    <td>{{ date('Y F d H:i:s', strtotime($user->date)) }}</td>
+                    <td>{{ date('Y F d', strtotime($user->date)) }}</td>
                 </tr>
                 @endforeach
             </tbody>

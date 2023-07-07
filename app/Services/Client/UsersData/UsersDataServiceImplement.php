@@ -29,9 +29,9 @@ class UsersDataServiceImplement extends Service implements UsersDataService
      * @param array|null $columns
      * @return array
      */
-    public function getUsersData($conditions = null, $columns = ['*'])
+    public function getUsersData($conditions, $columns = ['*'], $dateRange)
     {
-        return $this->handleRepositoryCall('getUsersData', [$conditions, $columns]);
+        return $this->handleRepositoryCall('getUsersData', [$conditions, $columns, $dateRange]);
     }
 
     /**
@@ -47,12 +47,11 @@ class UsersDataServiceImplement extends Service implements UsersDataService
 
     /**
      * Retrieves records from a database, initializes DataTables, adds columns to DataTable.
-     * @return mixed The result of the getDatatables repository method call.
-     * @throws Exception if an error occurs during the repository method call.
+     * @return DataTables Yajra JSON response.
      */
-    public function getDatatables()
+    public function getDatatables($fromDate, $toDate)
     {
-        return $this->handleRepositoryCall('getDatatables');
+        return $this->handleRepositoryCall('getDatatables', [$fromDate, $toDate]);
     }
 
     /**

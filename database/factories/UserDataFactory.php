@@ -29,7 +29,7 @@ class UserDataFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'phone_number' => $this->faker->phoneNumber,
             'room_number' => $this->faker->randomNumber(),
-            'date' => now(),
+            'date' => date('Y-m-d', strtotime($this->faker->date())),
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
             'location' => $this->faker->city,
