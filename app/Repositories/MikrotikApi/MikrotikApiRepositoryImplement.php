@@ -493,7 +493,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
         $uptime = $this->parseUptime($uptime);
 
         // Add a percent sign to the CPU Load percentage before returning
-        $cpuLoad .= "%";
+        // $cpuLoad .= "%";
 
         return compact('uptime', 'freeMemoryPercentage', 'cpuLoad');
     }
