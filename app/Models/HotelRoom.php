@@ -15,6 +15,7 @@ class HotelRoom extends Model
     protected $fillable = [
         'room_number',
         'name',
+        'password',
         'folio_number',
         'service_id',
         'default_cron_type',
@@ -25,4 +26,12 @@ class HotelRoom extends Model
         'departure',
         'no_posting',
     ];
+
+    /**
+     * Get the data service.
+     */
+    public function service()
+    {
+        return $this->belongsTo(Services::class, 'service_id', 'id');
+    }
 }

@@ -18,6 +18,7 @@ use App\Http\Livewire\Backend\{
     Client\UsersData\DataTable as DataTableUsersData,
     Client\Voucher\List\DataTableActiveVouchers as DataTableActiveVouchers,
     Client\Voucher\List\DataTableDetailVoucherBatch as DataTableDetailVoucherBatch,
+    Client\HotelRooms\DataTable as DataTableHotelRooms,
     Service\List\DataTable as DataTableService,
     Service\Premium\DataTable as DataTablePremiumService,
     Report\ListOnlineUser\DataTable as DataTableOnlineUsers,
@@ -54,6 +55,7 @@ Route::middleware(['check.session.cookie'])->group(function () {
             // Route for getting datatable data for clients
             Route::get('getDataTable', [DataTableClient::class, 'getDataTable'])->name('client.getDataTable');
             Route::get('usersData/getDataTable', [DataTableUsersData::class, 'getDataTable'])->name('usersData.getDataTable');
+            Route::get('hotelRooms/getDataTable', [DataTableHotelRooms::class, 'getDataTable'])->name('hotelRooms.getDataTable');
             Route::get('voucherBatches/getDataTable', [DataTableVoucherBatches::class, 'getDataTable'])->name('voucherBatches.getDataTable');
             Route::get('activeVouchers/getDataTable', [DataTableActiveVouchers::class, 'getDataTable'])->name('activeVouchers.getDataTable');
             Route::get('detailVoucherBatch/getDataTable', [DataTableDetailVoucherBatch::class, 'getDataTable'])->name('detailVoucherBatch.getDataTable');

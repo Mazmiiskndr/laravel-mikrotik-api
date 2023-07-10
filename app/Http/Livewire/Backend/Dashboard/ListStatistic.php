@@ -39,19 +39,21 @@ class ListStatistic extends Component
         dispatch(new UpdateMikrotikStats());
         // Load the data from cache
         $this->cpuLoad = Cache::get('mikrotik.cpuLoad', 0);
-        // Decide color based on CPU Load
-        if ($this->cpuLoad < 30) {
-            $this->cpuLoadColor = 'green';
-        } elseif ($this->cpuLoad < 70) {
-            $this->cpuLoadColor = 'orange';
-        } else {
-            $this->cpuLoadColor = 'red';
+        if($this->cpuLoad > 0){
+            // Decide color based on CPU Load
+            if ($this->cpuLoad < 30) {
+                $this->cpuLoadColor = 'green';
+            } elseif ($this->cpuLoad < 70) {
+                $this->cpuLoadColor = 'orange';
+            } else {
+                $this->cpuLoadColor = 'red';
+            }
+            // emit event to frontend
+            $this->emit('dataUpdated', [
+                'cpuLoad' => $this->cpuLoad,
+                'color' => $this->cpuLoadColor,
+            ]);
         }
-        // emit event to frontend
-        $this->emit('dataUpdated', [
-            'cpuLoad' => $this->cpuLoad,
-            'color' => $this->cpuLoadColor,
-        ]);
         $this->uptime = Cache::get('mikrotik.uptime', '0d 0:0:0');
         $this->activeHotspots = Cache::get('mikrotik.activeHotspots', 0);
         $this->freeMemoryPercentage = Cache::get('mikrotik.freeMemory', '0%');

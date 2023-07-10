@@ -5,8 +5,9 @@ use App\Http\Controllers\{
     Backend\Client\ClientController,
     Backend\Client\Voucher\VoucherBatchController,
     Backend\Client\Voucher\VoucherActiveController,
+    Backend\Client\HotelRoom\HotelRoomsController,
+    Backend\Client\UserData\UsersDataController,
 };
-use App\Http\Controllers\Backend\Client\UsersData\UsersDataController;
 
 // Grouping routes that require check.session.cookie middleware
 Route::middleware(['check.session.cookie'])->group(function () {
@@ -29,6 +30,7 @@ Route::middleware(['check.session.cookie'])->group(function () {
         });
 
         // Route for configs list users data page
+        Route::get('hotel-rooms', [HotelRoomsController::class, 'index'])->name('hotel-rooms');
         Route::get('users-data', [UsersDataController::class, 'index'])->name('users-data');
         // Print users data to PDF 👇
         Route::get('users-data/print', [UsersDataController::class, 'print'])->name('users-data.print');

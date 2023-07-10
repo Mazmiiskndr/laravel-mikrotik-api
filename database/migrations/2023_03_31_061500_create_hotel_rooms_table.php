@@ -17,8 +17,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('room_number', 50);
             $table->string('name', 100)->default("Guest");
+            $table->string('password', 50);
             $table->string('folio_number', 100);
-            $table->integer('service_id')->default(0);
+            $table->uuid('service_id');
             $table->string('default_cron_type', 100);
             $table->enum('status', ['active', 'deactive'])->default("deactive");
             $table->tinyInteger('edit')->default(0);
@@ -27,6 +28,12 @@ return new class extends Migration
             $table->dateTime('departure')->nullable();
             $table->string('no_posting', 50)->default("N");
             $table->timestamps();
+
+            $table->foreign('service_id')
+                ->references('id')
+                ->on('services')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

@@ -68,7 +68,7 @@
 </div> --}}
 {{-- TODO: --}}
 <div class="row" wire:poll.{{ $pollingInterval }}ms="loadData">
-    <div class="col-xl-2 col-md-4 col-6 mb-4">
+    <div class="col-xl-2 col-md-4 col-6 mb-4" wire:ignore>
         <div class="card h-100">
             <div class="card-header pb-0">
                 <h5 class="card-title text-center mb-0">CPU Load</h5>
@@ -311,7 +311,7 @@
         }
         // Update chart color and data
         expensesRadialChart.updateOptions({
-            series: [data.cpuLoad],
+            series: [data.cpuLoad || 0],
             colors: [color],
         });
     });

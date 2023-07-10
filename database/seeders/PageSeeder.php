@@ -45,7 +45,7 @@ class PageSeeder
                 [12, 'list_voucher_batches', 'List Voucher Batches', 'clients/voucher/list-voucher-batches', '1,2', 1, NULL],
                 [12, 'create_voucher_batch', 'Create Voucher Batch', '#', '1,2', 0, NULL],
                 [12, 'list_active_vouchers', 'List Active Vouchers', 'clients/voucher/list-active-vouchers', '1,2', 1, NULL],
-                [13, 'hotel_rooms', 'Hotel Rooms', 'clients/pg/hotel_rooms', '1,2', 1, NULL],
+                [13, 'hotel_rooms', 'Hotel Rooms', 'clients/hotel-rooms', '1,2', 1, NULL],
                 [13, 'edit_all_static_hotel_rooms', 'Edit All Static Rooms', 'clients/pg/edit_all_static_hotel_rooms', '1,2', 0, NULL],
                 [13, 'hotel_rooms_csv', 'Hotel Rooms CSV', 'client/pg/hotel_rooms_csv', '1,2', 0, NULL],
                 [13, 'add_hotel_room', 'Add Hotel Room', 'clients/pg/add_hotel_room', '1,2', 0, NULL],
