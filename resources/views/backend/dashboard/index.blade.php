@@ -40,9 +40,8 @@
                 <div class="row">
                     @livewire('backend.dashboard.polar-chart')
 
-                    {{-- TODO: Change radar chart to bar chart --}}
-                    <!-- Bar Chart -->
-                    @livewire('backend.dashboard.radar-chart')
+                    {{-- TODO: bar chart --}}
+                    @livewire('backend.dashboard.bar-chart')
 
                 </div>
 
@@ -60,7 +59,7 @@
 </div>
 
 @push('scripts')
-{{-- <script src="{{ asset('assets/vendor/libs/apex-charts/apexcharts.js') }}"></script> --}}
+<script src="{{ asset('assets/js/backend/dashboard/bar-chart.js') }}"></script>
 @endpush
 
 @endsection
