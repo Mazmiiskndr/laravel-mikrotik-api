@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\HotelRoom;
 use App\Models\RadAcct;
 use App\Models\UserData;
 use Illuminate\Database\Seeder;
@@ -28,5 +29,6 @@ class DatabaseSeeder extends Seeder
             NasSeeder::class,
             AdTypeSeeder::class,
         ]);
+        HotelRoom::factory(50)->create();
     }
 }

@@ -118,6 +118,7 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
                 // Update hotel room data
                 $hotelRoom->service_id = $data['idService'];
                 $hotelRoom->password = $data['password'];
+                $hotelRoom->edit = 1;
                 $hotelRoom->room_number = $data['roomNumber'];
                 $hotelRoom->save();
 
