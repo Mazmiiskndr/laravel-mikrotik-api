@@ -31,7 +31,7 @@ class UsersDataExport implements FromCollection, WithHeadings, WithStyles
     public function collection()
     {
         // Retrieve the data from the report service
-        $data = $this->usersDataService->getUsersData(null, ['id', 'date', 'name', 'email', 'room_number'])['data'];
+        $data = $this->usersDataService->getUsersData(null, ['id', 'date', 'name', 'email', 'room_number'],null)['data'];
 
         // Transform the data to match the headings
         $mappedData = $data->map(function ($row, $key) {

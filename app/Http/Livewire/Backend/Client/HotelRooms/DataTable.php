@@ -44,8 +44,8 @@ class DataTable extends Component
     }
 
     /**
-     * Exports a report of online users to a XlSX file.
-     * @param HotelRoomService $hotelRoomService Service to generate report data.
+     * Exports a hotel of hotel rooms to a XlSX file.
+     * @param HotelRoomService $hotelRoomService Service to generate hotel data.
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse XlSX file download response.
      */
     public function saveToExcel(HotelRoomService $hotelRoomService)
