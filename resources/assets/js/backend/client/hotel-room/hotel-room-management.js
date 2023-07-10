@@ -1,3 +1,8 @@
+// Function to send save to excel
+function saveToExcel() {
+  // Emit an event to print Excel
+  Livewire.emit('saveToExcel');
+}
 // Function to show a modal based on a given id for UPDATE!
 function showHotelRoom(id) {
   // Emit an event to show the modal with the given Livewire component id for UPDATE!

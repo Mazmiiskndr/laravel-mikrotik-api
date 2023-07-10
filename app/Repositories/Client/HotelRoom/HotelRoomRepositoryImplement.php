@@ -91,7 +91,6 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
                 'status' => function ($data) {
                     return $data->status == 'active' ? '<span class="badge bg-label-success">Active</span>' : '<span class="badge bg-label-danger">Non Active</span>';
                 },
-                // TODO: FOR EDIT HOTEL ROOMS
                 'action' => function ($data) use ($editPermission, $editButton, $onclickEdit, $onclickDelete) {
                     return $this->getActionButtons($data, $editPermission, $editButton, $onclickEdit, $onclickDelete);
                 }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Livewire\Backend\Client\HotelRooms;
 
+use App\Exports\HotelRoomExport;
 use App\Services\Client\HotelRoom\HotelRoomService;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DataTable extends Component
 {
@@ -11,6 +13,7 @@ class DataTable extends Component
     // Listeners
     protected $listeners = [
         'hotelRoomUpdated' => 'refreshDataTable',
+        'saveToExcel' => 'saveToExcel',
     ];
 
     /**
@@ -38,5 +41,15 @@ class DataTable extends Component
     public function refreshDataTable()
     {
         $this->dispatchBrowserEvent('refreshDatatable');
+    }
+
+    /**
+     * Exports a report of online users to a XlSX file.
+     * @param HotelRoomService $hotelRoomService Service to generate report data.
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse XlSX file download response.
+     */
+    public function saveToExcel(HotelRoomService $hotelRoomService)
+    {
+        return Excel::download(new HotelRoomExport($hotelRoomService), 'hotel-rooms-' . date('Y-m-d') . '.xlsx');
     }
 }
