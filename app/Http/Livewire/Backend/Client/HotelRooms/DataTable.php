@@ -8,6 +8,11 @@ use Livewire\Component;
 class DataTable extends Component
 {
 
+    // Listeners
+    protected $listeners = [
+        'hotelRoomUpdated' => 'refreshDataTable',
+    ];
+
     /**
      * Render the component `data-table-hotel-rooms`.
      * @return \Illuminate\View\View
@@ -25,5 +30,13 @@ class DataTable extends Component
     public function getDataTable(HotelRoomService $hotelRoomService)
     {
         return $hotelRoomService->getDatatableHotelRooms();
+    }
+
+    /**
+     * Refresh the DataTable when an hotel rooms is created, updated and deleted.
+     */
+    public function refreshDataTable()
+    {
+        $this->dispatchBrowserEvent('refreshDatatable');
     }
 }

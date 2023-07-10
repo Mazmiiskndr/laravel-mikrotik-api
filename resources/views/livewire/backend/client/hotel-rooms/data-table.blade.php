@@ -22,11 +22,7 @@ $canEdit = App\Helpers\AccessControlHelper::isAllowedToPerformAction('edit_hotel
     <script>
         var canEdit = @json($canEdit);
         // Hide Modal
-        // Function to show a modal based on a given id for UPDATE!
-        function showHotelRoom(id) {
-            // Emit an event to show the modal with the given Livewire component id for UPDATE!
-            Livewire.emit('getHotelRoom', id);
-        }
+
 
         let dataTable;
 

@@ -22,7 +22,7 @@ class HotelRoomsController extends Controller
     {
         $this->hotelRoomService = $hotelRoomService;
         // Apply the 'checkPermissions' middleware to this controller with 'users-data' as the required permission
-        $this->middleware('checkPermissions:hotel_rooms')->only('index');
+        $this->middleware('checkPermissions:hotel_rooms,edit_hotel_room')->only('index');
     }
 
     /**
