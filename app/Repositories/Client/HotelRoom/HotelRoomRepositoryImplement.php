@@ -5,6 +5,7 @@ namespace App\Repositories\Client\HotelRoom;
 use App\Helpers\ActionButtonsBuilder;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\HotelRoom;
+use App\Services\ServiceMegalos\ServiceMegalosService;
 use App\Traits\DataTablesTrait;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -19,10 +20,12 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
     * @property Model|mixed $model;
     */
     protected $model;
+    protected $serviceMegalosService;
 
-    public function __construct(HotelRoom $model)
+    public function __construct(HotelRoom $model, ServiceMegalosService $serviceMegalosService)
     {
         $this->model = $model;
+        $this->serviceMegalosService = $serviceMegalosService;
     }
 
     /**
@@ -78,7 +81,6 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
         $data = $this->getHotelRoomsWithService()['data'];
         $editPermission = 'edit_hotel_room';
         $onclickEdit = 'showHotelRoom';
-        $onclickDelete = 'confirmDeleteHotelRoom';
         $editButton = 'button';
 
         // Format the data for DataTables
@@ -91,8 +93,8 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
                 'status' => function ($data) {
                     return $data->status == 'active' ? '<span class="badge bg-label-success">Active</span>' : '<span class="badge bg-label-danger">Non Active</span>';
                 },
-                'action' => function ($data) use ($editPermission, $editButton, $onclickEdit, $onclickDelete) {
-                    return $this->getActionButtons($data, $editPermission, $editButton, $onclickEdit, $onclickDelete);
+                'action' => function ($data) use ($editPermission, $editButton, $onclickEdit) {
+                    return $this->getActionButtons($data, $editPermission, $editButton, $onclickEdit);
                 }
             ]
         );
@@ -114,8 +116,11 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
             $hotelRoom = $this->model->findOrFail($id);
             // If the hotel room exists, update its data.
             if ($hotelRoom !== null) {
+                $service = $this->serviceMegalosService->getServiceById($data['idService']);
+
                 // Update hotel room data
                 $hotelRoom->service_id = $data['idService'];
+                $hotelRoom->default_cron_type = $service['cron_type'];
                 $hotelRoom->password = $data['password'];
                 $hotelRoom->edit = 1;
                 $hotelRoom->room_number = $data['roomNumber'];
@@ -146,14 +151,12 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
      * @param $editPermission
      * @param $editButton
      * @param $onclickEdit
-     * @param $onclickDelete
      * @return string HTML string for the action buttons
      */
-    private function getActionButtons($data, $editPermission, $editButton, $onclickEdit, $onclickDelete)
+    private function getActionButtons($data, $editPermission, $editButton, $onclickEdit)
     {
         return (new ActionButtonsBuilder())
             ->setEditPermission($editPermission)
-            ->setOnclickDelete($onclickDelete)
             ->setOnclickEdit($onclickEdit)
             ->setType($editButton)
             ->setIdentity($data->id)

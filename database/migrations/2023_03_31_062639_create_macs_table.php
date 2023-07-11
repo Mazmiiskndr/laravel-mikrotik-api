@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('macs', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('mac_address', 100);
-            $table->string('password', 100);
+            $table->string('password', 100)->nullable();
             $table->string('mikrotik_group', 100)->nullable();
             $table->string('validfrom', 100)->nullable();
             $table->string('validto', 100)->nullable();
