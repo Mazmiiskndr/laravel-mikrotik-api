@@ -28,4 +28,25 @@ interface BypassMacsRepository extends Repository{
      * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
      */
     public function getDatatableListBypassed();
+
+    /**
+     * Define validation rules for bypass macs creation.
+     * @param string|null $id Bypass Macs ID for uniqueness checks. If not provided, a create operation is assumed.
+     * @return array Array of validation rules
+     */
+    public function getRules($id = null);
+
+    /**
+     * Define validation messages for bypass mac creation.
+     * @return array Array of validation messages
+     */
+    public function getMessages();
+
+    /**
+     * Stores a new bypass mac using the provided request data.
+     * @param array $request The data used to create the new bypass mac.
+     * @return Model|mixed The newly created bypass mac.
+     * @throws \Exception if an error occurs while creating the bypass mac.
+     */
+    public function storeNewBypassMac($request);
 }

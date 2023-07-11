@@ -66,12 +66,12 @@
 {{-- TODO: --}}
 @if($permissions['isAllowedToAddMac'])
 {{-- START FORM CREATE MAC --}}
-{{-- @livewire('backend.client.list.create') --}}
+@livewire('backend.client.bypass-macs.create',['defaulStatus' => 'bypassed'])
 {{-- END FORM CREATE MAC --}}
 @endif
 @if($permissions['isAllowedToEditMac'])
 {{-- START FORM EDIT MAC --}}
-{{-- @livewire('backend.client.list.edit') --}}
+@livewire('backend.client.bypass-macs.edit',['defaulStatus' => 'bypassed'])
 {{-- END FORM EDIT MAC --}}
 @endif
 

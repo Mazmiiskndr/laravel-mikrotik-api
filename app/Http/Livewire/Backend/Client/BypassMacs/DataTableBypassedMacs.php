@@ -13,8 +13,8 @@ class DataTableBypassedMacs extends Component
 
     // Listeners
     protected $listeners = [
-        'macCreated' => 'refreshDataTable',
-        'macUpdated' => 'refreshDataTable',
+        'bypassMacCreated' => 'refreshDataTable',
+        'bypassMacUpdated' => 'refreshDataTable',
         'confirmMac' => 'deleteMac',
         'deleteBatch'   => 'deleteBatchMac',
     ];
@@ -37,4 +37,13 @@ class DataTableBypassedMacs extends Component
     {
         return $bypassMacsService->getDatatableListBypassed();
     }
+
+    /**
+     * Refresh the DataTable when an bypass mac is created, updated and deleted.
+     */
+    public function refreshDataTable()
+    {
+        $this->dispatchBrowserEvent('refreshDatatable');
+    }
+
 }

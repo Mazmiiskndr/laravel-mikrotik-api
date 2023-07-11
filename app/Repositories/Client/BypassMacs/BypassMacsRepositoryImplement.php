@@ -7,6 +7,7 @@ use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Mac;
 use App\Traits\DataTablesTrait;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class BypassMacsRepositoryImplement extends Eloquent implements BypassMacsRepository{
@@ -108,7 +109,107 @@ class BypassMacsRepositoryImplement extends Eloquent implements BypassMacsReposi
         }
     }
 
+
+    /**
+     * Define validation rules for bypass macs creation.
+     * @param string|null $id Bypass Macs ID for uniqueness checks. If not provided, a create operation is assumed.
+     * @return array Array of validation rules
+     */
+    public function getRules($id = null)
+    {
+        // If id is not provided, we're creating a new bypass macs, else we're updating an existing bypass macs.
+        $macAddressRule = 'required|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/|unique:macs,mac_address';
+        if ($id !== null) {
+            $macAddressRule .= ",$id,id";
+        }
+
+        return [
+            'mikrotikId' => 'nullable|integer',
+            'macAddress' => 'required|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/',
+            'status' => 'required|string',
+            'description' => 'nullable|string',
+            'server' => 'required|string',
+        ];
+    }
+
+    /**
+     * Define validation messages for bypass mac creation.
+     * @return array Array of validation messages
+     */
+    public function getMessages()
+    {
+        return [
+            'mikrotikId.required'      => 'Mikrotik ID must be an integer!',
+            'macAddress.required'      => 'Mac Address cannot be empty!',
+            'macAddress.regex'         => 'MAC address format is invalid!',
+            'macAddress.unique'        => 'MAC address already exists!',
+            'status.required'          => 'Status cannot be empty!',
+            'description.string'       => 'Description must be a string!',
+            'server.required'          => 'Server cannot be empty!',
+            'server.string'            => 'Server must be a string!',
+        ];
+    }
+
+    /**
+     * Stores a new bypass mac using the provided request data.
+     * @param array $request The data used to create the new bypass mac.
+     * @return Model|mixed The newly created bypass mac.
+     * @throws \Exception if an error occurs while creating the bypass mac.
+     */
+    public function storeNewBypassMac($request)
+    {
+        // Start a new database transaction.
+        DB::beginTransaction();
+
+        try {
+            // Create new bypass mac entries
+            $bypassMac = $this->createOrUpdateBypassMac($request);
+
+            // Commit the transaction (apply the changes).
+            DB::commit();
+
+            return $bypassMac;
+        } catch (\Exception $e) {
+            // If an exception occurred during the create process, rollback the transaction.
+            DB::rollBack();
+
+            // Log the error message.
+            Log::error("Failed to store new bypass mac : " . $e->getMessage());
+
+            // Rethrow the exception to be caught in the Livewire component.
+            throw $e;
+        }
+    }
+
     // 👇 **** PRIVATE FUNCTIONS **** 👇
+
+    /**
+     * Creates or updates a bypass mac using the provided data.
+     * @param array $request The data used to create or update the bypass mac.
+     * @return Model|mixed The newly created or updated bypass mac.
+     */
+    private function createOrUpdateBypassMac($request)
+    {
+        if(isset($request['id'])){
+            $data['id'] = $request['id'];
+        }
+        $data['mac_address'] = $request['macAddress'];
+        $data['status'] = $request['status'];
+        $data['description'] = $request['description'];
+        $data['server'] = $request['server'];
+        $data['mikrotik_id'] = $request['mikrotikId'];
+
+        // If the id is set in the data, update the existing entry
+        if (isset($data['id'])) {
+            $bypassMac = $this->model->find($data['id']);
+            $bypassMac->update($data);
+        } else {
+            // Else, create a new entry
+            $bypassMac = $this->model->create($data);
+        }
+
+        return $bypassMac;
+    }
 
     /**
      * Generate action buttons for the DataTables row.

@@ -57,6 +57,25 @@ interface MikrotikApiRepository extends Repository{
     public function getDhcpLeasesDatatables($ip, $username, $password);
 
     /**
+     * Retrieves Mikrotik hotspot servers data via RouterOS API.
+     * @param string $ip Mikrotik router IP address.
+     * @param string $username Authentication username.
+     * @param string $password Authentication password.
+     * @return array|null Mikrotik hotspot servers data or null on connection failure.
+     */
+    public function getMikrotikHotspotServers($ip, $username, $password);
+
+    /**
+     * Creates a new IP binding entry via RouterOS API.
+     * @param string $ip Mikrotik router IP address.
+     * @param string $username Authentication username.
+     * @param string $password Authentication password.
+     * @param string $data The MAC address, Server and Type.
+     * @return string|null The Mikrotik ID of the newly created IP binding or null on failure.
+     */
+    public function createMikrotikIpBinding($ip, $username, $password, $data);
+
+    /**
      * Establishes a connection to Mikrotik.
      * @param string $ip The IP address of the Mikrotik.
      * @param string $username The username to log into the Mikrotik.
