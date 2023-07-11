@@ -78,13 +78,14 @@ class BypassMacsRepositoryImplement extends Eloquent implements BypassMacsReposi
 
     /**
      * Retrieves List Bypassed Macs records from a database, initializes DataTables, and adds columns to DataTable.
+     * @param array|null $columns
      * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
      */
-    public function getDatatableListBypassed()
+    public function getDatatable($status)
     {
-        // Retrieve records from the getBypassMacs function with status = 'bypassed'
+        // Retrieve records from the getBypassMacs function with status = $status
         try {
-            $data = $this->getBypassMacs(['status' => 'bypassed'],['id','mac_address','status','description','created_at'])['data'];
+            $data = $this->getBypassMacs(['status' => $status],['id','mac_address','status','description','created_at'])['data'];
             $editPermission = 'edit_mac';
             $deletePermission = 'delete_mac';
             $onclickEdit = 'showMac';

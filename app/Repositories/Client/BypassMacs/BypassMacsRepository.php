@@ -22,12 +22,12 @@ interface BypassMacsRepository extends Repository{
      */
     public function getBypassMacId($bypassMacsId);
 
-
     /**
      * Retrieves List Bypassed Macs records from a database, initializes DataTables, and adds columns to DataTable.
+     * @param array|null $columns
      * @return \Yajra\DataTables\DataTables Yajra DataTables JSON response.
      */
-    public function getDatatableListBypassed();
+    public function getDatatable($status);
 
     /**
      * Define validation rules for bypass macs creation.

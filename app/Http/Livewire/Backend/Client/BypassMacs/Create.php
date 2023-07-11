@@ -24,7 +24,8 @@ class Create extends Component
 
     // Listeners
     protected $listeners = [
-        'bypassMacCreated' => '$refresh',
+        'bypassedMacCreated' => '$refresh',
+        'blockedMacCreated' => '$refresh',
     ];
 
     /**
@@ -99,7 +100,11 @@ class Create extends Component
             // Notify the frontend of success
             $this->dispatchSuccessEvent('Bypass mac was created successfully.');
             // Let other components know that an bypass mac was created
-            $this->emit('bypassMacCreated', true);
+            if($this->defaulStatus == 'blocked'){
+                $this->emit('blockedMacCreated', true);
+            }else{
+                $this->emit('bypassedMacCreated', true);
+            }
         } catch (\Throwable $th) {
             // Notify the frontend of the error
             $this->dispatchErrorEvent('An error occurred while creating bypass mac: ' . $th->getMessage());

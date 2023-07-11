@@ -17,6 +17,7 @@ use App\Http\Livewire\Backend\{
     Client\Voucher\List\DataTableVoucherBatches as DataTableVoucherBatches,
     Client\UsersData\DataTable as DataTableUsersData,
     Client\BypassMacs\DataTableBypassedMacs as DataTableBypassedMacs,
+    Client\BypassMacs\DataTableBlockedMacs as DataTableBlockedMacs,
     Client\Voucher\List\DataTableActiveVouchers as DataTableActiveVouchers,
     Client\Voucher\List\DataTableDetailVoucherBatch as DataTableDetailVoucherBatch,
     Client\HotelRooms\DataTable as DataTableHotelRooms,

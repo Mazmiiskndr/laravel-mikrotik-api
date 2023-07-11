@@ -14,8 +14,8 @@ class DataTableBypassedMacs extends Component
 
     // Listeners
     protected $listeners = [
-        'bypassMacCreated' => 'refreshDataTable',
-        'bypassMacUpdated' => 'refreshDataTable',
+        'bypassedMacCreated' => 'refreshDataTable',
+        'bypassedMacUpdated' => 'refreshDataTable',
         'confirmMac' => 'deleteMac',
         'deleteBatch'   => 'deleteBatchMacs',
     ];
@@ -36,7 +36,7 @@ class DataTableBypassedMacs extends Component
      */
     public function getDataTable(BypassMacsService $bypassMacsService)
     {
-        return $bypassMacsService->getDatatableListBypassed();
+        return $bypassMacsService->getDatatable('bypassed');
     }
 
     /**

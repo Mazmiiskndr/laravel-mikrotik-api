@@ -25,7 +25,7 @@ class Edit extends Component
     // Listeners
     protected $listeners = [
         'getBypassMac' => 'showBypassMac',
-        'bypassMacUpdated' => '$refresh',
+        'bypassedMacUpdated' => '$refresh',
     ];
 
     /**
@@ -83,8 +83,13 @@ class Edit extends Component
             }
             // Notify the frontend of success
             $this->dispatchSuccessEvent('Bypass mac was successfully updated.');
-            // Let other components know that an bypass mac was updated
-            $this->emit('bypassMacUpdated', true);
+            if($this->defaulStatus == 'blocked'){
+                // Let other components know that an bypass mac was updated
+                $this->emit('blockedMacUpdated', true);
+            }else{
+                // Let other components know that an bypass mac was updated
+                $this->emit('bypassedMacUpdated', true);
+            }
         } catch (\Throwable $th) {
             // Notify the frontend of the error
             $this->dispatchErrorEvent('An error occurred while updating bypass mac: ' . $th->getMessage());
