@@ -485,33 +485,32 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
 
     /**
      * Creates or updates a client using the provided data.
-     * @param array $data The data used to create or update the client.
+     * @param array $request The data used to create or update the client.
      * @return Model|mixed The newly created or updated client.
      */
-    private function createOrUpdateClient($data)
+    private function createOrUpdateClient($request)
     {
         // If the client's first name and last name are provided, create a full name.
-        if ($data['firstName'] && $data['lastName']) {
-            $data['fullname'] = $data['firstName'] . ' ' . $data['lastName'];
+        if ($request['firstName'] && $request['lastName']) {
+            $data['fullname'] = $request['firstName'] . ' ' . $request['lastName'];
         }
 
         // If the simultaneous use is not provided, set it to 0.
-        $data['simultaneous_use'] = $data['simultaneousUse'] ?? 0;
+        $data['simultaneous_use'] = $request['simultaneousUse'] ?? 0;
 
-        $data['service_id'] = $data['idService'];
-        $data['username'] = strtolower($data['username']);
-        $data['validfrom'] = strtotime($data['validFrom']);
-        $data['valid_until'] = strtotime($data['validTo']);
-        $data['identification'] = $data['identificationNo'];
-        $data['email'] = $data['emailAddress'];
-        $data['first_name'] = $data['firstName'];
-        $data['last_name'] = $data['lastName'];
-        $data['birth_place'] = $data['placeOfBirth'];
-        $data['birth_date'] = $data['dateOfBirth'];
-        $data['phone'] = $data['phone'];
-        $data['address'] = $data['address'];
-        $data['note'] = $data['notes'];
-
+        $data['service_id'] = $request['idService'];
+        $data['username'] = strtolower($request['username']);
+        $data['validfrom'] = strtotime($request['validFrom']);
+        $data['valid_until'] = strtotime($request['validTo']);
+        $data['identification'] = $request['identificationNo'];
+        $data['email'] = $request['emailAddress'];
+        $data['first_name'] = $request['firstName'];
+        $data['last_name'] = $request['lastName'];
+        $data['birth_place'] = $request['placeOfBirth'];
+        $data['birth_date'] = $request['dateOfBirth'];
+        $data['phone'] = $request['phone'];
+        $data['address'] = $request['address'];
+        $data['note'] = $request['notes'];
         // Update or create client, based on username
         return $this->model->updateOrCreate(
             ['username' => $data['username']],

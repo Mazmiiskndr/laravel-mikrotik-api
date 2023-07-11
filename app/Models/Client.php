@@ -38,6 +38,7 @@ class Client extends Model
         'valid_until',
         'first_use',
         'status',
+        'note',
         'validfrom',
     ];
 
