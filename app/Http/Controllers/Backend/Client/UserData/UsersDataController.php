@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend\Client\UsersData;
+namespace App\Http\Controllers\Backend\Client\UserData;
 
 use App\Http\Controllers\Controller;
 use App\Services\Client\UsersData\UsersDataService;

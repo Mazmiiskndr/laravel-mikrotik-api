@@ -1,3 +1,8 @@
+// Function to send save to excel
+function saveToExcel() {
+  // Emit an event to print Excel
+  Livewire.emit('saveToExcel');
+}
 if (findUsersData) {
   // Helper function to initialize a flatpickr instance with common settings
   function initializeFlatpickr(elementId, isDateTime = true) {

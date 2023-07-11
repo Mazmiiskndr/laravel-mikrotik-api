@@ -29,7 +29,7 @@ class UserDataFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'phone_number' => $this->faker->phoneNumber,
             'room_number' => $this->faker->randomNumber(),
-            'date' => date('Y-m-d', strtotime($this->faker->date())),
+            'date' => $this->faker->dateTimeBetween('-30 days', 'now')->format('Y-m-d'),
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
             'location' => $this->faker->city,
@@ -39,4 +39,5 @@ class UserDataFactory extends Factory
             'mac' => $this->faker->macAddress,
         ];
     }
+
 }

@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Services\Client\UsersData\UsersDataService;
+use App\Services\Client\HotelRoom\HotelRoomService;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -10,18 +10,19 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class UsersDataExport implements FromCollection, WithHeadings, WithStyles
+
+class HotelRoomExport implements FromCollection, WithHeadings, WithStyles
 {
-    protected $usersDataService;
+    protected $hotelRoomService;
     protected $totalRowNumber;
 
     /**
      * ListOnlineUsersExport constructor.
-     * @param UsersDataService $usersDataService
+     * @param HotelRoomService $hotelRoomService
      */
-    public function __construct(UsersDataService $usersDataService)
+    public function __construct(HotelRoomService $hotelRoomService)
     {
-        $this->usersDataService = $usersDataService;
+        $this->hotelRoomService = $hotelRoomService;
     }
 
     /**
@@ -30,28 +31,30 @@ class UsersDataExport implements FromCollection, WithHeadings, WithStyles
      */
     public function collection()
     {
-        // Retrieve the data from the report service
-        $data = $this->usersDataService->getUsersData(null, ['id', 'date', 'name', 'email', 'room_number'],null)['data'];
+        // Retrieve the data from the hotel rooms service
+        $data = $this->hotelRoomService->getHotelRoomsWithService(null,['*'])['data'];
 
         // Transform the data to match the headings
         $mappedData = $data->map(function ($row, $key) {
             return [
                 'No' => $key + 1,
-                'Guest Name' => $row['name'] ?? '',
-                'Email' => $row['email'] ?? '',
                 'Room Number' => $row['room_number'] ?? '',
-                'Input Date' => date('Y-F-d', strtotime($row['date'])) ?? '',
+                'Name' => $row['name'] ?? '',
+                'Password' => $row['password'] ?? '',
+                'Service' => $row['service']['service_name'] ?? '',
+                'Status' => ucwords($row['status']) ?? '',
             ];
         });
 
-        $totalUsers = $mappedData->count();
+        $totalHotelRooms = $mappedData->count();
 
         $mappedData->push([
             'No' => '',
-            'Guest Name' => '',
-            'Email' => '',
-            'Room Number' => 'TOTAL',
-            'Input Date' => $totalUsers,
+            'Room Number' => '',
+            'Name' => '',
+            'Password' => '',
+            'Service' => 'TOTAL',
+            'Status' => $totalHotelRooms,
         ]);
 
         // Save the row number of the total
@@ -69,10 +72,11 @@ class UsersDataExport implements FromCollection, WithHeadings, WithStyles
     {
         return [
             'No',
-            'Guest Name',
-            'Email',
             'Room Number',
-            'Input Date'
+            'Name',
+            'Password',
+            'Service',
+            'Status'
         ];
     }
 
@@ -83,16 +87,16 @@ class UsersDataExport implements FromCollection, WithHeadings, WithStyles
     public function styles(Worksheet $sheet)
     {
         // Set the fill color to yellow for the header
-        $sheet->getStyle('A1:E1')->getFill()
+        $sheet->getStyle('A1:F1')->getFill()
             ->setFillType(Fill::FILL_SOLID)
             ->getStartColor()->setARGB('FFFFFF00');
 
         // Center the text for the header
-        $sheet->getStyle('A1:E1')->getAlignment()
+        $sheet->getStyle('A1:F1')->getAlignment()
             ->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         // Make the text bold for the header
-        $sheet->getStyle('A1:E1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:F1')->getFont()->setBold(true);
 
         // Add border to the cells
         $styleArray = [
@@ -107,24 +111,20 @@ class UsersDataExport implements FromCollection, WithHeadings, WithStyles
         $endRow = $sheet->getHighestRow();
 
         // Apply the border style to all cells
-        $sheet->getStyle('A1:E' . $endRow)->applyFromArray($styleArray);
-
-        // Set all cells alignment to left
-        $sheet->getStyle('A1:E' . $endRow)->getAlignment()
-            ->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyle('A1:F' . $endRow)->applyFromArray($styleArray);
 
         // Set column widths
-        foreach (range('A', 'E') as $columnID) {
+        foreach (range('A', 'F') as $columnID) {
             $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
 
         // Set the alignment to right for the total
         if (isset($this->totalRowNumber)) {
-            $sheet->getStyle('D' . $this->totalRowNumber + 1 . ':E' . $this->totalRowNumber + 1)->getAlignment()
+            $sheet->getStyle('E' . $this->totalRowNumber + 1 . ':F' . $this->totalRowNumber + 1)->getAlignment()
                 ->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
             // Make the text bold for the total
-            $sheet->getStyle('D' . $this->totalRowNumber + 1 . ':E' . $this->totalRowNumber + 1)->getFont()->setBold(true);
+            $sheet->getStyle('E' . $this->totalRowNumber + 1 . ':F' . $this->totalRowNumber + 1)->getFont()->setBold(true);
         }
     }
 }
