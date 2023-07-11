@@ -18,6 +18,10 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     const ENDPOINT_IP_BINDING_ROUTER_OS = "/ip/hotspot/ip-binding/print";
     const ENDPOINT_RESOURCE_ROUTER_OS = "/system/resource/print";
     const ENDPOINT_MONITOR_TRAFFIC_ROUTER_OS = "/interface/monitor-traffic";
+    const ENDPOINT_HOTSPOT_SERVERS_ROUTER_OS = "/ip/hotspot/print";
+    const ENDPOINT_IP_BINDING_ADD_ROUTER_OS = "/ip/hotspot/ip-binding/add";
+    const ENDPOINT_IP_BINDING_SET_ROUTER_OS = '/ip/hotspot/ip-binding/set';
+    const ENDPOINT_IP_BINDING_REMOVE_ROUTER_OS = '/ip/hotspot/ip-binding/remove';
 
     /**
      * 👇 Define CURL API endpoints 👇
@@ -265,6 +269,169 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     //         return null;
     //     }
     // }
+
+    /**
+     * Retrieves Mikrotik hotspot servers data via RouterOS API.
+     * @param string $ip Mikrotik router IP address.
+     * @param string $username Authentication username.
+     * @param string $password Authentication password.
+     * @return array|null Mikrotik hotspot servers data or null on connection failure.
+     */
+    public function getMikrotikHotspotServers($ip, $username, $password)
+    {
+        try {
+            // Connect to the Mikrotik router. If connection fails, log the error and return null.
+            if (!$this->model->connect($ip, $username, $password)) {
+                Log::error('Failed to connect to Mikrotik router: ' . $ip);
+                return null;
+            }
+
+            // Fetch list of hotspot servers
+            $hotspotServers = $this->model->comm(self::ENDPOINT_HOTSPOT_SERVERS_ROUTER_OS);
+
+            // Check if 'name' field exists and collect all server names
+            $serverNames = [];
+            foreach ($hotspotServers as $server) {
+                if (isset($server['name'])) {
+                    $serverNames[] = $server['name'];
+                }
+            }
+
+            // Return the list of server names
+            return $serverNames;
+        } catch (\Exception $e) {
+            // If any error occurs, log the error message and return null
+            Log::error('Failed to get Mikrotik hotspot servers data: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Creates a new IP binding entry via RouterOS API.
+     * @param string $ip Mikrotik router IP address.
+     * @param string $username Authentication username.
+     * @param string $password Authentication password.
+     * @param string $data The MAC address, Server and Type.
+     * @return string|null The Mikrotik ID of the newly created IP binding or null on failure.
+     */
+    public function createMikrotikIpBinding($ip, $username, $password, $data)
+    {
+        try {
+            // Connect to the Mikrotik router. If connection fails, log the error and return null.
+            if (!$this->model->connect($ip, $username, $password)) {
+                Log::error('Failed to connect to Mikrotik router: ' . $ip);
+                return null;
+            }
+
+            // Create the IP binding
+            $this->model->comm(self::ENDPOINT_IP_BINDING_ADD_ROUTER_OS, [
+                'mac-address' => $data['macAddress'],
+                'type' => $data['status'],
+                "comment" => "Managed by AZMI. DO NOT EDIT!!!",
+                'server' => $data['server']
+            ]);
+
+            // Query the IP bindings to get the ID of the binding that was just created.
+            $ipBindings = $this->model->comm(self::ENDPOINT_IP_BINDING_ROUTER_OS);
+
+            // Filter the IP bindings to find the one that was just created.
+            $newIpBinding = array_filter($ipBindings, function ($binding) use ($data) {
+                return $binding['mac-address'] == $data['macAddress'];
+            });
+
+            // If the IP binding was found, return its ID.
+            if (count($newIpBinding) > 0) {
+                $newIpBinding = reset($newIpBinding);
+                return $newIpBinding['.id'];
+            }
+
+            Log::error('Failed to retrieve the ID of the new IP binding.');
+            return null;
+        } catch (\Exception $e) {
+            // If any error occurs, log the error message and return null
+            Log::error('Failed to create IP binding: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Updates an IP binding entry via RouterOS API.
+     * @param string $ip Mikrotik router IP address.
+     * @param string $username Authentication username.
+     * @param string $password Authentication password.
+     * @param string $data The MAC address, Server and Type.
+     * @return string|null The Mikrotik ID of the updated IP binding or null on failure.
+     */
+    public function updateMikrotikIpBinding($ip, $username, $password, $data)
+    {
+        try {
+            // Connect to the Mikrotik router. If connection fails, log the error and return null.
+            if (!$this->model->connect($ip, $username, $password)) {
+                Log::error('Failed to connect to Mikrotik router: ' . $ip);
+                return null;
+            }
+
+            // Update the IP binding
+            $this->model->comm(self::ENDPOINT_IP_BINDING_SET_ROUTER_OS, [
+                '.id' => $data['mikrotikId'],
+                'mac-address' => $data['macAddress'],
+                'type' => $data['status'],
+                "comment" => "Managed by AZMI. DO NOT EDIT!!!",
+                'server' => $data['server']
+            ]);
+
+            // Query the IP bindings to get the ID of the binding that was just updated.
+            $ipBindings = $this->model->comm(self::ENDPOINT_IP_BINDING_ROUTER_OS);
+
+            // Filter the IP bindings to find the one that was just updated.
+            $updatedIpBinding = array_filter($ipBindings, function ($binding) use ($data) {
+                return $binding['mac-address'] == $data['macAddress'];
+            });
+
+            // If the IP binding was found, return its ID.
+            if (count($updatedIpBinding) > 0) {
+                $updatedIpBinding = reset($updatedIpBinding);
+                return $updatedIpBinding['.id'];
+            }
+
+            Log::error('Failed to retrieve the ID of the updated IP binding.');
+            return null;
+        } catch (\Exception $e) {
+            // If any error occurs, log the error message and return null
+            Log::error('Failed to update IP binding: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Deletes an IP binding entry via RouterOS API.
+     * @param string $ip Mikrotik router IP address.
+     * @param string $username Authentication username.
+     * @param string $password Authentication password.
+     * @param string $mikrotikId The Mikrotik ID of the IP binding.
+     * @return bool Whether the deletion was successful.
+     */
+    public function deleteMikrotikIpBinding($ip, $username, $password, $mikrotikId)
+    {
+        try {
+            // Connect to the Mikrotik router. If connection fails, log the error and return null.
+            if (!$this->model->connect($ip, $username, $password)) {
+                Log::error('Failed to connect to Mikrotik router: ' . $ip);
+                return false;
+            }
+
+            // Delete the IP binding
+            $this->model->comm(self::ENDPOINT_IP_BINDING_REMOVE_ROUTER_OS, [
+                '.id' => $mikrotikId
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+            // If any error occurs, log the error message and return false
+            Log::error('Failed to delete IP binding: ' . $e->getMessage());
+            return false;
+        }
+    }
 
     // 👇 🌟🌟🌟 GET Request to the Mikrotik router. WITH CURL 🌟🌟🌟 👇
 
