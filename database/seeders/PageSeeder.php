@@ -57,9 +57,9 @@ class PageSeeder
                 [15, 'list_macs', 'List Bypassed Macs', 'clients/list-bypassed-macs', '1', 1, NULL],
                 [15, 'list_blocked_macs', 'List Blocked Macs', 'clients/list-blocked-macs', '1', 1, NULL],
                 [15, 'batch_delete_macs', 'Batch Delete Macs', '#', '1,2', 0, NULL],
-                [15, 'add_mac', 'Add Mac Address', '#', '1', 1, NULL],
+                [15, 'add_mac', 'Add Mac Address', '#', '1', 0, NULL],
                 // TODO: SEARCH MAC
-                [15, 'search_mac', 'Search Mac', 'clients/pg/search_mac', '1', 1, NULL],
+                [15, 'search_mac', 'Search Mac', '#', '1', 0, NULL],
                 [15, 'edit_mac', 'Edit Mac', '#', '1', 0, NULL],
                 [15, 'delete_mac', 'Delete Mac', '#', '1', 0, NULL],
                 [16, 'users_data', 'Users Data', 'clients/users-data', '1', 1, NULL],
