@@ -281,10 +281,8 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     {
         try {
             // Connect to the Mikrotik router. If connection fails, log the error and return null.
-            if (!$this->model->connect($ip, $username, $password)) {
-                Log::error('Failed to connect to Mikrotik router: ' . $ip);
-                return null;
-            }
+            $this->connect($ip, $username, $password);
+
 
             // Fetch list of hotspot servers
             $hotspotServers = $this->model->comm(self::ENDPOINT_HOTSPOT_SERVERS_ROUTER_OS);
@@ -318,10 +316,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     {
         try {
             // Connect to the Mikrotik router. If connection fails, log the error and return null.
-            if (!$this->model->connect($ip, $username, $password)) {
-                Log::error('Failed to connect to Mikrotik router: ' . $ip);
-                return null;
-            }
+            $this->connect($ip, $username, $password);
 
             // Create the IP binding
             $this->model->comm(self::ENDPOINT_IP_BINDING_ADD_ROUTER_OS, [
@@ -366,10 +361,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     {
         try {
             // Connect to the Mikrotik router. If connection fails, log the error and return null.
-            if (!$this->model->connect($ip, $username, $password)) {
-                Log::error('Failed to connect to Mikrotik router: ' . $ip);
-                return null;
-            }
+            $this->connect($ip, $username, $password);
 
             // Update the IP binding
             $this->model->comm(self::ENDPOINT_IP_BINDING_SET_ROUTER_OS, [
@@ -415,10 +407,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     {
         try {
             // Connect to the Mikrotik router. If connection fails, log the error and return null.
-            if (!$this->model->connect($ip, $username, $password)) {
-                Log::error('Failed to connect to Mikrotik router: ' . $ip);
-                return false;
-            }
+            $this->connect($ip, $username, $password);
 
             // Delete the IP binding
             $this->model->comm(self::ENDPOINT_IP_BINDING_REMOVE_ROUTER_OS, [
