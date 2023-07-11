@@ -3,8 +3,10 @@
 namespace App\Repositories\Client\BypassMacs;
 
 use App\Helpers\ActionButtonsBuilder;
+use App\Helpers\MikrotikConfigHelper;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Mac;
+use App\Services\MikrotikApi\MikrotikApiService;
 use App\Traits\DataTablesTrait;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -20,10 +22,12 @@ class BypassMacsRepositoryImplement extends Eloquent implements BypassMacsReposi
     * @property Model|mixed $model;
     */
     protected $model;
+    protected $mikrotikApiService;
 
-    public function __construct(Mac $model)
+    public function __construct(Mac $model, MikrotikApiService $mikrotikApiService)
     {
         $this->model = $model;
+        $this->mikrotikApiService = $mikrotikApiService;
     }
 
     /**
@@ -61,7 +65,7 @@ class BypassMacsRepositoryImplement extends Eloquent implements BypassMacsReposi
      * @param $bypassMacsId
      * @return mixed
      */
-    public function getBypassMacsId($bypassMacsId)
+    public function getBypassMacId($bypassMacsId)
     {
         try {
             return $this->model->find($bypassMacsId);
@@ -109,7 +113,6 @@ class BypassMacsRepositoryImplement extends Eloquent implements BypassMacsReposi
         }
     }
 
-
     /**
      * Define validation rules for bypass macs creation.
      * @param string|null $id Bypass Macs ID for uniqueness checks. If not provided, a create operation is assumed.
@@ -124,11 +127,11 @@ class BypassMacsRepositoryImplement extends Eloquent implements BypassMacsReposi
         }
 
         return [
-            'mikrotikId' => 'nullable|integer',
-            'macAddress' => 'required|regex:/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/',
-            'status' => 'required|string',
-            'description' => 'nullable|string',
-            'server' => 'required|string',
+            'mikrotikId'    => 'nullable',
+            'macAddress'    => $macAddressRule,
+            'status'        => 'required|string',
+            'description'   => 'nullable|string',
+            'server'        => 'required|string',
         ];
     }
 
@@ -139,9 +142,8 @@ class BypassMacsRepositoryImplement extends Eloquent implements BypassMacsReposi
     public function getMessages()
     {
         return [
-            'mikrotikId.required'      => 'Mikrotik ID must be an integer!',
             'macAddress.required'      => 'Mac Address cannot be empty!',
-            'macAddress.regex'         => 'MAC address format is invalid!',
+            'macAddress.regex'         => 'MAC address field must contain a valid mac address(XX:XX:XX:XX:XX:XX).',
             'macAddress.unique'        => 'MAC address already exists!',
             'status.required'          => 'Status cannot be empty!',
             'description.string'       => 'Description must be a string!',
@@ -181,7 +183,139 @@ class BypassMacsRepositoryImplement extends Eloquent implements BypassMacsReposi
         }
     }
 
+    /**
+     * Updates an existing bypass mac using the provided request data.
+     * @param string $id Bypass Macs ID for uniqueness checks.
+     * @param array $request The data used to update the bypass mac.
+     * @return Model|mixed The updated bypass mac.
+     * @throws \Exception if an error occurs while updating the bypass mac.
+     */
+    public function updateBypassMac($bypassMacId, $request)
+    {
+        // Start a new database transaction.
+        DB::beginTransaction();
+
+        try {
+            $request['id'] = $bypassMacId;
+            // Delete the Mikrotik IP binding
+            $this->updateMikrotikIpBinding($bypassMacId, $request);
+            // Update bypass mac entries
+            $bypassMac = $this->createOrUpdateBypassMac($request);
+
+
+            // Commit the transaction (apply the changes).
+            DB::commit();
+
+            return $bypassMac;
+        } catch (\Exception $e) {
+            // If an exception occurred during the update process, rollback the transaction.
+            DB::rollBack();
+
+            // Log the error message.
+            Log::error("Failed to update bypass mac : " . $e->getMessage());
+
+            // Rethrow the exception to be caught in the Livewire component.
+            throw $e;
+        }
+    }
+
+    /**
+     * Deletes a bypass mac and its associated Mikrotik IP binding using the provided bypass mac ID.
+     * @param string $bypassMacId The ID of the bypass mac to delete.
+     * @return bool Whether the deletion was successful.
+     * @throws \Exception if an error occurs while deleting the bypass mac.
+     */
+    public function deleteBypassMac($bypassMacId)
+    {
+        // Start a new database transaction.
+        DB::beginTransaction();
+
+        try {
+            // Find the bypass mac to be deleted
+            $bypassMac = $this->model->find($bypassMacId);
+
+            if ($bypassMac === null) {
+                // If the bypass mac doesn't exist, log the error and return false
+                Log::error("Bypass mac with ID $bypassMacId not found");
+                return false;
+            }
+
+            // Delete the Mikrotik IP binding
+            $this->deleteMikrotikIpBinding($bypassMacId, $bypassMac->mikrotik_id);
+
+            // Delete the bypass mac
+            $bypassMac->delete();
+
+            // Commit the transaction (apply the changes).
+            DB::commit();
+
+            return true;
+        } catch (\Exception $e) {
+            // If an exception occurred during the delete process, rollback the transaction.
+            DB::rollBack();
+
+            // Log the error message.
+            Log::error("Failed to delete bypass mac : " . $e->getMessage());
+
+            // Rethrow the exception to be caught in the Livewire component.
+            throw $e;
+        }
+    }
+
     // 👇 **** PRIVATE FUNCTIONS **** 👇
+
+    /**
+     * Updated an IP binding from the Mikrotik router.
+     * @param string $bypassMacId The ID of the bypass mac.
+     * @param array $request The ID of the Mikrotik IP binding.
+     * @return bool Whether the deletion was successful.
+     * @throws \Exception if an error occurs while deleting the IP binding.
+     */
+    private function updateMikrotikIpBinding($bypassMacId, $request)
+    {
+        // Fetch and Validate Mikrotik Config
+        $config = $this->fetchAndValidateMikrotikConfig();
+
+        if ($config) {
+            // Update the IP binding
+            $ipBindingUpdated = $this->mikrotikApiService->updateMikrotikIpBinding($config['ip'], $config['username'], $config['password'], $request);
+            // If the IP binding deletion was not successful, throw an Exception.
+            if (!$ipBindingUpdated) {
+                throw new \Exception("Failed to update IP binding for bypass mac with ID $bypassMacId");
+            }
+
+            return $ipBindingUpdated;
+        }
+
+        return false;
+    }
+
+    /**
+     * Deletes an IP binding from the Mikrotik router.
+     * @param string $bypassMacId The ID of the bypass mac.
+     * @param string $mikrotikId The ID of the Mikrotik IP binding.
+     * @return bool Whether the deletion was successful.
+     * @throws \Exception if an error occurs while deleting the IP binding.
+     */
+    private function deleteMikrotikIpBinding($bypassMacId, $mikrotikId)
+    {
+        // Fetch and Validate Mikrotik Config
+        $config = $this->fetchAndValidateMikrotikConfig();
+
+        if ($config) {
+            // Delete the IP binding
+            $ipBindingDeleted = $this->mikrotikApiService->deleteMikrotikIpBinding($config['ip'], $config['username'], $config['password'], $mikrotikId);
+
+            // If the IP binding deletion was not successful, throw an Exception.
+            if (!$ipBindingDeleted) {
+                throw new \Exception("Failed to delete IP binding for bypass mac with ID $bypassMacId");
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      * Creates or updates a bypass mac using the provided data.
@@ -209,6 +343,24 @@ class BypassMacsRepositoryImplement extends Eloquent implements BypassMacsReposi
         }
 
         return $bypassMac;
+    }
+
+    /**
+     * Fetches Mikrotik configuration settings and validates them.
+     * @throws \Exception if the Mikrotik configuration settings are invalid.
+     * @return array An associative array containing Mikrotik configuration settings if they are valid.
+     */
+    private function fetchAndValidateMikrotikConfig()
+    {
+        // Retrieve the Mikrotik configuration settings.
+        $config = MikrotikConfigHelper::getMikrotikConfig();
+
+        // Check if the configuration exists and no values are empty.
+        if (!$config || in_array("", $config, true)) {
+            throw new \Exception("Invalid Mikrotik configuration settings.");
+        }
+
+        return $config;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Backend\Client\BypassMacs;
 
+use App\Helpers\MikrotikConfigHelper;
 use App\Services\Client\BypassMacs\BypassMacsService;
 use App\Traits\LivewireMessageEvents;
 use Livewire\Component;
@@ -16,7 +17,7 @@ class DataTableBypassedMacs extends Component
         'bypassMacCreated' => 'refreshDataTable',
         'bypassMacUpdated' => 'refreshDataTable',
         'confirmMac' => 'deleteMac',
-        'deleteBatch'   => 'deleteBatchMac',
+        'deleteBatch'   => 'deleteBatchMacs',
     ];
 
     /**
@@ -44,6 +45,54 @@ class DataTableBypassedMacs extends Component
     public function refreshDataTable()
     {
         $this->dispatchBrowserEvent('refreshDatatable');
+    }
+
+    /**
+     * Deletes multiple bypass macs using their UIDs.
+     * @param BypassMacsService $bypassMacsService
+     * @param array $bypassMacIds
+     * @return void
+     */
+    public function deleteBatchMacs(BypassMacsService $bypassMacsService, $bypassMacIds)
+    {
+        try {
+            // Loop through all bypass mac UIDs and delete each bypass mac's data.
+            foreach ($bypassMacIds as $bypassMacId) {
+                $bypassMacsService->deleteBypassMac($bypassMacId);
+            }
+
+            // Notify the frontend of success
+            $this->dispatchSuccessEvent('Bypass macs successfully deleted.');
+
+            // Refresh the data table
+            $this->refreshDataTable();
+        } catch (\Throwable $th) {
+            // Notify the frontend of the error
+            $this->dispatchErrorEvent('An error occurred while deleting bypass macs : ' . $th->getMessage());
+        }
+    }
+
+    /**
+     * Deletes a single bypass mac using its UID.
+     * @param BypassMacsService $bypassMacsService
+     * @param string $bypassMacId
+     * @return void
+     */
+    public function deleteMac(BypassMacsService $bypassMacsService, $bypassMacId)
+    {
+        try {
+            // Loop through all bypass mac UID and delete each bypass mac's data.
+            $bypassMacsService->deleteBypassMac($bypassMacId);
+
+            // Notify the frontend of success
+            $this->dispatchSuccessEvent('Bypass Mac successfully deleted.');
+
+            // Refresh the data table
+            $this->refreshDataTable();
+        } catch (\Throwable $th) {
+            // Notify the frontend of the error
+            $this->dispatchErrorEvent('An error occurred while deleting bypass mac : ' . $th->getMessage());
+        }
     }
 
 }

@@ -197,7 +197,7 @@ class ModuleSeeder extends Seeder
             ],
             [
                 'name' => 'bypass_mac',
-                'title' => 'Bypass Mac',
+                'title' => 'Bypass Macs',
                 'is_parent' => 0,
                 'show_to' => 'clients',
                 'url' => NULL,

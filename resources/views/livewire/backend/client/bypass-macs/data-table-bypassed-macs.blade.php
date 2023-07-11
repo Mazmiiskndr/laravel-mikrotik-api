@@ -108,29 +108,29 @@ $canBatchDelete = App\Helpers\AccessControlHelper::isAllowedToPerformAction('bat
 
     // Function to confirm Batch Delete
     function confirmDeleteBatch() {
-    // Get all checked macId
-    let macIds = Array.from(document.querySelectorAll('.mac-checkbox:checked')).map(el => el.value);
+        // Get all checked bypassMacId
+        let bypassMacIds = Array.from(document.querySelectorAll('.mac-checkbox:checked')).map(el => el.value);
 
-    if (macIds.length > 0) {
-        showSwalDialog('Are you sure?', 'You will not be able to restore this data!', () => {
-        // Emit an event to delete the checked macs
-        Livewire.emit('deleteBatch', macIds);
-        });
-    } else {
-        Swal.fire({ icon: 'error', title: 'Oops...', text: 'You must select at least one mac to delete!' });
-    }
+        if (bypassMacIds.length > 0) {
+            showSwalDialog('Are you sure?', 'You will not be able to restore this data!', () => {
+            // Emit an event to delete the checked macs
+            Livewire.emit('deleteBatch', bypassMacIds);
+            });
+        } else {
+            Swal.fire({ icon: 'error', title: 'Oops...', text: 'You must select at least one mac to delete!' });
+        }
     }
 
     // Function to show a modal for UPDATE!
-    function showMac(macId) {
-        Livewire.emit('getMac', macId);
+    function showMac(bypassMacId) {
+        Livewire.emit('getBypassMac', bypassMacId);
     }
 
     // Function to show a modal for DELETE!
-    function confirmDeleteMac(macId) {
-    showSwalDialog('Are you sure?', 'You will not be able to restore this data!', () => {
-        Livewire.emit('confirmMac', macId);
-    });
+    function confirmDeleteMac(bypassMacId) {
+        showSwalDialog('Are you sure?', 'You will not be able to restore this data!', () => {
+            Livewire.emit('confirmMac', bypassMacId);
+        });
     }
 </script>
 @endpush

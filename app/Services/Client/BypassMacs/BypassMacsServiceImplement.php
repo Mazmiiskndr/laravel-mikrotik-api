@@ -38,9 +38,9 @@ class BypassMacsServiceImplement extends Service implements BypassMacsService
      * @param $bypassMacsId
      * @return mixed
      */
-    public function getBypassMacsId($bypassMacsId)
+    public function getBypassMacId($bypassMacsId)
     {
-        return $this->handleRepositoryCall('getBypassMacsId', [$bypassMacsId]);
+        return $this->handleRepositoryCall('getBypassMacId', [$bypassMacsId]);
     }
 
 
@@ -80,5 +80,28 @@ class BypassMacsServiceImplement extends Service implements BypassMacsService
     public function storeNewBypassMac($request)
     {
         return $this->handleRepositoryCall('storeNewBypassMac',[$request]);
+    }
+
+    /**
+     * Updates an existing bypass mac using the provided request data.
+     * @param string $id Bypass Macs ID for uniqueness checks.
+     * @param array $request The data used to update the bypass mac.
+     * @return Model|mixed The updated bypass mac.
+     * @throws \Exception if an error occurs while updating the bypass mac.
+     */
+    public function updateBypassMac($bypassMacId, $request)
+    {
+        return $this->handleRepositoryCall('updateBypassMac',[$bypassMacId, $request]);
+    }
+
+    /**
+     * Deletes a bypass mac and its associated Mikrotik IP binding using the provided bypass mac ID.
+     * @param string $bypassMacId The ID of the bypass mac to delete.
+     * @return bool Whether the deletion was successful.
+     * @throws \Exception if an error occurs while deleting the bypass mac.
+     */
+    public function deleteBypassMac($bypassMacId)
+    {
+        return $this->handleRepositoryCall('deleteBypassMac', [$bypassMacId]);
     }
 }

@@ -54,8 +54,8 @@ class PageSeeder
                 [14, 'add_ad', 'Ads - Add', 'ads/pg/add_ad', '1,2', 0, NULL],
                 [14, 'edit_ad', 'Ads - Edit', 'ads/pg/edit_ad', '1,2', 0, NULL],
                 [14, 'delete_ad', 'Ads - Delete', 'ads/pg/delete_ad', '1,2', 0, NULL],
-                [15, 'list_macs', 'List Bypassed Mac', 'clients/list-bypassed-macs', '1', 1, NULL],
-                [15, 'list_blocked_macs', 'List Blocked Mac', 'clients/list-blocked-macs', '1', 1, NULL],
+                [15, 'list_macs', 'List Bypassed Macs', 'clients/list-bypassed-macs', '1', 1, NULL],
+                [15, 'list_blocked_macs', 'List Blocked Macs', 'clients/list-blocked-macs', '1', 1, NULL],
                 [15, 'batch_delete_macs', 'Batch Delete Macs', '#', '1,2', 0, NULL],
                 [15, 'add_mac', 'Add Mac Address', '#', '1', 1, NULL],
                 // TODO: SEARCH MAC

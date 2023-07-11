@@ -20,7 +20,7 @@ interface BypassMacsRepository extends Repository{
      * @param $bypassMacsId
      * @return mixed
      */
-    public function getBypassMacsId($bypassMacsId);
+    public function getBypassMacId($bypassMacsId);
 
 
     /**
@@ -49,4 +49,21 @@ interface BypassMacsRepository extends Repository{
      * @throws \Exception if an error occurs while creating the bypass mac.
      */
     public function storeNewBypassMac($request);
+
+    /**
+     * Updates an existing bypass mac using the provided request data.
+     * @param string $id Bypass Macs ID for uniqueness checks.
+     * @param array $request The data used to update the bypass mac.
+     * @return Model|mixed The updated bypass mac.
+     * @throws \Exception if an error occurs while updating the bypass mac.
+     */
+    public function updateBypassMac($bypassMacId, $request);
+
+    /**
+     * Deletes a bypass mac and its associated Mikrotik IP binding using the provided bypass mac ID.
+     * @param string $bypassMacId The ID of the bypass mac to delete.
+     * @return bool Whether the deletion was successful.
+     * @throws \Exception if an error occurs while deleting the bypass mac.
+     */
+    public function deleteBypassMac($bypassMacId);
 }
