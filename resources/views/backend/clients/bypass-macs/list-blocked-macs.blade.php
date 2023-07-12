@@ -46,18 +46,7 @@
     @push('scripts')
     <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
     {{-- TODO: --}}
-    {{-- <script src="{{ asset('assets/js/backend/client/client-management.js') }}"></script> --}}
-    <script>
-        // Event listener for hiding modals
-        window.addEventListener('hide-modal', () => {
-            ['createNewMac', 'updateMacModal'].forEach(id => $(`#${id}`).modal('hide'));
-        });
-
-        // Event listener for showing modals
-        window.addEventListener('show-modal', () => {
-        $   ('#updateMacModal').modal('show');
-        });
-    </script>
+    <script src="{{ asset('assets/js/backend/client/bypass-mac/bypass-mac-management.js') }}"></script>
     @endpush
 </div>
 @endif
