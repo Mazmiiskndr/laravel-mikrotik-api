@@ -319,6 +319,38 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
         return $limit . ' ' . $unit;
     }
 
+    /**
+     * This function updates the status of vouchers related to a specific voucher batch.
+     * @param  int  $voucherBatchId
+     * @return bool
+     */
+    public function updateVoucherStatusByVoucherBatchId($voucherBatchId)
+    {
+        try {
+            $voucherBatch = $this->getVoucherBatchIdWithService($voucherBatchId);
+
+            if (!$voucherBatch) {
+                return false;
+            }
+
+            $vouchers = $this->findActiveVouchersForBatch($voucherBatchId);
+
+            if ($vouchers->isEmpty()) {
+                return true;
+            }
+
+            $quota = $this->calculateServiceQuota($voucherBatch->service);
+
+            $this->updateVoucherStatuses($vouchers, $quota);
+
+            return true;
+        } catch (\Exception $e) {
+            // Log the exception or handle it as required
+            Log::error('Error updating voucher statuses: ' . $e->getMessage());
+            return false;
+        }
+    }
+
     // ***** 👇 PRIVATE FUNCTIONS 👇 *****
 
     /**
@@ -393,38 +425,6 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
         } catch (\Exception $e) {
             // If any exception occurs during the process, throw a new exception with the error message.
             throw new \Exception('Failed to create vouchers: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * This function updates the status of vouchers related to a specific voucher batch.
-     * @param  int  $voucherBatchId
-     * @return bool
-     */
-    public function updateVoucherStatusByVoucherBatchId($voucherBatchId)
-    {
-        try {
-            $voucherBatch = $this->getVoucherBatchIdWithService($voucherBatchId);
-
-            if (!$voucherBatch) {
-                return false;
-            }
-
-            $vouchers = $this->findActiveVouchersForBatch($voucherBatchId);
-
-            if ($vouchers->isEmpty()) {
-                return true;
-            }
-
-            $quota = $this->calculateServiceQuota($voucherBatch->service);
-
-            $this->updateVoucherStatuses($vouchers, $quota);
-
-            return true;
-        } catch (\Exception $e) {
-            // Log the exception or handle it as required
-            Log::error('Error updating voucher statuses: ' . $e->getMessage());
-            return false;
         }
     }
 

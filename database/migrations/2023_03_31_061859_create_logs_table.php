@@ -16,13 +16,18 @@ return new class extends Migration
         Schema::create('logs', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('voucher_batch_id');
+            $table->uuid('service_id');
             $table->integer('date');
             $table->string('operator', 150);
             $table->enum('action', ['Create', 'Delete', 'Import']);
             $table->integer('quantity');
-            $table->string('service', 200);
             $table->timestamps();
 
+            $table->foreign('service_id')
+                ->references('id')
+                ->on('services')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->foreign('voucher_batch_id')
                 ->references('id')
                 ->on('voucher_batches')
