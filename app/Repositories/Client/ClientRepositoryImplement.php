@@ -212,7 +212,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
             $client = $this->createOrUpdateClient($request);
 
             // For each attribute, we will first check if an entry exists, and if it does, update it, otherwise create a new entry.
-            $attributes = $this->prepareAttributesRadCheck($client->password, $request);
+            $attributes = $this->prepareAttributesRadCheck($request);
             // Create a new entry in radCheck, Radacctm RadUserGroup table for this create client.
             $this->createOrUpdateRelatedEntries($client->username, $attributes, $client->service_id);
 
@@ -254,7 +254,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
                 $client = $this->createOrUpdateClient($data);
 
                 // For each attribute, we will first check if an entry exists, and if it does, update it, otherwise create a new entry.
-                $attributes = $this->prepareAttributesRadCheck($client->password, $data);
+                $attributes = $this->prepareAttributesRadCheck($data);
                 // Create a new entry in radCheck, Radacctm RadUserGroup table for this update client.
                 $this->createOrUpdateRelatedEntries($client->username, $attributes, $client->service_id);
 
@@ -354,7 +354,6 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
                     'op' => $attribute == 'ValidFrom' ? '>=' : ':=',
                     'value' => $value,
                 ];
-
                 $this->radCheckModel->updateOrCreate(
                     [
                         'username' => $username,
@@ -447,14 +446,13 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
 
     /**
      * Prepare the attributes for the radcheck table.
-     * @param string $password The password for the attribute 'Cleartext-Password'.
      * @param array $request The request data used to populate other attributes.
      * @return array The prepared attributes for the radcheck table.
      */
-    private function prepareAttributesRadCheck($password, $request)
+    private function prepareAttributesRadCheck($request)
     {
         return [
-            'Cleartext-Password' => $password,
+            'Cleartext-Password' => $request['password'],
             'Simultaneous-Use' => $request['simultaneousUse'] ?? null,
             'Expiration' => !empty($request['validTo']) ? date('F d Y H:i:s', strtotime($request['validTo'])) : null,
             'ValidFrom' => $request['validFrom'] ?? null,
@@ -500,6 +498,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
 
         $data['service_id'] = $request['idService'];
         $data['username'] = strtolower($request['username']);
+        $data['password'] = $request['password'];
         $data['validfrom'] = strtotime($request['validFrom']);
         $data['valid_until'] = strtotime($request['validTo']);
         $data['identification'] = $request['identificationNo'];
