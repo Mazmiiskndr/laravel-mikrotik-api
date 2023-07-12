@@ -3,6 +3,7 @@
 namespace App\Repositories\Client\Voucher;
 
 use App\Helpers\AccessControlHelper;
+use App\Models\Log as ModelsLog;
 use App\Models\RadAcct;
 use App\Models\RadCheck;
 use App\Models\RadUserGroup;
@@ -28,32 +29,36 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
     protected $model;
     protected $voucherBatchesModel;
     protected $settingModel;
-    protected $serviceMegalosService;
     protected $radAcctModel;
     protected $radCheckModel;
     protected $radUserGroupModel;
     protected $serviceModel;
+    protected $logModel;
+    // Services 👇
+    protected $serviceMegalosService;
     protected $clientService;
 
     public function __construct(
         Voucher $model,
         VoucherBatches $voucherBatchesModel,
         Setting $settingModel,
-        ServiceMegalosService $serviceMegalosService,
         RadAcct $radAcctModel,
         RadCheck $radCheckModel,
         RadUserGroup $radUserGroupModel,
         Services $serviceModel,
+        ModelsLog $logModel,
+        ServiceMegalosService $serviceMegalosService,
         ClientService $clientService
     ) {
         $this->model = $model;
         $this->voucherBatchesModel = $voucherBatchesModel;
         $this->settingModel = $settingModel;
-        $this->serviceMegalosService = $serviceMegalosService;
         $this->radAcctModel = $radAcctModel;
         $this->radCheckModel = $radCheckModel;
         $this->radUserGroupModel = $radUserGroupModel;
         $this->serviceModel = $serviceModel;
+        $this->logModel = $logModel;
+        $this->serviceMegalosService = $serviceMegalosService;
         $this->clientService = $clientService;
     }
 
@@ -273,6 +278,8 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
         try {
             // Fetch the voucher batch
             $voucherBatch = $this->voucherBatchesModel->findOrFail($voucherBatchId);
+            // Fetch the voucher Log
+            $voucherLog = $this->logModel->where('voucher_batch_id', $voucherBatchId)->first();
 
             // Delete all vouchers associated with the voucher batch
             $vouchers = $voucherBatch->vouchers;
@@ -287,6 +294,8 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
                 $voucher->delete();
             }
 
+            // Delete the voucher log itself
+            $voucherLog->delete();
             // Delete the voucher batch itself
             $voucherBatch->delete();
 
@@ -390,42 +399,93 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
         try {
             // Start a new database transaction
             DB::transaction(function () use ($quantity, $characterLength, $idService, $voucherBatchId, $voucherType) {
+                // Create a new log entry
+                $this->createLog($voucherBatchId, $idService, $quantity, 'Create');
                 // Loop over the quantity to generate each voucher
                 for ($i = 0; $i < $quantity; $i++) {
-                    // Generate a unique username.
-                    // Keep generating until a unique username is found.
-                    do {
-                        $username = str()->random($characterLength);
-                    } while (
-                        $this->model->where('username', $username)->exists() ||
-                        $this->radUserGroupModel->where('username', $username)->exists()
-                    );
-
-                    // Generate a password. If voucher type is 'no_password', use the username as the password.
-                    $password = $voucherType->value === 'no_password' ? $username : str()->random($characterLength);
+                    // Generate a unique username and password
+                    list($username, $password) = $this->generateCredentials($characterLength, $voucherType);
 
                     // Create a new voucher with the generated username, password and other given parameters.
-                    $voucher = $this->model->create([
-                        'voucher_batch_id' => $voucherBatchId,
-                        'username'         => $username,
-                        'password'         => $password,
-                        'valid_until'      => 0,
-                        'first_use'        => 0,
-                        'status'           => 'active',
-                        'clean_up'         => 0,
-                    ]);
+                    $voucher = $this->createVoucher($voucherBatchId, $username, $password);
 
                     // Create a new entry in radCheck, Radacctm RadUserGroup table for this voucher.
-                    $this->clientService->createOrUpdateRelatedEntries($username,
-                    ['Cleartext-Password' => $password,'Simultaneous-Use' => 1],
-                    $idService, $voucher->id,
-                    'voucher');
+                    $this->clientService->createOrUpdateRelatedEntries(
+                        $username,
+                        ['Cleartext-Password' => $password, 'Simultaneous-Use' => 1],
+                        $idService,
+                        $voucher->id,
+                        'voucher'
+                    );
                 }
             });
         } catch (\Exception $e) {
             // If any exception occurs during the process, throw a new exception with the error message.
             throw new \Exception('Failed to create vouchers: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Generates a unique username and password.
+     * @param int $characterLength The length of the username and password.
+     * @param object $voucherType The type of the voucher.
+     * @return array The generated username and password.
+     */
+    private function generateCredentials($characterLength, $voucherType)
+    {
+        // Generate a unique username.
+        // Keep generating until a unique username is found.
+        do {
+            $username = str()->random($characterLength);
+        } while (
+            $this->model->where('username', $username)->exists() ||
+            $this->radUserGroupModel->where('username', $username)->exists()
+        );
+
+        // Generate a password. If voucher type is 'no_password', use the username as the password.
+        $password = $voucherType->value === 'no_password' ? $username : str()->random($characterLength);
+
+        return [$username, $password];
+    }
+
+    /**
+     * Creates a new voucher with the given parameters.
+     * @param int $voucherBatchId The ID of the voucher batch.
+     * @param string $username The username for the voucher.
+     * @param string $password The password for the voucher.
+     * @return object The created voucher.
+     */
+    private function createVoucher($voucherBatchId, $username, $password)
+    {
+        return $this->model->create([
+            'voucher_batch_id' => $voucherBatchId,
+            'username'         => $username,
+            'password'         => $password,
+            'valid_until'      => 0,
+            'first_use'        => 0,
+            'status'           => 'active',
+            'clean_up'         => 0,
+        ]);
+    }
+
+    /**
+     * Creates a new log entry with the given parameters.
+     * @param int $voucherBatchId The ID of the voucher batch.
+     * @param int $idService The ID of the service.
+     * @param int $quantity The quantity of vouchers.
+     * @param string $action The action of vouchers.
+     * @return object The created log entry.
+     */
+    private function createLog($voucherBatchId, $idService, $quantity, $action)
+    {
+        return $this->logModel->create([
+            'voucher_batch_id'  => $voucherBatchId,
+            'service_id'        => $idService,
+            'date'              => strtotime(date('Y-m-d H:i:s')),
+            'operator'          => session('username'),
+            'action'            => $action,
+            'quantity'          => $quantity,
+        ]);
     }
 
     /**
