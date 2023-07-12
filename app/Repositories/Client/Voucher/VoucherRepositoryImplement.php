@@ -360,6 +360,26 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
         }
     }
 
+    /**
+     * Creates a new log entry with the given parameters.
+     * @param int $voucherBatchId The ID of the voucher batch.
+     * @param int $idService The ID of the service.
+     * @param int $quantity The quantity of vouchers.
+     * @param string $action The action of vouchers.
+     * @return object The created log entry.
+     */
+    public function createLog($voucherBatchId, $idService, $quantity, $action)
+    {
+        return $this->logModel->create([
+            'voucher_batch_id'  => $voucherBatchId,
+            'service_id'        => $idService,
+            'date'              => strtotime(date('Y-m-d H:i:s')),
+            'operator'          => session('username'),
+            'action'            => $action,
+            'quantity'          => $quantity,
+        ]);
+    }
+
     // ***** 👇 PRIVATE FUNCTIONS 👇 *****
 
     /**
@@ -465,26 +485,6 @@ class VoucherRepositoryImplement extends Eloquent implements VoucherRepository{
             'first_use'        => 0,
             'status'           => 'active',
             'clean_up'         => 0,
-        ]);
-    }
-
-    /**
-     * Creates a new log entry with the given parameters.
-     * @param int $voucherBatchId The ID of the voucher batch.
-     * @param int $idService The ID of the service.
-     * @param int $quantity The quantity of vouchers.
-     * @param string $action The action of vouchers.
-     * @return object The created log entry.
-     */
-    private function createLog($voucherBatchId, $idService, $quantity, $action)
-    {
-        return $this->logModel->create([
-            'voucher_batch_id'  => $voucherBatchId,
-            'service_id'        => $idService,
-            'date'              => strtotime(date('Y-m-d H:i:s')),
-            'operator'          => session('username'),
-            'action'            => $action,
-            'quantity'          => $quantity,
         ]);
     }
 

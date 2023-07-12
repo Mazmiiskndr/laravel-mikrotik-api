@@ -70,4 +70,14 @@ interface VoucherService extends BaseService{
      * @return string The formatted time for display.
      */
     public function formatTimeDisplay($limit, $unit);
+
+    /**
+     * Creates a new log entry with the given parameters.
+     * @param int $voucherBatchId The ID of the voucher batch.
+     * @param int $idService The ID of the service.
+     * @param int $quantity The quantity of vouchers.
+     * @param string $action The action of vouchers.
+     * @return object The created log entry.
+     */
+    public function createLog($voucherBatchId, $idService, $quantity, $action);
 }
