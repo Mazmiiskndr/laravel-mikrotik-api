@@ -317,6 +317,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
         try {
             // Connect to the Mikrotik router. If connection fails, log the error and return null.
             $this->connect($ip, $username, $password);
+
             // Prepare the common data for create and update operations.
             $commonData = $this->prepareCommonDataMikrotikIpBinding($data);
 
