@@ -54,6 +54,7 @@ class UpdateMikrotikTraffic implements ShouldQueue
             $upload = intval($data['uploadTraffic']) ?? 0;
             $download = intval($data['downloadTraffic']) ?? 0;
 
+
             // Store data in cache for multiple data retrievals
             Cache::put('mikrotik.uploadTraffic', $upload, 2);
             Cache::put('mikrotik.downloadTraffic', $download, 2);
