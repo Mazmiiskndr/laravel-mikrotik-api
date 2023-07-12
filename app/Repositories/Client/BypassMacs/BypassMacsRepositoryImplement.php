@@ -279,7 +279,7 @@ class BypassMacsRepositoryImplement extends Eloquent implements BypassMacsReposi
 
         if ($config) {
             // Update the IP binding
-            $ipBindingUpdated = $this->mikrotikApiService->updateMikrotikIpBinding($config['ip'], $config['username'], $config['password'], $request);
+            $ipBindingUpdated = $this->mikrotikApiService->createOrUpdateMikrotikIpBinding($config['ip'], $config['username'], $config['password'], $request);
             // If the IP binding deletion was not successful, throw an Exception.
             if (!$ipBindingUpdated) {
                 throw new \Exception("Failed to update IP binding for bypass mac with ID $bypassMacId");

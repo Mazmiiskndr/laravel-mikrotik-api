@@ -77,7 +77,7 @@ class Create extends Component
             $config = $this->fetchAndValidateMikrotikConfig();
 
             // Create the IP binding
-            $this->mikrotikId = $mikrotikApiService->createMikrotikIpBinding(
+            $this->mikrotikId = $mikrotikApiService->createOrUpdateMikrotikIpBinding(
                 $config['ip'],
                 $config['username'],
                 $config['password'],
