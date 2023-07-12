@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Storage;
 
 class LogoForm extends Component
 {
-    use WithFileUploads;
-    use LivewireMessageEvents;
+    // Traits WithFileUploads and LivewireMessageEvents
+    use WithFileUploads, LivewireMessageEvents;
 
     // Public property for storing the logo
     public $logo;

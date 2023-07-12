@@ -305,92 +305,50 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     }
 
     /**
-     * Creates a new IP binding entry via RouterOS API.
+     * Creates or updates an IP binding entry via RouterOS API.
      * @param string $ip Mikrotik router IP address.
      * @param string $username Authentication username.
      * @param string $password Authentication password.
-     * @param string $data The MAC address, Server and Type.
-     * @return string|null The Mikrotik ID of the newly created IP binding or null on failure.
+     * @param array $data The data for the IP binding.
+     * @return string|null The Mikrotik ID of the created or updated IP binding or null on failure.
      */
-    public function createMikrotikIpBinding($ip, $username, $password, $data)
+    public function createOrUpdateMikrotikIpBinding($ip, $username, $password, $data)
     {
         try {
             // Connect to the Mikrotik router. If connection fails, log the error and return null.
             $this->connect($ip, $username, $password);
 
-            // Create the IP binding
-            $this->model->comm(self::ENDPOINT_IP_BINDING_ADD_ROUTER_OS, [
-                'mac-address' => $data['macAddress'],
-                'type' => $data['status'],
-                "comment" => "Managed by AZMI. DO NOT EDIT!!!",
-                'server' => $data['server']
-            ]);
+            // Prepare the common data for create and update operations.
+            $commonData = $this->prepareCommonDataMikrotikIpBinding($data);
 
-            // Query the IP bindings to get the ID of the binding that was just created.
+            // Check if 'mikrotikId' is set in the data. If it is, perform an update operation. If not, perform a create operation.
+            if (isset($data['mikrotikId'])) {
+                // Update the IP binding
+                $this->model->comm(self::ENDPOINT_IP_BINDING_SET_ROUTER_OS, array_merge(['.id' => $data['mikrotikId']], $commonData));
+            } else {
+                // Create the IP binding
+                $this->model->comm(self::ENDPOINT_IP_BINDING_ADD_ROUTER_OS, $commonData);
+            }
+
+            // Query the IP bindings to get the ID of the binding that was just created or updated.
             $ipBindings = $this->model->comm(self::ENDPOINT_IP_BINDING_ROUTER_OS);
 
-            // Filter the IP bindings to find the one that was just created.
-            $newIpBinding = array_filter($ipBindings, function ($binding) use ($data) {
+            // Filter the IP bindings to find the one that was just created or updated.
+            $savedIpBinding = array_filter($ipBindings, function ($binding) use ($data) {
                 return $binding['mac-address'] == $data['macAddress'];
             });
 
             // If the IP binding was found, return its ID.
-            if (count($newIpBinding) > 0) {
-                $newIpBinding = reset($newIpBinding);
-                return $newIpBinding['.id'];
+            if (count($savedIpBinding) > 0) {
+                $savedIpBinding = reset($savedIpBinding);
+                return $savedIpBinding['.id'];
             }
 
-            Log::error('Failed to retrieve the ID of the new IP binding.');
+            Log::error('Failed to retrieve the ID of the saved IP binding.');
             return null;
         } catch (\Exception $e) {
             // If any error occurs, log the error message and return null
-            Log::error('Failed to create IP binding: ' . $e->getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Updates an IP binding entry via RouterOS API.
-     * @param string $ip Mikrotik router IP address.
-     * @param string $username Authentication username.
-     * @param string $password Authentication password.
-     * @param string $data The MAC address, Server and Type.
-     * @return string|null The Mikrotik ID of the updated IP binding or null on failure.
-     */
-    public function updateMikrotikIpBinding($ip, $username, $password, $data)
-    {
-        try {
-            // Connect to the Mikrotik router. If connection fails, log the error and return null.
-            $this->connect($ip, $username, $password);
-
-            // Update the IP binding
-            $this->model->comm(self::ENDPOINT_IP_BINDING_SET_ROUTER_OS, [
-                '.id' => $data['mikrotikId'],
-                'mac-address' => $data['macAddress'],
-                'type' => $data['status'],
-                "comment" => "Managed by AZMI. DO NOT EDIT!!!",
-                'server' => $data['server']
-            ]);
-
-            // Query the IP bindings to get the ID of the binding that was just updated.
-            $ipBindings = $this->model->comm(self::ENDPOINT_IP_BINDING_ROUTER_OS);
-
-            // Filter the IP bindings to find the one that was just updated.
-            $updatedIpBinding = array_filter($ipBindings, function ($binding) use ($data) {
-                return $binding['mac-address'] == $data['macAddress'];
-            });
-
-            // If the IP binding was found, return its ID.
-            if (count($updatedIpBinding) > 0) {
-                $updatedIpBinding = reset($updatedIpBinding);
-                return $updatedIpBinding['.id'];
-            }
-
-            Log::error('Failed to retrieve the ID of the updated IP binding.');
-            return null;
-        } catch (\Exception $e) {
-            // If any error occurs, log the error message and return null
-            Log::error('Failed to update IP binding: ' . $e->getMessage());
+            Log::error('Failed to save IP binding: ' . $e->getMessage());
             return null;
         }
     }
@@ -418,6 +376,24 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
             Log::error('Failed to delete IP binding: ' . $e->getMessage());
             return false;
         }
+    }
+
+    // 👇 🌟🌟🌟 PRIVATES FUNCTION FOR IP BINDING 🌟🌟🌟 👇
+
+    /**
+     * The function prepares common data for creating and updating Mikrotik IP bindings in PHP.
+     * @param data The parameter `` is an array that contains the following keys:
+     * @return An array is being returned.
+     */
+    private function prepareCommonDataMikrotikIpBinding($data)
+    {
+        // Prepare the common data for create and update operations.
+        return [
+            'mac-address' => $data['macAddress'],
+            'type' => $data['status'],
+            "comment" => "Managed by AZMI. DO NOT EDIT!!!",
+            'server' => $data['server']
+        ];
     }
 
     // 👇 🌟🌟🌟 GET Request to the Mikrotik router. WITH CURL 🌟🌟🌟 👇

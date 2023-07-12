@@ -66,6 +66,7 @@ class VoucherBatchController extends Controller
     public function print($voucherBatchId)
     {
         $vouchers = $this->getVouchers($voucherBatchId);
+        $voucherLog = $this->createLog($voucherBatchId, count($vouchers));
         $timeLimit = $this->getTimeLimit($voucherBatchId);
         $invoice = $this->getInvoiceData();
         $voucherType = $this->getVoucherType($voucherBatchId);
@@ -92,6 +93,18 @@ class VoucherBatchController extends Controller
     private function getVouchers($voucherBatchId)
     {
         return $this->voucherService->getVouchersByBatchId($voucherBatchId);
+    }
+
+    /**
+     * create voucher log data by batch ID.
+     * @param int $voucherBatchId The ID of the voucher batch.
+     * @param int $quantity The ID of the voucher batch.
+     * @return mixed The fetched vouchers data.
+     */
+    private function createLog($voucherBatchId, $quantity)
+    {
+        $voucherBatch  = $this->voucherService->getVoucherBatchIdWithService($voucherBatchId);
+        $this->voucherService->createLog($voucherBatch->id, $voucherBatch->service->id, $quantity, 'Import');
     }
 
     /**

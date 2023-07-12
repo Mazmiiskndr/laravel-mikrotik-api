@@ -41,4 +41,24 @@ class ReportServiceImplement extends Service implements ReportService
         return $this->handleRepositoryCall('getDatatables');
     }
 
+    /**
+     * Retrieve one radacct records where by 'radacctId'.
+     * @param int $id RadAcct ID for query.
+     */
+    public function getRadAcctById($radAcctId)
+    {
+        return $this->handleRepositoryCall('getRadAcctById', [$radAcctId]);
+    }
+
+    /**
+     * Updates an existing blocked mac addresses using the provided request data.
+     * @param object $request The data used to update the blocked mac addresses.
+     * @return Model|mixed The updated blocked mac addresses.
+     * @throws \Exception if an error occurs while updating the blocked mac addresses.
+     */
+    public function blockedMacAddresses($request)
+    {
+        return $this->handleRepositoryCall('blockedMacAddresses', [$request]);
+    }
+
 }

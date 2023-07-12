@@ -12,11 +12,8 @@ use Livewire\WithFileUploads;
 
 class Edit extends Component
 {
-    // File Uploads for the Ads property
-    use WithFileUploads;
-    // Traits LivewireMessageEvents and CloseModalTrait
-    use LivewireMessageEvents;
-    use CloseModalTrait;
+    // Traits WithFileUploads, LivewireMessageEvents and CloseModalTrait
+    use WithFileUploads, LivewireMessageEvents, CloseModalTrait;
     // Properties Public Variables
     public $ads_id, $type, $deviceType, $imageBanner, $title, $urlForImage = "http://", $position, $timeToShow, $timeToHide, $shortDescription;
     // Ads Type

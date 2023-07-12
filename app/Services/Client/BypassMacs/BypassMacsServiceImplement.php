@@ -104,4 +104,14 @@ class BypassMacsServiceImplement extends Service implements BypassMacsService
     {
         return $this->handleRepositoryCall('deleteBypassMac', [$bypassMacId]);
     }
+
+    /**
+     * Creates or updates a bypass mac using the provided data.
+     * @param array $request The data used to create or update the bypass mac.
+     * @return Model|mixed The newly created or updated bypass mac.
+     */
+    public function createOrUpdateBypassMac($request)
+    {
+        return $this->handleRepositoryCall('createOrUpdateBypassMac', [$request]);
+    }
 }

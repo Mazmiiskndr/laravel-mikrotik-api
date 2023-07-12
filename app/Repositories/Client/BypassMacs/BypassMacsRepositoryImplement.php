@@ -279,7 +279,7 @@ class BypassMacsRepositoryImplement extends Eloquent implements BypassMacsReposi
 
         if ($config) {
             // Update the IP binding
-            $ipBindingUpdated = $this->mikrotikApiService->updateMikrotikIpBinding($config['ip'], $config['username'], $config['password'], $request);
+            $ipBindingUpdated = $this->mikrotikApiService->createOrUpdateMikrotikIpBinding($config['ip'], $config['username'], $config['password'], $request);
             // If the IP binding deletion was not successful, throw an Exception.
             if (!$ipBindingUpdated) {
                 throw new \Exception("Failed to update IP binding for bypass mac with ID $bypassMacId");
@@ -323,7 +323,7 @@ class BypassMacsRepositoryImplement extends Eloquent implements BypassMacsReposi
      * @param array $request The data used to create or update the bypass mac.
      * @return Model|mixed The newly created or updated bypass mac.
      */
-    private function createOrUpdateBypassMac($request)
+    public function createOrUpdateBypassMac($request)
     {
         if(isset($request['id'])){
             $data['id'] = $request['id'];
@@ -333,16 +333,27 @@ class BypassMacsRepositoryImplement extends Eloquent implements BypassMacsReposi
         $data['description'] = $request['description'];
         $data['server'] = $request['server'];
         $data['mikrotik_id'] = $request['mikrotikId'];
-
-        // If the id is set in the data, update the existing entry
-        if (isset($data['id'])) {
-            $bypassMac = $this->model->find($data['id']);
-            $bypassMac->update($data);
-        } else {
-            // Else, create a new entry
-            $bypassMac = $this->model->create($data);
+        // If the mac_address is provided, check if an entry with the same mac_address already exists
+        if (!empty($data['mac_address'])) {
+            $existingBypassMac = $this->model->where('mac_address', $data['mac_address'])->first();
+            if ($existingBypassMac) {
+                // Update the existing entry
+                $existingBypassMac->update($data);
+                return $existingBypassMac;
+            }
         }
 
+        // If the id is set, update the specified entry
+        if (isset($data['id'])) {
+            $bypassMac = $this->model->find($data['id']);
+            if ($bypassMac) {
+                $bypassMac->update($data);
+                return $bypassMac;
+            }
+        }
+
+        // If neither mac_address nor id matches existing entries, create a new entry
+        $bypassMac = $this->model->create($data);
         return $bypassMac;
     }
 

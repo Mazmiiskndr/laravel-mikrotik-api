@@ -15,7 +15,7 @@
             <h4 class="card-title">Table Online Users</h4>
 
             <div>
-                {{-- TODO: BUTTON DISCONNECT AND BUTTON BLOCK MAC ADDRESS --}}
+                {{-- TODO: BUTTON DISCONNECT --}}
                 {{-- /Start Button for Disconnect --}}
                 <x-button type="button" color="youtube btn-sm" onclick="confirmAction('disconnect')">
                     <i class="tf-icons fas fa-power-off ti-xs me-1"></i>&nbsp; Disconnect
@@ -48,7 +48,7 @@
 </div>
 @push('scripts')
 <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
-{{-- <script src="{{ asset('assets/js/backend/service/service-management.js') }}"></script> --}}
+<script src="{{ asset('assets/js/backend/report/list-online-users-management.js') }}"></script>
 @endpush
 
 @endif

@@ -113,29 +113,16 @@ class MikrotikApiServiceImplement extends Service implements MikrotikApiService
     }
 
     /**
-     * Creates a new IP binding entry via RouterOS API.
+     * Creates or updates an IP binding entry via RouterOS API.
      * @param string $ip Mikrotik router IP address.
      * @param string $username Authentication username.
      * @param string $password Authentication password.
-     * @param string $data The MAC address, Server and Type.
-     * @return string|null The Mikrotik ID of the newly created IP binding or null on failure.
+     * @param array $data The data for the IP binding.
+     * @return string|null The Mikrotik ID of the created or updated IP binding or null on failure.
      */
-    public function createMikrotikIpBinding($ip, $username, $password, $data)
+    public function createOrUpdateMikrotikIpBinding($ip, $username, $password, $data)
     {
-        return $this->handleRepositoryCall('createMikrotikIpBinding', [$ip,$username, $password, $data]);
-    }
-
-    /**
-     * Updates an IP binding entry via RouterOS API.
-     * @param string $ip Mikrotik router IP address.
-     * @param string $username Authentication username.
-     * @param string $password Authentication password.
-     * @param string $data The MAC address, Server and Type.
-     * @return string|null The Mikrotik ID of the updated IP binding or null on failure.
-     */
-    public function updateMikrotikIpBinding($ip, $username, $password, $data)
-    {
-        return $this->handleRepositoryCall('updateMikrotikIpBinding', [$ip, $username, $password, $data]);
+        return $this->handleRepositoryCall('createOrUpdateMikrotikIpBinding', [$ip, $username, $password, $data]);
     }
 
     /**

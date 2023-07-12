@@ -13,8 +13,7 @@ use Livewire\Component;
 class Create extends Component
 {
     // Traits LivewireMessageEvents and CloseModalTrait
-    use LivewireMessageEvents;
-    use CloseModalTrait;
+    use LivewireMessageEvents, CloseModalTrait;
     // Default Status for Bypassed Macs
     public $defaulStatus;
     // Properties Public For Create Bpassed Macs
@@ -77,7 +76,7 @@ class Create extends Component
             $config = $this->fetchAndValidateMikrotikConfig();
 
             // Create the IP binding
-            $this->mikrotikId = $mikrotikApiService->createMikrotikIpBinding(
+            $this->mikrotikId = $mikrotikApiService->createOrUpdateMikrotikIpBinding(
                 $config['ip'],
                 $config['username'],
                 $config['password'],

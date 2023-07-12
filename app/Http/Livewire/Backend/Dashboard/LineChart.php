@@ -34,7 +34,7 @@ class LineChart extends Component
     {
         $config = MikrotikConfigHelper::getMikrotikConfig();
 
-        // Jika konfigurasi kosong, hentikan polling dan return
+        // if config is empty, stop polling and return
         if (empty($config['ip']) || empty($config['username']) || empty($config['password'])) {
             $this->pollingInterval = null; // set polling interval to null and stop polling
             return;

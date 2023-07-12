@@ -3,8 +3,11 @@
 namespace App\Repositories\Report;
 
 use App\Helpers\AccessControlHelper;
+use App\Helpers\MikrotikConfigHelper;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\RadAcct;
+use App\Services\Client\BypassMacs\BypassMacsService;
+use App\Services\MikrotikApi\MikrotikApiService;
 use App\Traits\DataTablesTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -19,10 +22,14 @@ class ReportRepositoryImplement extends Eloquent implements ReportRepository
      * @property Model|mixed $model;
      */
     protected $radAcctModel;
+    protected $mikrotikApiService;
+    protected $bypassMacsService;
 
-    public function __construct(RadAcct $radAcctModel)
+    public function __construct(RadAcct $radAcctModel, MikrotikApiService $mikrotikApiService, BypassMacsService $bypassMacsService)
     {
         $this->radAcctModel = $radAcctModel;
+        $this->mikrotikApiService = $mikrotikApiService;
+        $this->bypassMacsService = $bypassMacsService;
     }
 
     /**
@@ -103,7 +110,125 @@ class ReportRepositoryImplement extends Eloquent implements ReportRepository
                 },
             ]
         );
+
     }
+
+    /**
+     * Retrieve one radacct records where by 'radacctId'.
+     * @param int $id RadAcct ID for query.
+     */
+    public function getRadAcctById($radAcctId)
+    {
+        try {
+            // Prepare the data.
+            $responseData = $this->radAcctModel->select([
+                'radacctid',
+                'username',
+                'acctstarttime as starttime',
+                'nasipaddress',
+                'framedipaddress as ipaddress',
+                'acctsessiontime',
+                'callingstationid as macaddress'
+            ])->find($radAcctId);
+
+            // Return the result.
+            return $responseData;
+        } catch (\Exception $e) {
+            // Log the error and return a message.
+            Log::error("Error getting all radacct records: " . $e->getMessage());
+            return [
+                'error' => 'An error occurred while trying to fetch the records. Please try again.',
+            ];
+        }
+    }
+
+    /**
+     * Updates an existing blocked mac addresses using the provided request data.
+     * @param object $request The data used to update the blocked mac addresses.
+     * @return Model|mixed The updated blocked mac addresses.
+     * @throws \Exception if an error occurs while updating the blocked mac addresses.
+     */
+    public function blockedMacAddresses($request)
+    {
+        try {
+            // Prepare the data to be updated.
+            $radAcctData = $this->prepareRadAcctData($request);
+
+            // Blocked the Mikrotik IP binding
+            $mikrotikId = $this->createOrUpdateIpBinding($radAcctData['radacctid'], $radAcctData);
+            $radAcctData['mikrotikId'] = $mikrotikId;
+            $this->bypassMacsService->createOrUpdateBypassMac($radAcctData);
+
+            return true;
+        } catch (\Exception $e) {
+            // Log the error message.
+            Log::error("Failed to blocked mac addresses : " . $e->getMessage());
+            // Rethrow the exception to be caught in the Livewire component.
+            throw $e;
+        }
+    }
+
+    // 👇 **** PRIVATE FUNCTIONS **** 👇
+    /**
+     * Prepares the data for updating blocked mac addresses.
+     * created or updated an IP binding from the Mikrotik router.
+     * @param object $request The data for blocked mac addresses.
+     */
+    private function prepareRadAcctData($request)
+    {
+        return [
+            'radacctid' => $request->radacctid,
+            'macAddress' => $request->macaddress,
+            'status' => 'blocked',
+            'server' => 'all',
+            'description' => null,
+        ];
+    }
+
+    /**
+     * created or updated an IP binding from the Mikrotik router.
+     * @param string $radAcctId The ID of the bypass mac.
+     * @param array $request The ID of the Mikrotik IP binding.
+     * @return bool Whether the deletion was successful.
+     * @throws \Exception if an error occurs while deleting the IP binding.
+     */
+    private function createOrUpdateIpBinding($radAcctId, $request)
+    {
+        // Fetch and Validate Mikrotik Config
+        $config = $this->fetchAndValidateMikrotikConfig();
+
+        if ($config) {
+            // Update the IP binding
+            $ipBindingUpdated = $this->mikrotikApiService->createOrUpdateMikrotikIpBinding($config['ip'], $config['username'], $config['password'], $request);
+            // If the IP binding deletion was not successful, throw an Exception.
+            if (!$ipBindingUpdated) {
+                throw new \Exception("Failed to update IP binding for bypass mac with ID $radAcctId");
+            }
+
+            return $ipBindingUpdated;
+        }
+
+        return false;
+    }
+
+    /**
+     * Fetches Mikrotik configuration settings and validates them.
+     * @throws \Exception if the Mikrotik configuration settings are invalid.
+     * @return array An associative array containing Mikrotik configuration settings if they are valid.
+     */
+    private function fetchAndValidateMikrotikConfig()
+    {
+        // Retrieve the Mikrotik configuration settings.
+        $config = MikrotikConfigHelper::getMikrotikConfig();
+
+        // Check if the configuration exists and no values are empty.
+        if (!$config || in_array("", $config, true)) {
+            throw new \Exception("Invalid Mikrotik configuration settings.");
+        }
+
+        return $config;
+    }
+
 
     /**
      * Fetches the first 'acctstarttime' for a given username where 'acctstarttime' is not NULL.
