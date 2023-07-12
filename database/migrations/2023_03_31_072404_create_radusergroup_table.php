@@ -20,7 +20,13 @@ return new class extends Migration
                 $table->string('groupname', 64);
                 $table->string('priority', 2)->default(1);
                 $table->string('user_type', 20);
-                $table->integer('voucher_id')->nullable();
+                $table->uuid('voucher_id')->nullable();
+
+                $table->foreign('voucher_id')
+                ->references('id')
+                ->on('vouchers')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             });
         }
     }
