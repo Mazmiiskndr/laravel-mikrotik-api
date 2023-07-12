@@ -410,9 +410,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
             $this->connect($ip, $username, $password);
 
             // Delete the IP binding
-            $this->model->comm(self::ENDPOINT_IP_BINDING_REMOVE_ROUTER_OS, [
-                '.id' => $mikrotikId
-            ]);
+            $this->model->comm(self::ENDPOINT_IP_BINDING_REMOVE_ROUTER_OS, ['.id' => $mikrotikId]);
 
             return true;
         } catch (\Exception $e) {
