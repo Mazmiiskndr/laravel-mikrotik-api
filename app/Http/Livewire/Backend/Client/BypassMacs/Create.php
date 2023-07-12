@@ -13,8 +13,7 @@ use Livewire\Component;
 class Create extends Component
 {
     // Traits LivewireMessageEvents and CloseModalTrait
-    use LivewireMessageEvents;
-    use CloseModalTrait;
+    use LivewireMessageEvents, CloseModalTrait;
     // Default Status for Bypassed Macs
     public $defaulStatus;
     // Properties Public For Create Bpassed Macs

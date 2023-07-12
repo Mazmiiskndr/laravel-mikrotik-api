@@ -40,7 +40,7 @@ class DataTable extends Component
     }
 
     /**
-     * Blocked multiple online users using their UIDs.
+     * Blocked multiple online users using their IDs.
      * @param ReportService $reportService
      * @param array $radAcctIds
      * @return void
@@ -48,12 +48,11 @@ class DataTable extends Component
     public function blockedMacAddresses(ReportService $reportService, $radAcctIds)
     {
         try {
-            // Loop through all bypass mac UIDs and delete each bypass mac's data.
+            // Loop through all rad acct IDs and delete each rad acct's data.
             foreach ($radAcctIds as $radAcctId) {
                 $radAcctData = $reportService->getRadAcctById($radAcctId);
                 $reportService->blockedMacAddresses($radAcctData);
             }
-
             // Notify the frontend of success
             $this->dispatchSuccessEvent('Mac Addresses successfully blocked.');
 
@@ -65,12 +64,5 @@ class DataTable extends Component
         }
     }
 
-    /**
-     * Refresh the DataTable when an bypass mac is created, updated and deleted.
-     */
-    public function refreshDataTable()
-    {
-        $this->dispatchBrowserEvent('refreshDatatable');
-    }
 
 }

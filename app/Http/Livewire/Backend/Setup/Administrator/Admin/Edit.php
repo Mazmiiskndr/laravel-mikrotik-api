@@ -11,8 +11,7 @@ use Livewire\Component;
 class Edit extends Component
 {
     // Traits LivewireMessageEvents and CloseModalTrait
-    use LivewireMessageEvents;
-    use CloseModalTrait;
+    use LivewireMessageEvents, CloseModalTrait;
 
     // Properties Public Variables
     public $adminId, $group_id, $username, $password, $fullname, $email, $status;

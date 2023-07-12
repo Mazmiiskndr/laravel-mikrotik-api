@@ -11,8 +11,7 @@ use Livewire\Component;
 class Create extends Component
 {
     // Traits LivewireMessageEvents and CloseModalTrait
-    use LivewireMessageEvents;
-    use CloseModalTrait;
+    use LivewireMessageEvents, CloseModalTrait;
 
     // Properties Public For Create Clients
     public $idService, $username, $password, $simultaneousUse, $validFrom, $validTo,

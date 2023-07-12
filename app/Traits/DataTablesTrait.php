@@ -29,4 +29,12 @@ trait DataTablesTrait
         // Generate the final DataTables response
         return $dataTables->make(true);
     }
+
+    /**
+     * Refresh the DataTable.
+     */
+    public function refreshDataTable()
+    {
+        $this->dispatchBrowserEvent('refreshDatatable');
+    }
 }

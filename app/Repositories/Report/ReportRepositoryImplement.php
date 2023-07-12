@@ -154,12 +154,12 @@ class ReportRepositoryImplement extends Eloquent implements ReportRepository
             // Prepare the data to be updated.
             $radAcctData = $this->prepareRadAcctData($request);
 
-            // Delete the Mikrotik IP binding
+            // Blocked the Mikrotik IP binding
             $mikrotikId = $this->createOrUpdateIpBinding($radAcctData['radacctid'], $radAcctData);
             $radAcctData['mikrotikId'] = $mikrotikId;
             $this->bypassMacsService->createOrUpdateBypassMac($radAcctData);
 
-            // return $bypassMac;
+            return true;
         } catch (\Exception $e) {
             // Log the error message.
             Log::error("Failed to blocked mac addresses : " . $e->getMessage());

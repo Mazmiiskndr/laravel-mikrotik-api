@@ -11,11 +11,8 @@ use Livewire\WithFileUploads;
 
 class Create extends Component
 {
-    // File Uploads for the Ads property
-    use WithFileUploads;
-    // Traits LivewireMessageEvents and CloseModalTrait
-    use LivewireMessageEvents;
-    use CloseModalTrait;
+    // Traits WithFileUploads, LivewireMessageEvents and CloseModalTrait
+    use WithFileUploads, LivewireMessageEvents, CloseModalTrait;
     // Properties for inserting a new ad
     public $type, $deviceType, $imageBanner, $title, $urlForImage = "http://", $position, $timeToShow, $timeToHide, $shortDescription;
     // Ads Type
