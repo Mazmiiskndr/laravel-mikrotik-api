@@ -13,6 +13,8 @@ trait CloseModalTrait
         $this->resetFields();
         // Reset the validation error messages
         $this->resetErrorBag();
+        // Reset the validation status
+        $this->resetValidation();
         $this->dispatchBrowserEvent('hide-modal');
     }
 }

@@ -89,6 +89,8 @@ class EditRouter extends Component
         $this->resetFields();
         // Reset the validation error messages
         $this->resetErrorBag();
+        // Reset the validation status
+        $this->resetValidation();
         $this->dispatchBrowserEvent('closeModal');
     }
 
@@ -176,6 +178,8 @@ class EditRouter extends Component
                 }
             } else {
                 if ($mikrotikStatus['message']) {
+                    // Regardless of the outcome, we close the modal after the process
+                    $this->closeModal();
                     // If the Mikrotik setup process was not successful, we handle the error case
                     $this->handleError('An error occurred : ' . $mikrotikStatus['message']);
                 }
